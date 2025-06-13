@@ -1,0 +1,214 @@
+Build Error
+Failed to compile
+
+Next.js (14.2.3) is outdated (learn more)
+./src/pages/index.tsx
+Error: 
+  × the name `MainSection` is defined multiple times
+     ╭─[/home/runner/workspace/site/src/pages/index.tsx:81:1]
+  81 │   }
+  82 │ `;
+  83 │ 
+  84 │ const MainSection = styled.section`
+     ·       ─────┬─────
+     ·            ╰── previous definition of `MainSection` here
+  85 │   display: grid;
+  86 │   grid-template-columns: 1fr;
+  87 │   gap: 3rem;
+  88 │   padding: 4rem 0;
+  89 │   text-align: center;
+  90 │ 
+  91 │   @media (min-width: 968px) {
+  92 │     grid-template-columns: 1fr 400px;
+  93 │     text-align: left;
+  94 │     align-items: center;
+  95 │   }
+  96 │ `;
+  97 │ 
+  98 │ const LeftContent = styled.div`
+  99 │   h1 {
+ 100 │     font-size: 3rem;
+ 101 │     font-weight: 800;
+ 102 │     line-height: 1.1;
+ 103 │     margin-bottom: 1.5rem;
+ 104 │ 
+ 105 │     span {
+ 106 │       color: #00ff88;
+ 107 │     }
+ 108 │ 
+ 109 │     @media (min-width: 968px) {
+ 110 │       font-size: 4rem;
+ 111 │     }
+ 112 │ 
+ 113 │     @media (max-width: 480px) {
+ 114 │       font-size: 2.5rem;
+ 115 │     }
+ 116 │   }
+ 117 │ 
+ 118 │   p {
+ 119 │     font-size: 1.1rem;
+ 120 │     color: #b8b8b8;
+ 121 │     line-height: 1.6;
+ 122 │     margin-bottom: 2rem;
+ 123 │     max-width: 600px;
+ 124 │     margin-left: auto;
+ 125 │     margin-right: auto;
+ 126 │ 
+ 127 │     @media (min-width: 968px) {
+ 128 │       margin-left: 0;
+ 129 │       margin-right: 0;
+ 130 │       font-size: 1.2rem;
+ 131 │     }
+ 132 │   }
+ 133 │ `;
+ 134 │ 
+ 135 │ const FeatureList = styled.div`
+ 136 │   display: flex;
+ 137 │   flex-direction: column;
+ 138 │   gap: 1rem;
+ 139 │   margin: 2rem 0;
+ 140 │   max-width: 400px;
+ 141 │   margin-left: auto;
+ 142 │   margin-right: auto;
+ 143 │ 
+ 144 │   @media (min-width: 968px) {
+ 145 │     margin-left: 0;
+ 146 │     margin-right: 0;
+ 147 │   }
+ 148 │ `;
+ 149 │ 
+ 150 │ const FeatureItem = styled.div`
+ 151 │   display: flex;
+ 152 │   align-items: center;
+ 153 │   gap: 0.75rem;
+ 154 │   color: #e0e0e0;
+ 155 │ 
+ 156 │   &::before {
+ 157 │     content: '✓';
+ 158 │     color: #00ff88;
+ 159 │     font-weight: bold;
+ 160 │     font-size: 1.2rem;
+ 161 │   }
+ 162 │ `;
+ 163 │ 
+ 164 │ const ContactInfo = styled.div`
+ 165 │   display: flex;
+ 166 │   flex-direction: column;
+ 167 │   gap: 1rem;
+ 168 │   margin-top: 2rem;
+ 169 │   color: #888;
+ 170 │ 
+ 171 │   @media (min-width: 480px) {
+ 172 │     flex-direction: row;
+ 173 │     gap: 2rem;
+ 174 │     justify-content: center;
+ 175 │   }
+ 176 │ 
+ 177 │   @media (min-width: 968px) {
+ 178 │     justify-content: flex-start;
+ 179 │   }
+ 180 │ 
+ 181 │   a {
+ 182 │     display: flex;
+ 183 │     align-items: center;
+ 184 │     gap: 0.5rem;
+ 185 │     color: #00ff88;
+ 186 │     text-decoration: none;
+ 187 │     transition: all 0.3s ease;
+ 188 │ 
+ 189 │     &:hover {
+ 190 │       color: #00e67a;
+ 191 │       transform: translateY(-1px);
+ 192 │     }
+ 193 │ 
+ 194 │     &.instagram::before {
+ 195 │       content: '📱';
+ 196 │     }
+ 197 │ 
+ 198 │     &.whatsapp::before {
+ 199 │       content: '📞';
+ 200 │     }
+ 201 │   }
+ 202 │ `;
+ 203 │ 
+ 204 │ const LoginCard = styled.div`
+ 205 │   background: rgba(26, 29, 33, 0.9);
+ 206 │   border: 1px solid rgba(0, 255, 136, 0.2);
+ 207 │   border-radius: 16px;
+ 208 │   padding: 2rem;
+ 209 │   backdrop-filter: blur(10px);
+ 210 │   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+ 211 │   max-width: 400px;
+ 212 │   margin: 0 auto;
+ 213 │ `;
+ 214 │ 
+ 215 │ const LoginHeader = styled.div`
+ 216 │   text-align: center;
+ 217 │   margin-bottom: 2rem;
+ 218 │ 
+ 219 │   h3 {
+ 220 │     color: #00ff88;
+ 221 │     font-size: 1.3rem;
+ 222 │     margin-bottom: 0.5rem;
+ 223 │   }
+ 224 │ 
+ 225 │   p {
+ 226 │     color: #b8b8b8;
+ 227 │     font-size: 0.9rem;
+ 228 │   }
+ 229 │ `;
+ 230 │ 
+ 231 │ const TabContainer = styled.div`
+ 232 │   display: flex;
+ 233 │   gap: 0.5rem;
+ 234 │   margin-bottom: 1.5rem;
+ 235 │   background: rgba(0, 0, 0, 0.3);
+ 236 │   border-radius: 8px;
+ 237 │   padding: 0.25rem;
+ 238 │ `;
+ 239 │ 
+ 240 │ const Tab = styled.button`
+ 241 │   flex: 1;
+ 242 │   padding: 0.75rem;
+ 243 │   background: ${props => props.$active ? '#00ff88' : 'transparent'};
+ 244 │   color: ${props => props.$active ? '#0a0f0a' : '#ffffff'};
+ 245 │   border: none;
+ 246 │   border-radius: 6px;
+ 247 │   font-weight: 600;
+ 248 │   cursor: pointer;
+ 249 │   transition: all 0.3s ease;
+ 250 │ `;
+ 251 │ 
+ 252 │ const FormGroup = styled.div`
+ 253 │   margin-bottom: 1rem;
+ 254 │ 
+ 255 │   label {
+ 256 │     display: block;
+ 257 │     color: #b8b8b8;
+ 258 │     font-size: 0.9rem;
+ 259 │     margin-bottom: 0.5rem;
+ 260 │   }
+ 261 │ 
+ 262 │   input {
+ 263 │     width: 100%;
+ 264 │     padding: 0.75rem;
+ 265 │     background: rgba(0, 0, 0, 0.3);
+ 266 │     border: 1px solid rgba(255, 255, 255, 0.1);
+ 267 │     border-radius: 6px;
+ 268 │     color: #ffffff;
+ 269 │     font-size: 1rem;
+ 270 │     transition: border-color 0.3s ease;
+ 271 │ 
+ 272 │     &:focus {
+ 273 │       outline: none;
+ 274 │       border-color: #00ff88;
+ 275 │     }
+ 276 │ 
+ 277 │     &::placeholder {
+ 278 │       color: #666;
+ 279 │     }
+ 280 │   }
+ 281 │ `;
+ 282 │ 
+ 283 │ const CheckboxGroup = styled.div`
+ 284 │   display: flex;

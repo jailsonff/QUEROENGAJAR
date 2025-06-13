@@ -1,0 +1,25 @@
+modules = ["nodejs-20", "python-3.12"]
+run = "npm run dev"
+
+[nix]
+channel = "stable-24_05"
+packages = ["geckodriver", "glibcLocales"]
+
+[deployment]
+run = ["sh", "-c", "npm run dev"]
+
+[workflows]
+runButton = "Executar Site"
+
+[[workflows.workflow]]
+name = "Executar Site"
+author = 43736867
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd site && npm install && npm run dev"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
