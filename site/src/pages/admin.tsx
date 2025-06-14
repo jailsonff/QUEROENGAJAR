@@ -51,10 +51,10 @@ const Title = styled.h2`
 `;
 const Section = styled.div`
   background: rgba(10, 11, 13, 0.95);
-  border-radius: 20px;
-  padding: 2.5rem;
+  border-radius: 16px;
+  padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   max-width: 1400px;
   width: 100%;
   margin-left: auto;
@@ -75,18 +75,33 @@ const Section = styled.div`
     right: 0;
     bottom: 0;
     background: linear-gradient(135deg, rgba(0, 255, 136, 0.05) 0%, transparent 50%, rgba(0, 255, 136, 0.05) 100%);
-    border-radius: 20px;
+    border-radius: 16px;
     pointer-events: none;
   }
   
+  @media (max-width: 1200px) {
+    max-width: 100%;
+    margin: 0 1rem 2rem;
+  }
+  
   @media (max-width: 768px) {
-    padding: 2rem;
-    margin: 0 0.5rem 2rem;
+    padding: 1.5rem;
+    margin: 0 0.5rem 1.5rem;
+    border-radius: 12px;
+    
+    &::before {
+      border-radius: 12px;
+    }
   }
   
   @media (max-width: 480px) {
-    padding: 1.5rem;
-    margin: 0 0.25rem 1.5rem;
+    padding: 1rem;
+    margin: 0 0.25rem 1rem;
+    border-radius: 8px;
+    
+    &::before {
+      border-radius: 8px;
+    }
   }
 `;
 const Table = styled.table`
@@ -792,56 +807,100 @@ export default function Admin() {
             </div>
           </div>
 
-          {/* Botão para abrir popup de cadastro */}
-          <div style={{display:'flex', justifyContent:'center', marginBottom:'2rem'}}>
-            <Button 
-              onClick={() => setShowCadastroPopup(true)}
-              style={{
-                background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', 
-                color:'#0a0f0a', 
-                padding:'1.2rem 2.5rem', 
-                fontSize:'1.2rem', 
-                fontWeight:'700', 
-                boxShadow:'0 6px 25px rgba(0, 255, 136, 0.4)', 
-                transform:'translateY(0)', 
-                transition:'all 0.3s ease', 
-                textTransform:'uppercase', 
-                letterSpacing:'0.8px',
-                border:'none',
-                borderRadius:'12px',
-                cursor:'pointer',
-                display:'flex',
-                alignItems:'center',
-                gap:'0.75rem'
-              }}
-              onMouseEnter={e=>{
-                e.currentTarget.style.transform='translateY(-3px)'; 
-                e.currentTarget.style.boxShadow='0 8px 30px rgba(0, 255, 136, 0.6)';
-              }} 
-              onMouseLeave={e=>{
-                e.currentTarget.style.transform='translateY(0)'; 
-                e.currentTarget.style.boxShadow='0 6px 25px rgba(0, 255, 136, 0.4)';
-              }}
-            >
-              <span style={{fontSize:'1.4rem'}}>➕</span>
-              Cadastrar Novo Cliente
-            </Button>
-          </div>
+          {/* Área de controles - Busca e Botão de cadastro */}
+          <div style={{
+            display:'flex', 
+            gap:'1.5rem', 
+            marginBottom:'2rem', 
+            alignItems:'stretch',
+            flexWrap:'wrap',
+            '@media (max-width: 768px)': {
+              flexDirection:'column',
+              gap:'1rem'
+            }
+          }}>
+            {/* Card de busca */}
+            <div style={{
+              background:'#000000', 
+              borderRadius:'16px', 
+              padding:'1.5rem', 
+              border:'2px solid rgba(0, 255, 136, 0.3)', 
+              boxShadow:'0 6px 24px rgba(0, 255, 136, 0.12)', 
+              backdropFilter:'blur(15px)', 
+              position:'relative',
+              flex:'1',
+              minWidth:'320px'
+            }}>
+              <div style={{position:'absolute', top:0, left:0, right:0, bottom:0, background:'linear-gradient(135deg, rgba(0, 255, 136, 0.03) 0%, transparent 50%, rgba(0, 255, 136, 0.03) 100%)', borderRadius:'16px', pointerEvents:'none'}}></div>
+              <div style={{position:'relative', zIndex:1}}>
+                <span style={{position:'absolute', left:'1.2rem', top:'50%', transform:'translateY(-50%)', color:'#00ff88', fontSize:'1.2rem', textShadow:'0 0 10px rgba(0, 255, 136, 0.6)', zIndex:2}}>🔍</span>
+                <input
+                  type="text"
+                  placeholder="Buscar por nome ou email..."
+                  value={busca}
+                  onChange={e=>setBusca(e.target.value)}
+                  style={{
+                    width:'100%', 
+                    padding:'1rem 1rem 1rem 3.2rem', 
+                    borderRadius:'12px', 
+                    border:'2px solid rgba(0, 255, 136, 0.2)', 
+                    background:'rgba(0, 0, 0, 0.6)', 
+                    color:'#ffffff', 
+                    fontSize:'1rem', 
+                    transition:'all 0.3s ease', 
+                    outline:'none', 
+                    boxShadow:'0 2px 8px rgba(0, 0, 0, 0.2)', 
+                    fontWeight:'400'
+                  }}
+                  onFocus={e=>{e.target.style.borderColor='#00ff88'; e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2)'}}
+                  onBlur={e=>{e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)'}}
+                />
+              </div>
+            </div>
 
-          {/* Card de busca */}
-          <div style={{background:'#000000', borderRadius:'20px', padding:'2.5rem', marginBottom:'2.5rem', border:'2px solid rgba(0, 255, 136, 0.3)', boxShadow:'0 8px 32px rgba(0, 255, 136, 0.15)', backdropFilter:'blur(15px)', position:'relative'}}>
-            <div style={{position:'absolute', top:0, left:0, right:0, bottom:0, background:'linear-gradient(135deg, rgba(0, 255, 136, 0.03) 0%, transparent 50%, rgba(0, 255, 136, 0.03) 100%)', borderRadius:'20px', pointerEvents:'none'}}></div>
-            <div style={{position:'relative', zIndex:1}}>
-              <span style={{position:'absolute', left:'1.5rem', top:'50%', transform:'translateY(-50%)', color:'#00ff88', fontSize:'1.4rem', textShadow:'0 0 15px rgba(0, 255, 136, 0.6)', zIndex:2}}>🔍</span>
-              <input
-                type="text"
-                placeholder="Buscar por nome ou email..."
-                value={busca}
-                onChange={e=>setBusca(e.target.value)}
-                style={{width:'100%', padding:'1.5rem 1.5rem 1.5rem 4rem', borderRadius:'16px', border:'2px solid rgba(0, 255, 136, 0.3)', background:'rgba(0, 0, 0, 0.8)', color:'#ffffff', fontSize:'1.2rem', transition:'all 0.3s ease', outline:'none', boxShadow:'0 4px 15px rgba(0, 0, 0, 0.3)', fontWeight:'500'}}
-                onFocus={e=>{e.target.style.borderColor='#00ff88'; e.target.style.boxShadow='0 0 0 4px rgba(0, 255, 136, 0.15), 0 4px 15px rgba(0, 0, 0, 0.3)'}}
-                onBlur={e=>{e.target.style.borderColor='rgba(0, 255, 136, 0.3)'; e.target.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.3)'}}
-              />
+            {/* Botão de cadastro */}
+            <div style={{
+              display:'flex', 
+              alignItems:'center',
+              '@media (max-width: 768px)': {
+                justifyContent:'center'
+              }
+            }}>
+              <Button 
+                onClick={() => setShowCadastroPopup(true)}
+                style={{
+                  background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', 
+                  color:'#0a0f0a', 
+                  padding:'1rem 2rem', 
+                  fontSize:'1rem', 
+                  fontWeight:'700', 
+                  boxShadow:'0 4px 20px rgba(0, 255, 136, 0.3)', 
+                  transform:'translateY(0)', 
+                  transition:'all 0.3s ease', 
+                  textTransform:'uppercase', 
+                  letterSpacing:'0.6px',
+                  border:'none',
+                  borderRadius:'12px',
+                  cursor:'pointer',
+                  display:'flex',
+                  alignItems:'center',
+                  gap:'0.6rem',
+                  whiteSpace:'nowrap',
+                  height:'fit-content'
+                }}
+                onMouseEnter={e=>{
+                  e.currentTarget.style.transform='translateY(-2px)'; 
+                  e.currentTarget.style.boxShadow='0 6px 25px rgba(0, 255, 136, 0.5)';
+                }} 
+                onMouseLeave={e=>{
+                  e.currentTarget.style.transform='translateY(0)'; 
+                  e.currentTarget.style.boxShadow='0 4px 20px rgba(0, 255, 136, 0.3)';
+                }}
+              >
+                <span style={{fontSize:'1.2rem'}}>➕</span>
+                <span style={{'@media (max-width: 480px)': {display:'none'}}}>Cadastrar Novo Cliente</span>
+                <span style={{display:'none', '@media (max-width: 480px)': {display:'inline'}}}>Cadastrar</span>
+              </Button>
             </div>
           </div>
 
@@ -853,114 +912,202 @@ export default function Admin() {
           </div>
 
           {/* Tabela responsiva */}
-          <div style={{background:'#000000', borderRadius:'20px', overflow:'hidden', border:'2px solid rgba(0, 255, 136, 0.4)', boxShadow:'0 12px 40px rgba(0, 255, 136, 0.2)', backdropFilter:'blur(15px)', position:'relative'}}>
-            <div style={{position:'absolute', top:0, left:0, right:0, bottom:0, background:'linear-gradient(135deg, rgba(0, 255, 136, 0.02) 0%, transparent 50%, rgba(0, 255, 136, 0.02) 100%)', borderRadius:'20px', pointerEvents:'none'}}></div>
-            <div style={{overflowX:'auto', position:'relative', zIndex:1}}>
-              <Table style={{margin:0, borderRadius:0, boxShadow:'none', background:'transparent', border:'none'}}>
+          <div style={{
+            background:'#000000', 
+            borderRadius:'16px', 
+            overflow:'hidden', 
+            border:'2px solid rgba(0, 255, 136, 0.3)', 
+            boxShadow:'0 8px 32px rgba(0, 255, 136, 0.15)', 
+            backdropFilter:'blur(15px)', 
+            position:'relative',
+            maxWidth:'100%'
+          }}>
+            <div style={{position:'absolute', top:0, left:0, right:0, bottom:0, background:'linear-gradient(135deg, rgba(0, 255, 136, 0.02) 0%, transparent 50%, rgba(0, 255, 136, 0.02) 100%)', borderRadius:'16px', pointerEvents:'none'}}></div>
+            <div style={{overflowX:'auto', position:'relative', zIndex:1, maxWidth:'100%'}}>
+              <Table style={{
+                margin:0, 
+                borderRadius:0, 
+                boxShadow:'none', 
+                background:'transparent', 
+                border:'none',
+                minWidth:'1000px',
+                '@media (max-width: 768px)': {
+                  minWidth:'900px'
+                }
+              }}>
                 <thead>
                   <tr>
-                    <th>👤 Nome</th>
-                    <th>📧 Email</th>
-                    <th>📱 WhatsApp</th>
-                    <th>🔐 Senha</th>
-                    <th>📊 Status</th>
-                    <th>👑 Admin</th>
-                    <th>💬 Comentários</th>
-                    <th>⚡ Simultâneos</th>
-                    <th>⚙️ Ações</th>
+                    <th style={{
+                      padding:'0.8rem 0.6rem',
+                      fontSize:'0.85rem',
+                      '@media (max-width: 768px)': {
+                        padding:'0.6rem 0.4rem',
+                        fontSize:'0.8rem'
+                      }
+                    }}>👤 Nome</th>
+                    <th style={{
+                      padding:'0.8rem 0.6rem',
+                      fontSize:'0.85rem',
+                      '@media (max-width: 768px)': {
+                        padding:'0.6rem 0.4rem',
+                        fontSize:'0.8rem'
+                      }
+                    }}>📧 Email</th>
+                    <th style={{
+                      padding:'0.8rem 0.6rem',
+                      fontSize:'0.85rem',
+                      '@media (max-width: 768px)': {
+                        padding:'0.6rem 0.4rem',
+                        fontSize:'0.8rem'
+                      }
+                    }}>📱 WhatsApp</th>
+                    <th style={{
+                      padding:'0.8rem 0.6rem',
+                      fontSize:'0.85rem',
+                      '@media (max-width: 768px)': {
+                        padding:'0.6rem 0.4rem',
+                        fontSize:'0.8rem'
+                      }
+                    }}>🔐 Senha</th>
+                    <th style={{
+                      padding:'0.8rem 0.6rem',
+                      fontSize:'0.85rem',
+                      '@media (max-width: 768px)': {
+                        padding:'0.6rem 0.4rem',
+                        fontSize:'0.8rem'
+                      }
+                    }}>📊 Status</th>
+                    <th style={{
+                      padding:'0.8rem 0.6rem',
+                      fontSize:'0.85rem',
+                      '@media (max-width: 768px)': {
+                        padding:'0.6rem 0.4rem',
+                        fontSize:'0.8rem'
+                      }
+                    }}>👑 Admin</th>
+                    <th style={{
+                      padding:'0.8rem 0.6rem',
+                      fontSize:'0.85rem',
+                      '@media (max-width: 768px)': {
+                        padding:'0.6rem 0.4rem',
+                        fontSize:'0.8rem'
+                      }
+                    }}>💬 Comentários</th>
+                    <th style={{
+                      padding:'0.8rem 0.6rem',
+                      fontSize:'0.85rem',
+                      '@media (max-width: 768px)': {
+                        padding:'0.6rem 0.4rem',
+                        fontSize:'0.8rem'
+                      }
+                    }}>⚡ Simultâneos</th>
+                    <th style={{
+                      padding:'0.8rem 0.6rem',
+                      fontSize:'0.85rem',
+                      minWidth:'240px',
+                      '@media (max-width: 768px)': {
+                        padding:'0.6rem 0.4rem',
+                        fontSize:'0.8rem',
+                        minWidth:'220px'
+                      }
+                    }}>⚙️ Ações</th>
                   </tr>
                 </thead>
                 <tbody>
                   {clientesFiltrados.map((c, i) => (
                     editIdx === i && section==='clientes' ? (
                       <tr key={i} style={{background:'linear-gradient(135deg, #2A2D30 0%, #232528 100%)', borderLeft:'4px solid #FFD600'}}>
-                        <td style={{padding:'1rem'}}>
-                          <input type="text" value={editData.nome} onChange={e=>setEditData({...editData, nome: e.target.value})} style={{width:'100%', padding:'0.8rem', borderRadius:'10px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.95rem', outline:'none', boxShadow:'0 0 0 3px rgba(0, 255, 136, 0.1)'}} />
+                        <td style={{padding:'0.6rem 0.4rem'}}>
+                          <input type="text" value={editData.nome} onChange={e=>setEditData({...editData, nome: e.target.value})} style={{width:'100%', padding:'0.6rem', borderRadius:'8px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.85rem', outline:'none', boxShadow:'0 0 0 2px rgba(0, 255, 136, 0.1)'}} />
                         </td>
-                        <td style={{padding:'1rem'}}>
-                          <input type="email" value={editData.email} onChange={e=>setEditData({...editData, email: e.target.value})} style={{width:'100%', padding:'0.8rem', borderRadius:'10px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.95rem', outline:'none', boxShadow:'0 0 0 3px rgba(0, 255, 136, 0.1)'}} />
+                        <td style={{padding:'0.6rem 0.4rem'}}>
+                          <input type="email" value={editData.email} onChange={e=>setEditData({...editData, email: e.target.value})} style={{width:'100%', padding:'0.6rem', borderRadius:'8px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.85rem', outline:'none', boxShadow:'0 0 0 2px rgba(0, 255, 136, 0.1)'}} />
                         </td>
-                        <td style={{padding:'1rem'}}>
-                          <input type="text" value={editData.whatsapp} onChange={e=>setEditData({...editData, whatsapp: e.target.value})} style={{width:'100%', padding:'0.8rem', borderRadius:'10px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.95rem', outline:'none', boxShadow:'0 0 0 3px rgba(0, 255, 136, 0.1)'}} />
+                        <td style={{padding:'0.6rem 0.4rem'}}>
+                          <input type="text" value={editData.whatsapp} onChange={e=>setEditData({...editData, whatsapp: e.target.value})} style={{width:'100%', padding:'0.6rem', borderRadius:'8px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.85rem', outline:'none', boxShadow:'0 0 0 2px rgba(0, 255, 136, 0.1)'}} />
                         </td>
-                        <td style={{padding:'1rem'}}>
-                          <input type="password" value={editData.senha || ''} onChange={e=>setEditData({...editData, senha: e.target.value})} style={{width:'100%', padding:'0.8rem', borderRadius:'10px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.95rem', outline:'none', boxShadow:'0 0 0 3px rgba(0, 255, 136, 0.1)'}} />
+                        <td style={{padding:'0.6rem 0.4rem'}}>
+                          <input type="password" value={editData.senha || ''} onChange={e=>setEditData({...editData, senha: e.target.value})} style={{width:'100%', padding:'0.6rem', borderRadius:'8px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.85rem', outline:'none', boxShadow:'0 0 0 2px rgba(0, 255, 136, 0.1)'}} />
                         </td>
-                        <td style={{padding:'1rem'}}>
-                          <select value={editData.status} onChange={e=>setEditData({...editData, status: e.target.value})} style={{width:'100%', padding:'0.8rem', borderRadius:'10px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.95rem', cursor:'pointer', boxShadow:'0 0 0 3px rgba(0, 255, 136, 0.1)'}}>
+                        <td style={{padding:'0.6rem 0.4rem'}}>
+                          <select value={editData.status} onChange={e=>setEditData({...editData, status: e.target.value})} style={{width:'100%', padding:'0.6rem', borderRadius:'8px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.85rem', cursor:'pointer', boxShadow:'0 0 0 2px rgba(0, 255, 136, 0.1)'}}>
                             <option value="ativo">Ativo</option>
                             <option value="bloqueado">Bloqueado</option>
                           </select>
                         </td>
-                        <td style={{padding:'1rem'}}>
-                          <select value={editData.admin ? 'sim' : 'não'} onChange={e=>setEditData({...editData, admin: e.target.value === 'sim'})} style={{width:'100%', padding:'0.8rem', borderRadius:'10px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.95rem', cursor:'pointer', boxShadow:'0 0 0 3px rgba(0, 255, 136, 0.1)'}}>
+                        <td style={{padding:'0.6rem 0.4rem'}}>
+                          <select value={editData.admin ? 'sim' : 'não'} onChange={e=>setEditData({...editData, admin: e.target.value === 'sim'})} style={{width:'100%', padding:'0.6rem', borderRadius:'8px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.85rem', cursor:'pointer', boxShadow:'0 0 0 2px rgba(0, 255, 136, 0.1)'}}>
                             <option value="sim">Sim</option>
                             <option value="não">Não</option>
                           </select>
                         </td>
-                        <td style={{padding:'1rem'}}>
-                          <input type="number" value={editData.comentarios} onChange={e=>setEditData({...editData, comentarios: Number(e.target.value)})} style={{width:'90px', padding:'0.8rem', borderRadius:'10px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.95rem', outline:'none', boxShadow:'0 0 0 3px rgba(0, 255, 136, 0.1)'}} />
+                        <td style={{padding:'0.6rem 0.4rem'}}>
+                          <input type="number" value={editData.comentarios} onChange={e=>setEditData({...editData, comentarios: Number(e.target.value)})} style={{width:'80px', padding:'0.6rem', borderRadius:'8px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.85rem', outline:'none', boxShadow:'0 0 0 2px rgba(0, 255, 136, 0.1)'}} />
                         </td>
-                        <td style={{padding:'1rem'}}>
-                          <select value={editData.simultaneos} onChange={e=>setEditData({...editData, simultaneos: Number(e.target.value)})} style={{width:'100%', padding:'0.8rem', borderRadius:'10px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.95rem', cursor:'pointer', boxShadow:'0 0 0 3px rgba(0, 255, 136, 0.1)'}}>
+                        <td style={{padding:'0.6rem 0.4rem'}}>
+                          <select value={editData.simultaneos} onChange={e=>setEditData({...editData, simultaneos: Number(e.target.value)})} style={{width:'100%', padding:'0.6rem', borderRadius:'8px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.85rem', cursor:'pointer', boxShadow:'0 0 0 2px rgba(0, 255, 136, 0.1)'}}>
                             {[1,2,3,4,5].map(q=> <option key={q} value={q}>{q} simultâneo{q>1?'s':''}</option>)}
                           </select>
                         </td>
-                        <td style={{padding:'1rem'}}>
-                          <div style={{display:'flex', gap:'0.5rem', flexWrap:'wrap'}}>
-                            <Button style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.7rem 1.2rem', fontSize:'0.85rem', fontWeight:'700', boxShadow:'0 4px 15px rgba(0, 255, 136, 0.4)', textTransform:'uppercase', letterSpacing:'0.3px'}} onClick={()=>handleSave(i)}>✅ Salvar</Button>
-                            <Button style={{background:'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)', color:'#FFF', padding:'0.7rem 1.2rem', fontSize:'0.85rem', fontWeight:'700', boxShadow:'0 4px 15px rgba(255, 71, 87, 0.4)', textTransform:'uppercase', letterSpacing:'0.3px'}} onClick={()=>setEditIdx(null)}>❌ Cancelar</Button>
+                        <td style={{padding:'0.6rem 0.4rem'}}>
+                          <div style={{display:'flex', gap:'0.3rem', flexWrap:'wrap', justifyContent:'center'}}>
+                            <Button style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.5rem 0.8rem', fontSize:'0.75rem', fontWeight:'700', boxShadow:'0 2px 10px rgba(0, 255, 136, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'auto'}} onClick={()=>handleSave(i)}>✅ Salvar</Button>
+                            <Button style={{background:'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)', color:'#FFF', padding:'0.5rem 0.8rem', fontSize:'0.75rem', fontWeight:'700', boxShadow:'0 2px 10px rgba(255, 71, 87, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'auto'}} onClick={()=>setEditIdx(null)}>❌ Cancelar</Button>
                           </div>
                         </td>
                       </tr>
                     ) : (
                       <tr key={i} style={{borderBottom: i < clientesFiltrados.length - 1 ? '1px solid rgba(255, 214, 0, 0.2)' : 'none', background: i % 2 === 0 ? 'rgba(35, 37, 40, 0.5)' : 'transparent', transition:'all 0.3s ease'}} onMouseEnter={e=>{e.target.style.background='rgba(255, 214, 0, 0.1)'; e.target.style.transform='scale(1.01)'}} onMouseLeave={e=>{e.target.style.background= i % 2 === 0 ? 'rgba(35, 37, 40, 0.5)' : 'transparent'; e.target.style.transform='scale(1)'}}>
-                        <td style={{padding:'1.2rem 1rem', fontSize:'1rem', fontWeight:'500', color:'#FFF'}}>{c.nome}</td>
-                        <td style={{padding:'1.2rem 1rem', fontSize:'0.95rem', color:'#B0B0B0'}}>{c.email}</td>
-                        <td style={{padding:'1.2rem 1rem', fontSize:'0.95rem', color:'#B0B0B0'}}>{c.whatsapp}</td>
-                        <td style={{padding:'1.2rem 1rem', fontSize:'0.95rem'}}>{c.senha ? <span style={{color:'#FFD600', fontSize:'1.1rem'}}>🔒 ••••••••</span> : <span style={{color:'#FF6B6B', fontWeight:'bold'}}>⚠️ Não definida</span>}</td>
-                        <td style={{padding:'1.2rem 1rem', textAlign:'center'}}>
+                        <td style={{padding:'0.8rem 0.5rem', fontSize:'0.9rem', fontWeight:'500', color:'#FFF'}}>{c.nome}</td>
+                        <td style={{padding:'0.8rem 0.5rem', fontSize:'0.85rem', color:'#B0B0B0'}}>{c.email}</td>
+                        <td style={{padding:'0.8rem 0.5rem', fontSize:'0.85rem', color:'#B0B0B0'}}>{c.whatsapp}</td>
+                        <td style={{padding:'0.8rem 0.5rem', fontSize:'0.85rem'}}>{c.senha ? <span style={{color:'#FFD600', fontSize:'1rem'}}>🔒 ••••••••</span> : <span style={{color:'#FF6B6B', fontWeight:'bold'}}>⚠️ Não definida</span>}</td>
+                        <td style={{padding:'0.8rem 0.5rem', textAlign:'center'}}>
                           {c.status === 'ativo' ? 
-                            <span style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.5rem 1rem', borderRadius:'25px', fontSize:'0.9rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.4rem', boxShadow:'0 4px 15px rgba(0, 255, 136, 0.4)', textTransform:'uppercase', letterSpacing:'0.3px'}}>
+                            <span style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.3rem', boxShadow:'0 2px 10px rgba(0, 255, 136, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px'}}>
                               ✅ Ativo
                             </span> : 
-                            <span style={{background:'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)', color:'#FFF', padding:'0.5rem 1rem', borderRadius:'25px', fontSize:'0.9rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.4rem', boxShadow:'0 4px 15px rgba(255, 71, 87, 0.4)', textTransform:'uppercase', letterSpacing:'0.3px'}}>
+                            <span style={{background:'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)', color:'#FFF', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.3rem', boxShadow:'0 2px 10px rgba(255, 71, 87, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px'}}>
                               🚫 Bloqueado
                             </span>
                           }
                         </td>
-                        <td style={{padding:'1.2rem 1rem', textAlign:'center'}}>
+                        <td style={{padding:'0.8rem 0.5rem', textAlign:'center'}}>
                           {c.admin ? 
-                            <span style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.5rem 1rem', borderRadius:'25px', fontSize:'0.9rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.4rem', boxShadow:'0 4px 15px rgba(0, 255, 136, 0.4)', textTransform:'uppercase', letterSpacing:'0.3px'}}>
+                            <span style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.3rem', boxShadow:'0 2px 10px rgba(0, 255, 136, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px'}}>
                               👑 Admin
                             </span> : 
-                            <span style={{color:'rgba(255, 255, 255, 0.6)', fontSize:'0.9rem', fontStyle:'italic'}}>👤 Usuário</span>
+                            <span style={{color:'rgba(255, 255, 255, 0.6)', fontSize:'0.8rem', fontStyle:'italic'}}>👤 Usuário</span>
                           }
                         </td>
-                        <td style={{padding:'1.2rem 1rem', textAlign:'center'}}>
-                          <span style={{background:'rgba(0, 255, 136, 0.2)', color:'#00ff88', padding:'0.5rem 1rem', borderRadius:'25px', fontSize:'0.9rem', fontWeight:'700', boxShadow:'0 2px 10px rgba(0, 255, 136, 0.2)', border:'1px solid rgba(0, 255, 136, 0.3)'}}>
+                        <td style={{padding:'0.8rem 0.5rem', textAlign:'center'}}>
+                          <span style={{background:'rgba(0, 255, 136, 0.2)', color:'#00ff88', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', boxShadow:'0 1px 6px rgba(0, 255, 136, 0.2)', border:'1px solid rgba(0, 255, 136, 0.3)'}}>
                             {c.comentarios}
                           </span>
                         </td>
-                        <td style={{padding:'1.2rem 1rem', textAlign:'center'}}>
-                          <span style={{background:'rgba(0, 255, 136, 0.2)', color:'#00ff88', padding:'0.5rem 1rem', borderRadius:'25px', fontSize:'0.9rem', fontWeight:'700', boxShadow:'0 2px 10px rgba(0, 255, 136, 0.2)', border:'1px solid rgba(0, 255, 136, 0.3)'}}>
+                        <td style={{padding:'0.8rem 0.5rem', textAlign:'center'}}>
+                          <span style={{background:'rgba(0, 255, 136, 0.2)', color:'#00ff88', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', boxShadow:'0 1px 6px rgba(0, 255, 136, 0.2)', border:'1px solid rgba(0, 255, 136, 0.3)'}}>
                             {c.simultaneos || 1}
                           </span>
                         </td>
-                        <td style={{padding:'1.2rem 1rem'}}>
-                          <div style={{display:'flex', flexDirection:'row', alignItems:'center', gap:'0.5rem', flexWrap:'wrap', justifyContent:'center'}}>
-                            <Button onClick={()=>handleEdit(i)} style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.6rem 1rem', fontSize:'0.8rem', fontWeight:'700', boxShadow:'0 4px 15px rgba(0, 255, 136, 0.4)', display:'flex', alignItems:'center', gap:'0.4rem', textTransform:'uppercase', letterSpacing:'0.3px'}}>
-                              ✏️ Editar
-                            </Button>
-                            <Button onClick={()=>handleBlock(i)} style={{background: c.status === 'ativo' ? 'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)' : 'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color: c.status === 'ativo' ? '#FFF' : '#0a0f0a', padding:'0.6rem 1rem', fontSize:'0.8rem', fontWeight:'700', boxShadow: c.status === 'ativo' ? '0 4px 15px rgba(255, 71, 87, 0.4)' : '0 4px 15px rgba(0, 255, 136, 0.4)', display:'flex', alignItems:'center', gap:'0.4rem', textTransform:'uppercase', letterSpacing:'0.3px'}}>
-                              {c.status === 'ativo' ? '🚫 Bloquear' : '✅ Liberar'}
-                            </Button>
-                            <Button onClick={()=>handleToggleAdmin(i)} style={{background: c.admin ? 'linear-gradient(135deg, #ffa726 0%, #ff9800 100%)' : 'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color: c.admin ? '#FFF' : '#0a0f0a', padding:'0.6rem 1rem', fontSize:'0.8rem', fontWeight:'700', boxShadow: c.admin ? '0 4px 15px rgba(255, 167, 38, 0.4)' : '0 4px 15px rgba(0, 255, 136, 0.4)', display:'flex', alignItems:'center', gap:'0.4rem', textTransform:'uppercase', letterSpacing:'0.3px'}}>
-                              {c.admin ? '👤 Remover Admin' : '👑 Tornar Admin'}
-                            </Button>
-                            <Button style={{background:'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)', color:'#FFF', padding:'0.6rem 1rem', fontSize:'0.8rem', fontWeight:'700', boxShadow:'0 4px 15px rgba(255, 71, 87, 0.4)', display:'flex', alignItems:'center', gap:'0.4rem', textTransform:'uppercase', letterSpacing:'0.3px'}} onClick={()=>handleDeleteUser(i)}>
-                              🗑️ Excluir
-                            </Button>
+                        <td style={{padding:'0.8rem 0.5rem'}}>
+                          <div style={{display:'flex', flexDirection:'column', alignItems:'center', gap:'0.3rem', justifyContent:'center'}}>
+                            <div style={{display:'flex', gap:'0.3rem', flexWrap:'wrap', justifyContent:'center'}}>
+                              <Button onClick={()=>handleEdit(i)} style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.4rem 0.7rem', fontSize:'0.7rem', fontWeight:'700', boxShadow:'0 2px 8px rgba(0, 255, 136, 0.3)', display:'flex', alignItems:'center', gap:'0.2rem', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'auto', borderRadius:'6px'}}>
+                                ✏️ Editar
+                              </Button>
+                              <Button onClick={()=>handleBlock(i)} style={{background: c.status === 'ativo' ? 'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)' : 'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color: c.status === 'ativo' ? '#FFF' : '#0a0f0a', padding:'0.4rem 0.7rem', fontSize:'0.7rem', fontWeight:'700', boxShadow: c.status === 'ativo' ? '0 2px 8px rgba(255, 71, 87, 0.3)' : '0 2px 8px rgba(0, 255, 136, 0.3)', display:'flex', alignItems:'center', gap:'0.2rem', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'auto', borderRadius:'6px'}}>
+                                {c.status === 'ativo' ? '🚫 Bloquear' : '✅ Liberar'}
+                              </Button>
+                            </div>
+                            <div style={{display:'flex', gap:'0.3rem', flexWrap:'wrap', justifyContent:'center'}}>
+                              <Button onClick={()=>handleToggleAdmin(i)} style={{background: c.admin ? 'linear-gradient(135deg, #ffa726 0%, #ff9800 100%)' : 'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color: c.admin ? '#FFF' : '#0a0f0a', padding:'0.4rem 0.7rem', fontSize:'0.7rem', fontWeight:'700', boxShadow: c.admin ? '0 2px 8px rgba(255, 167, 38, 0.3)' : '0 2px 8px rgba(0, 255, 136, 0.3)', display:'flex', alignItems:'center', gap:'0.2rem', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'auto', borderRadius:'6px'}}>
+                                {c.admin ? '👤 Rem. Admin' : '👑 Admin'}
+                              </Button>
+                              <Button style={{background:'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)', color:'#FFF', padding:'0.4rem 0.7rem', fontSize:'0.7rem', fontWeight:'700', boxShadow:'0 2px 8px rgba(255, 71, 87, 0.3)', display:'flex', alignItems:'center', gap:'0.2rem', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'auto', borderRadius:'6px'}} onClick={()=>handleDeleteUser(i)}>
+                                🗑️ Excluir
+                              </Button>
+                            </div>
                           </div>
                         </td>
                       </tr>
