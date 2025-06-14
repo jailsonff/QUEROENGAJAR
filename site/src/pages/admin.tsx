@@ -179,8 +179,12 @@ const Table = styled.table`
     white-space: nowrap;
     
     th, td {
-      padding: 0.8rem 0.5rem;
-      min-width: 120px;
+      padding: 0.8rem 0.4rem;
+      min-width: 110px;
+    }
+    
+    th:first-child, td:first-child {
+      min-width: 130px;
     }
   }
   
@@ -188,8 +192,12 @@ const Table = styled.table`
     font-size: 0.75rem;
     
     th, td {
-      padding: 0.6rem 0.3rem;
-      min-width: 100px;
+      padding: 0.6rem 0.25rem;
+      min-width: 90px;
+    }
+    
+    th:first-child, td:first-child {
+      min-width: 110px;
     }
     
     th {
@@ -797,14 +805,11 @@ export default function Admin() {
       {msg && <div style={{background:'#FFD600',color:'#181A1B',padding:'8px 16px',borderRadius:8,marginBottom:16,fontWeight:'bold'}}>{msg}</div>}
       {section==='clientes' && (
         <Section>
-          <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', width:'100%', marginBottom:'2rem', flexWrap:'wrap', gap:'1rem'}}>
-            <h3 style={{color:'#00ff88', fontSize:'2.2rem', fontWeight:'700', margin:0, display:'flex', alignItems:'center', gap:'0.75rem', textShadow:'0 0 15px rgba(0, 255, 136, 0.4)'}}>
+          <div style={{display:'flex', alignItems:'center', justifyContent:'center', width:'100%', marginBottom:'2rem'}}>
+            <h3 style={{color:'#00ff88', fontSize:'2.2rem', fontWeight:'700', margin:0, display:'flex', alignItems:'center', gap:'0.75rem', textShadow:'0 0 15px rgba(0, 255, 136, 0.4)', textAlign:'center'}}>
               <span style={{fontSize:'2rem'}}>👥</span>
               Clientes Registrados
             </h3>
-            <div style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', padding:'1rem 1.5rem', borderRadius:'12px', color:'#0a0f0a', fontWeight:'700', fontSize:'1rem', boxShadow:'0 4px 20px rgba(0, 255, 136, 0.4)', border:'1px solid rgba(0, 255, 136, 0.3)'}}>
-              Total: {clientesFiltrados.length} cliente{clientesFiltrados.length !== 1 ? 's' : ''}
-            </div>
           </div>
 
           {/* Área de controles - Busca e Botão de cadastro */}
@@ -940,6 +945,7 @@ export default function Admin() {
                     <th style={{
                       padding:'0.8rem 0.6rem',
                       fontSize:'0.85rem',
+                      textAlign:'center',
                       '@media (max-width: 768px)': {
                         padding:'0.6rem 0.4rem',
                         fontSize:'0.8rem'
@@ -1058,7 +1064,7 @@ export default function Admin() {
                       </tr>
                     ) : (
                       <tr key={i} style={{borderBottom: i < clientesFiltrados.length - 1 ? '1px solid rgba(255, 214, 0, 0.2)' : 'none', background: i % 2 === 0 ? 'rgba(35, 37, 40, 0.5)' : 'transparent', transition:'all 0.3s ease'}} onMouseEnter={e=>{e.target.style.background='rgba(255, 214, 0, 0.1)'; e.target.style.transform='scale(1.01)'}} onMouseLeave={e=>{e.target.style.background= i % 2 === 0 ? 'rgba(35, 37, 40, 0.5)' : 'transparent'; e.target.style.transform='scale(1)'}}>
-                        <td style={{padding:'0.8rem 0.5rem', fontSize:'0.9rem', fontWeight:'500', color:'#FFF'}}>{c.nome}</td>
+                        <td style={{padding:'0.8rem 0.5rem', fontSize:'0.9rem', fontWeight:'500', color:'#FFF', textAlign:'center', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', maxWidth:'150px', '@media (max-width: 480px)': {maxWidth:'120px', fontSize:'0.85rem'}}} title={c.nome}>{c.nome}</td>
                         <td style={{padding:'0.8rem 0.5rem', fontSize:'0.85rem', color:'#B0B0B0'}}>{c.email}</td>
                         <td style={{padding:'0.8rem 0.5rem', fontSize:'0.85rem', color:'#B0B0B0'}}>{c.whatsapp}</td>
                         <td style={{padding:'0.8rem 0.5rem', fontSize:'0.85rem'}}>{c.senha ? <span style={{color:'#FFD600', fontSize:'1rem'}}>🔒 ••••••••</span> : <span style={{color:'#FF6B6B', fontWeight:'bold'}}>⚠️ Não definida</span>}</td>
