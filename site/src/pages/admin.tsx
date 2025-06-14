@@ -671,6 +671,7 @@ export default function Admin() {
   const [novoPlano, setNovoPlano] = useState({nome:'', quantidade:0, preco:0, descricao:''});
   const [editPlanoIdx, setEditPlanoIdx] = useState<number|null>(null);
   const [editPlanoData, setEditPlanoData] = useState<any>({descricao: ''});
+  const [showEditPlanoPopup, setShowEditPlanoPopup] = useState(false);
 
   function handleEdit(idx:number) {
     setEditIdx(idx);
@@ -1100,58 +1101,35 @@ export default function Admin() {
             <tbody>
               {planos.map((p,i)=>(
                 <tr key={i}>
-                  <td>{editPlanoIdx===i ? <input type="number" value={editPlanoData.quantidade} onChange={e=>setEditPlanoData({...editPlanoData,quantidade:Number(e.target.value)})} style={{width:'100%',background:'#232528',color:'#FFD600',border:'1px solid #FFD600',borderRadius:4}}/> : p.quantidade}</td>
-                  <td>{editPlanoIdx===i ? <input type="number" value={editPlanoData.preco} onChange={e=>setEditPlanoData({...editPlanoData,preco:Number(e.target.value)})} style={{width:'100%',background:'#232528',color:'#FFD600',border:'1px solid #FFD600',borderRadius:4}}/> : p.preco.toFixed(2)}</td>
+                  <td>{p.quantidade}</td>
+                  <td>{p.preco.toFixed(2)}</td>
                   <td>
-                    {editPlanoIdx===i ? (
-                      <>
-                        <Button onClick={async () => {
-                          try {
-                            const resp = await fetch('/api/planos', {
-                              method: 'PUT',
-                              headers: {'Content-Type': 'application/json'},
-                              body: JSON.stringify({ ...editPlanoData, id: planos[i].id })
-                            });
-                            const data = await resp.json();
-                            if (resp.ok && data.success) {
-                              const novos = [...planos];
-                              novos[i] = data.plano;
-                              setPlanos(novos); setEditPlanoIdx(null); setMsg('Plano atualizado!'); setTimeout(()=>setMsg(''), 1500);
-                            } else {
-                              setMsg(data.error || 'Erro ao atualizar plano.'); setTimeout(()=>setMsg(''), 2500);
-                            }
-                          } catch (err) {
-                            setMsg('Erro ao atualizar plano.'); setTimeout(()=>setMsg(''), 2500);
+                    <Button onClick={() => {
+                      setEditPlanoIdx(i);
+                      setEditPlanoData({...p});
+                      setShowEditPlanoPopup(true);
+                    }}>Editar</Button>
+                    <Button style={{background:'#F44336',color:'#FFF'}} onClick={async () => {
+                      if(window.confirm('Tem certeza que deseja excluir este plano?')){
+                        try {
+                          const resp = await fetch('/api/planos', {
+                            method: 'DELETE',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ id: p.id })
+                          });
+                          const data = await resp.json();
+                          if (resp.ok && data.success) {
+                            const novos = planos.filter((_, idx) => idx !== i);
+                            setPlanos(novos);
+                            setMsg('Plano excluído!'); setTimeout(()=>setMsg(''), 1500);
+                          } else {
+                            setMsg(data.error || 'Erro ao excluir plano.'); setTimeout(()=>setMsg(''), 2500);
                           }
-                        }}>Salvar</Button>
-                        <Button onClick={()=>setEditPlanoIdx(null)}>Cancelar</Button>
-                      </>
-                    ) : (
-                      <>
-                        <Button onClick={() => {setEditPlanoIdx(i);setEditPlanoData({...p});}}>Editar</Button>
-                        <Button style={{background:'#F44336',color:'#FFF'}} onClick={async () => {
-                          if(window.confirm('Tem certeza que deseja excluir este plano?')){
-                            try {
-                              const resp = await fetch('/api/planos', {
-                                method: 'DELETE',
-                                headers: {'Content-Type': 'application/json'},
-                                body: JSON.stringify({ id: p.id })
-                              });
-                              const data = await resp.json();
-                              if (resp.ok && data.success) {
-                                const novos = planos.filter((_, idx) => idx !== i);
-                                setPlanos(novos);
-                                setMsg('Plano excluído!'); setTimeout(()=>setMsg(''), 1500);
-                              } else {
-                                setMsg(data.error || 'Erro ao excluir plano.'); setTimeout(()=>setMsg(''), 2500);
-                              }
-                            } catch (err) {
-                              setMsg('Erro ao excluir plano.'); setTimeout(()=>setMsg(''), 2500);
-                            }
-                          }
-                        }}>Excluir</Button>
-                      </>
-                    )}
+                        } catch (err) {
+                          setMsg('Erro ao excluir plano.'); setTimeout(()=>setMsg(''), 2500);
+                        }
+                      }
+                    }}>Excluir</Button>
                   </td>
                 </tr>
               ))}
@@ -2431,6 +2409,315 @@ export default function Admin() {
                   onMouseLeave={e=>{
                     e.currentTarget.style.transform='translateY(0)'; 
                     e.currentTarget.style.boxShadow='0 4px 15px rgba(108, 117, 125, 0.4)';
+                  }}
+                >
+                  <span>❌</span>
+                  Cancelar
+                </Button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Popup de Edição de Plano */}
+      {showEditPlanoPopup && editPlanoIdx !== null && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.85)',
+          backdropFilter: 'blur(10px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '2rem'
+        }}>
+          <div style={{
+            background: '#000000',
+            border: '3px solid rgba(0, 255, 136, 0.5)',
+            borderRadius: '24px',
+            padding: '3rem',
+            maxWidth: '550px',
+            width: '100%',
+            maxHeight: '85vh',
+            overflowY: 'auto',
+            boxShadow: '0 25px 80px rgba(0, 255, 136, 0.3)',
+            position: 'relative',
+            animation: 'popupSlideIn 0.3s ease-out'
+          }}>
+            {/* Botão de fechar */}
+            <button
+              onClick={() => {setShowEditPlanoPopup(false); setEditPlanoIdx(null);}}
+              style={{
+                position: 'absolute',
+                top: '1rem',
+                right: '1rem',
+                background: 'none',
+                border: 'none',
+                color: '#00ff88',
+                fontSize: '2rem',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'rgba(255, 71, 87, 0.2)';
+                e.currentTarget.style.color = '#ff4757';
+                e.currentTarget.style.transform = 'rotate(90deg)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'none';
+                e.currentTarget.style.color = '#00ff88';
+                e.currentTarget.style.transform = 'rotate(0deg)';
+              }}
+            >
+              ✕
+            </button>
+
+            {/* Título do popup */}
+            <h3 style={{
+              color: '#00ff88',
+              fontSize: '1.8rem',
+              marginBottom: '2rem',
+              textAlign: 'center',
+              fontWeight: '700',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.75rem',
+              textShadow: '0 0 15px rgba(0, 255, 136, 0.4)'
+            }}>
+              <span style={{fontSize: '1.6rem'}}>✏️</span>
+              Editar Plano
+            </h3>
+
+            {/* Formulário */}
+            <form onSubmit={async e => {
+              e.preventDefault();
+              try {
+                const resp = await fetch('/api/planos', {
+                  method: 'PUT',
+                  headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify({ ...editPlanoData, id: planos[editPlanoIdx].id })
+                });
+                const data = await resp.json();
+                if (resp.ok && data.success) {
+                  const novos = [...planos];
+                  novos[editPlanoIdx] = data.plano;
+                  setPlanos(novos);
+                  setEditPlanoIdx(null);
+                  setShowEditPlanoPopup(false);
+                  setMsg('Plano atualizado!');
+                  setTimeout(()=>setMsg(''), 1500);
+                } else {
+                  setMsg(data.error || 'Erro ao atualizar plano.');
+                  setTimeout(()=>setMsg(''), 2500);
+                }
+              } catch (err) {
+                setMsg('Erro ao atualizar plano.');
+                setTimeout(()=>setMsg(''), 2500);
+              }
+            }} style={{display: 'flex', flexDirection: 'column', gap: '1.5rem'}}>
+
+              {/* Quantidade */}
+              <div>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.5rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  📊 Quantidade de Comentários
+                </label>
+                <input 
+                  type="number" 
+                  placeholder="0" 
+                  value={editPlanoData.quantidade || 0} 
+                  onChange={e=>setEditPlanoData({...editPlanoData,quantidade:Number(e.target.value)})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease',
+                    outline: 'none',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+                  }}
+                  onFocus={e=>{
+                    e.target.style.borderColor='#00ff88'; 
+                    e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)';
+                  }} 
+                  onBlur={e=>{
+                    e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; 
+                    e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)';
+                  }} 
+                />
+              </div>
+
+              {/* Preço */}
+              <div>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.5rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  💰 Preço (R$)
+                </label>
+                <input 
+                  type="number" 
+                  step="0.01"
+                  placeholder="0.00" 
+                  value={editPlanoData.preco || 0} 
+                  onChange={e=>setEditPlanoData({...editPlanoData,preco:Number(e.target.value)})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease',
+                    outline: 'none',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+                  }}
+                  onFocus={e=>{
+                    e.target.style.borderColor='#00ff88'; 
+                    e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)';
+                  }} 
+                  onBlur={e=>{
+                    e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; 
+                    e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)';
+                  }} 
+                />
+              </div>
+
+              {/* Descrição */}
+              <div>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.5rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  📝 Descrição
+                </label>
+                <input 
+                  type="text" 
+                  placeholder="Descrição do plano..." 
+                  value={editPlanoData.descricao || ''} 
+                  onChange={e=>setEditPlanoData({...editPlanoData,descricao:e.target.value})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease',
+                    outline: 'none',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+                  }}
+                  onFocus={e=>{
+                    e.target.style.borderColor='#00ff88'; 
+                    e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)';
+                  }} 
+                  onBlur={e=>{
+                    e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; 
+                    e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)';
+                  }} 
+                />
+              </div>
+
+              {/* Botões de ação */}
+              <div style={{
+                display: 'flex', 
+                gap: '1rem', 
+                justifyContent: 'center', 
+                marginTop: '1.5rem'
+              }}>
+                <Button 
+                  type="submit" 
+                  style={{
+                    background: 'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)',
+                    color: '#0a0f0a',
+                    padding: '1rem 2rem',
+                    fontSize: '1.1rem',
+                    fontWeight: '700',
+                    boxShadow: '0 4px 20px rgba(0, 255, 136, 0.4)',
+                    transform: 'translateY(0)',
+                    transition: 'all 0.3s ease',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    border: 'none',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem'
+                  }}
+                  onMouseEnter={e=>{
+                    e.currentTarget.style.transform='translateY(-3px)'; 
+                    e.currentTarget.style.boxShadow='0 8px 25px rgba(0, 255, 136, 0.6)';
+                  }} 
+                  onMouseLeave={e=>{
+                    e.currentTarget.style.transform='translateY(0)'; 
+                    e.currentTarget.style.boxShadow='0 4px 20px rgba(0, 255, 136, 0.4)';
+                  }}
+                >
+                  <span>✅</span>
+                  Salvar Alterações
+                </Button>
+
+                <Button 
+                  type="button"
+                  onClick={() => {setShowEditPlanoPopup(false); setEditPlanoIdx(null);}}
+                  style={{
+                    background: 'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)',
+                    color: '#FFF',
+                    padding: '1rem 2rem',
+                    fontSize: '1.1rem',
+                    fontWeight: '700',
+                    boxShadow: '0 4px 20px rgba(255, 71, 87, 0.4)',
+                    transform: 'translateY(0)',
+                    transition: 'all 0.3s ease',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    border: 'none',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem'
+                  }}
+                  onMouseEnter={e=>{
+                    e.currentTarget.style.transform='translateY(-3px)'; 
+                    e.currentTarget.style.boxShadow='0 8px 25px rgba(255, 71, 87, 0.6)';
+                  }} 
+                  onMouseLeave={e=>{
+                    e.currentTarget.style.transform='translateY(0)'; 
+                    e.currentTarget.style.boxShadow='0 4px 20px rgba(255, 71, 87, 0.4)';
                   }}
                 >
                   <span>❌</span>
