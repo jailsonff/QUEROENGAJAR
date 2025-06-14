@@ -1593,15 +1593,13 @@ export default function Admin() {
           </form>
           <Table>
             <thead>
-              <tr><th>Nome</th><th>Qtd. Comentários</th><th>Preço (R$)</th><th>Descrição</th><th>Ações</th></tr>
+              <tr><th>Qtd.</th><th>Preço (R$)</th><th>Ações</th></tr>
             </thead>
             <tbody>
               {planos.map((p,i)=>(
                 <tr key={i}>
-                  <td>{editPlanoIdx===i ? <input value={editPlanoData.nome} onChange={e=>setEditPlanoData({...editPlanoData,nome:e.target.value})} style={{width:'100%',background:'#232528',color:'#FFD600',border:'1px solid #FFD600',borderRadius:4}}/> : p.nome}</td>
                   <td>{editPlanoIdx===i ? <input type="number" value={editPlanoData.quantidade} onChange={e=>setEditPlanoData({...editPlanoData,quantidade:Number(e.target.value)})} style={{width:'100%',background:'#232528',color:'#FFD600',border:'1px solid #FFD600',borderRadius:4}}/> : p.quantidade}</td>
                   <td>{editPlanoIdx===i ? <input type="number" value={editPlanoData.preco} onChange={e=>setEditPlanoData({...editPlanoData,preco:Number(e.target.value)})} style={{width:'100%',background:'#232528',color:'#FFD600',border:'1px solid #FFD600',borderRadius:4}}/> : p.preco.toFixed(2)}</td>
-                  <td>{editPlanoIdx===i ? <input value={editPlanoData.descricao||''} onChange={e=>setEditPlanoData({...editPlanoData,descricao:e.target.value})} style={{width:'100%',background:'#232528',color:'#FFD600',border:'1px solid #FFD600',borderRadius:4}}/> : (p.descricao || <span style={{color:'#FFD600',opacity:0.7}}>—</span>)}</td>
                   <td>
                     {editPlanoIdx===i ? (
                       <>
@@ -1656,7 +1654,7 @@ export default function Admin() {
                 </tr>
               ))}
             </tbody>
-          </Table>
+          </Table></old_str>
         </Section>
       )}
     {/* Popup de Cadastro */}
