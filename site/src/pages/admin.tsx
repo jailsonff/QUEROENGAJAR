@@ -597,6 +597,8 @@ export default function Admin() {
   const [novoUsuario, setNovoUsuario] = useState({nome:'', email:'', whatsapp:'', senha:'', comentarios:0, admin:false, simultaneos:1});
   // Controle do popup de cadastro
   const [showCadastroPopup, setShowCadastroPopup] = useState(false);
+  // Controle do popup de edição
+  const [showEditPopup, setShowEditPopup] = useState(false);
 
   // --- Pedidos: Funções admin ---
   function handleStopPedido(idx:number) {
@@ -673,6 +675,7 @@ export default function Admin() {
   function handleEdit(idx:number) {
     setEditIdx(idx);
     setEditData({...clientes[idx]});
+    setShowEditPopup(true);
   }
   async function handleSave(idx:number) {
     const cliente = { ...editData, simultaneos: Number(editData.simultaneos) > 0 ? Number(editData.simultaneos) : 1 };
@@ -686,6 +689,7 @@ export default function Admin() {
       if (resp.ok && data.success) {
         await fetchClientes();
         setEditIdx(null);
+        setShowEditPopup(false);
         setMsg('Cliente atualizado!');
         setTimeout(()=>setMsg(''), 1500);
       } else {
@@ -1021,48 +1025,6 @@ export default function Admin() {
                 </thead>
                 <tbody>
                   {clientesFiltrados.map((c, i) => (
-                    editIdx === i && section==='clientes' ? (
-                      <tr key={i} style={{background:'linear-gradient(135deg, #2A2D30 0%, #232528 100%)', borderLeft:'4px solid #FFD600'}}>
-                        <td style={{padding:'0.6rem 0.4rem'}}>
-                          <input type="text" value={editData.nome} onChange={e=>setEditData({...editData, nome: e.target.value})} style={{width:'100%', padding:'0.6rem', borderRadius:'8px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.85rem', outline:'none', boxShadow:'0 0 0 2px rgba(0, 255, 136, 0.1)'}} />
-                        </td>
-                        <td style={{padding:'0.6rem 0.4rem'}}>
-                          <input type="email" value={editData.email} onChange={e=>setEditData({...editData, email: e.target.value})} style={{width:'100%', padding:'0.6rem', borderRadius:'8px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.85rem', outline:'none', boxShadow:'0 0 0 2px rgba(0, 255, 136, 0.1)'}} />
-                        </td>
-                        <td style={{padding:'0.6rem 0.4rem'}}>
-                          <input type="text" value={editData.whatsapp} onChange={e=>setEditData({...editData, whatsapp: e.target.value})} style={{width:'100%', padding:'0.6rem', borderRadius:'8px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.85rem', outline:'none', boxShadow:'0 0 0 2px rgba(0, 255, 136, 0.1)'}} />
-                        </td>
-                        <td style={{padding:'0.6rem 0.4rem'}}>
-                          <input type="password" value={editData.senha || ''} onChange={e=>setEditData({...editData, senha: e.target.value})} style={{width:'100%', padding:'0.6rem', borderRadius:'8px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.85rem', outline:'none', boxShadow:'0 0 0 2px rgba(0, 255, 136, 0.1)'}} />
-                        </td>
-                        <td style={{padding:'0.6rem 0.4rem'}}>
-                          <select value={editData.status} onChange={e=>setEditData({...editData, status: e.target.value})} style={{width:'100%', padding:'0.6rem', borderRadius:'8px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.85rem', cursor:'pointer', boxShadow:'0 0 0 2px rgba(0, 255, 136, 0.1)'}}>
-                            <option value="ativo">Ativo</option>
-                            <option value="bloqueado">Bloqueado</option>
-                          </select>
-                        </td>
-                        <td style={{padding:'0.6rem 0.4rem'}}>
-                          <select value={editData.admin ? 'sim' : 'não'} onChange={e=>setEditData({...editData, admin: e.target.value === 'sim'})} style={{width:'100%', padding:'0.6rem', borderRadius:'8px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.85rem', cursor:'pointer', boxShadow:'0 0 0 2px rgba(0, 255, 136, 0.1)'}}>
-                            <option value="sim">Sim</option>
-                            <option value="não">Não</option>
-                          </select>
-                        </td>
-                        <td style={{padding:'0.6rem 0.4rem'}}>
-                          <input type="number" value={editData.comentarios} onChange={e=>setEditData({...editData, comentarios: Number(e.target.value)})} style={{width:'80px', padding:'0.6rem', borderRadius:'8px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.85rem', outline:'none', boxShadow:'0 0 0 2px rgba(0, 255, 136, 0.1)'}} />
-                        </td>
-                        <td style={{padding:'0.6rem 0.4rem'}}>
-                          <select value={editData.simultaneos} onChange={e=>setEditData({...editData, simultaneos: Number(e.target.value)})} style={{width:'100%', padding:'0.6rem', borderRadius:'8px', border:'2px solid #00ff88', background:'rgba(10, 11, 13, 0.8)', color:'#00ff88', fontSize:'0.85rem', cursor:'pointer', boxShadow:'0 0 0 2px rgba(0, 255, 136, 0.1)'}}>
-                            {[1,2,3,4,5].map(q=> <option key={q} value={q}>{q} simultâneo{q>1?'s':''}</option>)}
-                          </select>
-                        </td>
-                        <td style={{padding:'0.6rem 0.4rem', textAlign:'center', verticalAlign:'middle'}}>
-                          <div style={{display:'flex', gap:'0.5rem', flexWrap:'wrap', justifyContent:'center', alignItems:'center', minHeight:'60px'}}>
-                            <Button style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.5rem 0.8rem', fontSize:'0.75rem', fontWeight:'700', boxShadow:'0 2px 10px rgba(0, 255, 136, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'80px', height:'36px', display:'flex', alignItems:'center', justifyContent:'center', borderRadius:'6px'}} onClick={()=>handleSave(i)}>✅ Salvar</Button>
-                            <Button style={{background:'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)', color:'#FFF', padding:'0.5rem 0.8rem', fontSize:'0.75rem', fontWeight:'700', boxShadow:'0 2px 10px rgba(255, 71, 87, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'90px', height:'36px', display:'flex', alignItems:'center', justifyContent:'center', borderRadius:'6px'}} onClick={()=>setEditIdx(null)}>❌ Cancelar</Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ) : (
                       <tr key={i} style={{borderBottom: i < clientesFiltrados.length - 1 ? '1px solid rgba(255, 214, 0, 0.2)' : 'none', background: i % 2 === 0 ? 'rgba(35, 37, 40, 0.5)' : 'transparent', transition:'all 0.3s ease'}} onMouseEnter={e=>{e.target.style.background='rgba(255, 214, 0, 0.1)'; e.target.style.transform='scale(1.01)'}} onMouseLeave={e=>{e.target.style.background= i % 2 === 0 ? 'rgba(35, 37, 40, 0.5)' : 'transparent'; e.target.style.transform='scale(1)'}}>
                         <td style={{padding:'0.8rem 0.5rem', fontSize:'0.9rem', fontWeight:'500', color:'#FFF', textAlign:'center', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', maxWidth:'150px', '@media (max-width: 480px)': {maxWidth:'120px', fontSize:'0.85rem'}}} title={c.nome}>{c.nome}</td>
                         <td style={{padding:'0.8rem 0.5rem', fontSize:'0.85rem', color:'#B0B0B0'}}>{c.email}</td>
@@ -1097,27 +1059,11 @@ export default function Admin() {
                           </span>
                         </td>
                         <td style={{padding:'0.8rem 0.5rem', textAlign:'center', verticalAlign:'middle'}}>
-                          <div style={{display:'flex', flexDirection:'column', alignItems:'center', gap:'0.5rem', justifyContent:'center', minHeight:'80px'}}>
-                            <div style={{display:'flex', gap:'0.3rem', flexWrap:'wrap', justifyContent:'center', alignItems:'center'}}>
-                              <Button onClick={()=>handleEdit(i)} style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.4rem 0.7rem', fontSize:'0.7rem', fontWeight:'700', boxShadow:'0 2px 8px rgba(0, 255, 136, 0.3)', display:'flex', alignItems:'center', gap:'0.2rem', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'75px', borderRadius:'6px', height:'32px', justifyContent:'center'}}>
-                                ✏️ Editar
-                              </Button>
-                              <Button onClick={()=>handleBlock(i)} style={{background: c.status === 'ativo' ? 'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)' : 'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color: c.status === 'ativo' ? '#FFF' : '#0a0f0a', padding:'0.4rem 0.7rem', fontSize:'0.7rem', fontWeight:'700', boxShadow: c.status === 'ativo' ? '0 2px 8px rgba(255, 71, 87, 0.3)' : '0 2px 8px rgba(0, 255, 136, 0.3)', display:'flex', alignItems:'center', gap:'0.2rem', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'85px', borderRadius:'6px', height:'32px', justifyContent:'center'}}>
-                                {c.status === 'ativo' ? '🚫 Bloquear' : '✅ Liberar'}
-                              </Button>
-                            </div>
-                            <div style={{display:'flex', gap:'0.3rem', flexWrap:'wrap', justifyContent:'center', alignItems:'center'}}>
-                              <Button onClick={()=>handleToggleAdmin(i)} style={{background: c.admin ? 'linear-gradient(135deg, #ffa726 0%, #ff9800 100%)' : 'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color: c.admin ? '#FFF' : '#0a0f0a', padding:'0.4rem 0.7rem', fontSize:'0.7rem', fontWeight:'700', boxShadow: c.admin ? '0 2px 8px rgba(255, 167, 38, 0.3)' : '0 2px 8px rgba(0, 255, 136, 0.3)', display:'flex', alignItems:'center', gap:'0.2rem', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'95px', borderRadius:'6px', height:'32px', justifyContent:'center'}}>
-                                {c.admin ? '👤 Rem. Admin' : '👑 Admin'}
-                              </Button>
-                              <Button style={{background:'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)', color:'#FFF', padding:'0.4rem 0.7rem', fontSize:'0.7rem', fontWeight:'700', boxShadow:'0 2px 8px rgba(255, 71, 87, 0.3)', display:'flex', alignItems:'center', gap:'0.2rem', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'75px', borderRadius:'6px', height:'32px', justifyContent:'center'}} onClick={()=>handleDeleteUser(i)}>
-                                🗑️ Excluir
-                              </Button>
-                            </div>
-                          </div>
+                          <Button onClick={()=>handleEdit(i)} style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.6rem 1.2rem', fontSize:'0.85rem', fontWeight:'700', boxShadow:'0 4px 15px rgba(0, 255, 136, 0.3)', display:'flex', alignItems:'center', gap:'0.5rem', textTransform:'uppercase', letterSpacing:'0.3px', borderRadius:'8px', height:'40px', justifyContent:'center', transition:'all 0.3s ease'}} onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 6px 20px rgba(0, 255, 136, 0.5)';}} onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 4px 15px rgba(0, 255, 136, 0.3)';}}>
+                            ✏️ Editar
+                          </Button>
                         </td>
                       </tr>
-                    )
                   ))}
                 </tbody>
               </Table>
@@ -1793,6 +1739,467 @@ export default function Admin() {
                 <Button 
                   type="button"
                   onClick={() => setShowCadastroPopup(false)}
+                  style={{
+                    background: 'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)',
+                    color: '#FFF',
+                    padding: '1rem 2rem',
+                    fontSize: '1.1rem',
+                    fontWeight: '700',
+                    boxShadow: '0 4px 20px rgba(255, 71, 87, 0.4)',
+                    transform: 'translateY(0)',
+                    transition: 'all 0.3s ease',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    border: 'none',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem'
+                  }}
+                  onMouseEnter={e=>{
+                    e.currentTarget.style.transform='translateY(-3px)'; 
+                    e.currentTarget.style.boxShadow='0 8px 25px rgba(255, 71, 87, 0.6)';
+                  }} 
+                  onMouseLeave={e=>{
+                    e.currentTarget.style.transform='translateY(0)'; 
+                    e.currentTarget.style.boxShadow='0 4px 20px rgba(255, 71, 87, 0.4)';
+                  }}
+                >
+                  <span>❌</span>
+                  Cancelar
+                </Button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Popup de Edição */}
+      {showEditPopup && editIdx !== null && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.85)',
+          backdropFilter: 'blur(10px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '2rem'
+        }}>
+          <div style={{
+            background: '#000000',
+            border: '3px solid rgba(0, 255, 136, 0.5)',
+            borderRadius: '24px',
+            padding: '3rem',
+            maxWidth: '650px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            boxShadow: '0 25px 80px rgba(0, 255, 136, 0.3)',
+            position: 'relative',
+            animation: 'popupSlideIn 0.3s ease-out'
+          }}>
+            {/* Botão de fechar */}
+            <button
+              onClick={() => {setShowEditPopup(false); setEditIdx(null);}}
+              style={{
+                position: 'absolute',
+                top: '1rem',
+                right: '1rem',
+                background: 'none',
+                border: 'none',
+                color: '#00ff88',
+                fontSize: '2rem',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'rgba(255, 71, 87, 0.2)';
+                e.currentTarget.style.color = '#ff4757';
+                e.currentTarget.style.transform = 'rotate(90deg)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'none';
+                e.currentTarget.style.color = '#00ff88';
+                e.currentTarget.style.transform = 'rotate(0deg)';
+              }}
+            >
+              ✕
+            </button>
+
+            {/* Título do popup */}
+            <h3 style={{
+              color: '#00ff88',
+              fontSize: '1.8rem',
+              marginBottom: '2rem',
+              textAlign: 'center',
+              fontWeight: '700',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.75rem',
+              textShadow: '0 0 15px rgba(0, 255, 136, 0.4)'
+            }}>
+              <span style={{fontSize: '1.6rem'}}>✏️</span>
+              Editar Cliente
+            </h3>
+
+            {/* Formulário */}
+            <form onSubmit={async e => {
+              e.preventDefault();
+              await handleSave(editIdx);
+            }} style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem'}}>
+              
+              {/* Nome */}
+              <div style={{gridColumn: 'span 2'}}>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  📝 Nome Completo
+                </label>
+                <input 
+                  type="text" 
+                  placeholder="Digite o nome completo" 
+                  value={editData.nome || ''} 
+                  onChange={e=>setEditData({...editData,nome:e.target.value})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease',
+                    outline: 'none',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+                  }}
+                  onFocus={e=>{
+                    e.target.style.borderColor='#00ff88'; 
+                    e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)';
+                  }} 
+                  onBlur={e=>{
+                    e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; 
+                    e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)';
+                  }} 
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  📧 Email
+                </label>
+                <input 
+                  type="email" 
+                  placeholder="email@exemplo.com" 
+                  value={editData.email || ''} 
+                  onChange={e=>setEditData({...editData,email:e.target.value})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease',
+                    outline: 'none',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+                  }}
+                  onFocus={e=>{
+                    e.target.style.borderColor='#00ff88'; 
+                    e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)';
+                  }} 
+                  onBlur={e=>{
+                    e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; 
+                    e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)';
+                  }} 
+                />
+              </div>
+
+              {/* WhatsApp */}
+              <div>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  📱 WhatsApp
+                </label>
+                <input 
+                  type="text" 
+                  placeholder="(11) 99999-9999" 
+                  value={editData.whatsapp || ''} 
+                  onChange={e=>setEditData({...editData,whatsapp:e.target.value})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease',
+                    outline: 'none',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+                  }}
+                  onFocus={e=>{
+                    e.target.style.borderColor='#00ff88'; 
+                    e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)';
+                  }} 
+                  onBlur={e=>{
+                    e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; 
+                    e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)';
+                  }} 
+                />
+              </div>
+
+              {/* Senha */}
+              <div>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  🔐 Senha
+                </label>
+                <input 
+                  type="password" 
+                  placeholder="Senha segura" 
+                  value={editData.senha || ''} 
+                  onChange={e=>setEditData({...editData,senha:e.target.value})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease',
+                    outline: 'none',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+                  }}
+                  onFocus={e=>{
+                    e.target.style.borderColor='#00ff88'; 
+                    e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)';
+                  }} 
+                  onBlur={e=>{
+                    e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; 
+                    e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)';
+                  }} 
+                />
+              </div>
+
+              {/* Status */}
+              <div>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  📊 Status
+                </label>
+                <select 
+                  value={editData.status || 'ativo'} 
+                  onChange={e=>setEditData({...editData,status:e.target.value})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+                    outline: 'none'
+                  }}
+                >
+                  <option value="ativo">✅ Ativo</option>
+                  <option value="bloqueado">🚫 Bloqueado</option>
+                </select>
+              </div>
+
+              {/* Admin */}
+              <div>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  👑 Permissões
+                </label>
+                <select 
+                  value={editData.admin ? 'sim' : 'não'} 
+                  onChange={e=>setEditData({...editData,admin:e.target.value==='sim'})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+                    outline: 'none'
+                  }}
+                >
+                  <option value="não">👤 Usuário Normal</option>
+                  <option value="sim">👑 Administrador</option>
+                </select>
+              </div>
+
+              {/* Comentários */}
+              <div>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  💬 Comentários
+                </label>
+                <input 
+                  type="number" 
+                  placeholder="0" 
+                  value={editData.comentarios || 0} 
+                  onChange={e=>setEditData({...editData,comentarios:Number(e.target.value)})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease',
+                    outline: 'none',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+                  }}
+                  onFocus={e=>{
+                    e.target.style.borderColor='#00ff88'; 
+                    e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)';
+                  }} 
+                  onBlur={e=>{
+                    e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; 
+                    e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)';
+                  }} 
+                />
+              </div>
+
+              {/* Simultâneos */}
+              <div>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  ⚡ Pedidos Simultâneos
+                </label>
+                <select 
+                  value={editData.simultaneos || 1} 
+                  onChange={e=>setEditData({...editData,simultaneos:Number(e.target.value)})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+                    outline: 'none'
+                  }}
+                >
+                  {[1,2,3,4,5].map(q=> 
+                    <option key={q} value={q}>⚡ {q} simultâneo{q>1?'s':''}</option>
+                  )}
+                </select>
+              </div>
+
+              {/* Botões de ação */}
+              <div style={{gridColumn: 'span 2', display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '1.5rem'}}>
+                <Button 
+                  type="submit" 
+                  style={{
+                    background: 'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)',
+                    color: '#0a0f0a',
+                    padding: '1rem 2rem',
+                    fontSize: '1.1rem',
+                    fontWeight: '700',
+                    boxShadow: '0 4px 20px rgba(0, 255, 136, 0.4)',
+                    transform: 'translateY(0)',
+                    transition: 'all 0.3s ease',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    border: 'none',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem'
+                  }}
+                  onMouseEnter={e=>{
+                    e.currentTarget.style.transform='translateY(-3px)'; 
+                    e.currentTarget.style.boxShadow='0 8px 25px rgba(0, 255, 136, 0.6)';
+                  }} 
+                  onMouseLeave={e=>{
+                    e.currentTarget.style.transform='translateY(0)'; 
+                    e.currentTarget.style.boxShadow='0 4px 20px rgba(0, 255, 136, 0.4)';
+                  }}
+                >
+                  <span>✅</span>
+                  Salvar Alterações
+                </Button>
+
+                <Button 
+                  type="button"
+                  onClick={() => {setShowEditPopup(false); setEditIdx(null);}}
                   style={{
                     background: 'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)',
                     color: '#FFF',
