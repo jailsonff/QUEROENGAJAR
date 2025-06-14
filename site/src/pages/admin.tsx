@@ -1365,52 +1365,158 @@ export default function Admin() {
                 <thead>
                   <tr>
                     <th style={{
-                      padding:'0.7rem 0.4rem',
-                      fontSize:'0.75rem',
+                      padding:'0.5rem 0.2rem',
+                      fontSize:'0.65rem',
                       textAlign:'center',
-                      width:'35%',
+                      width:'40%',
+                      whiteSpace:'nowrap',
                       '@media (max-width: 768px)': {
-                        padding:'0.5rem 0.3rem',
-                        fontSize:'0.7rem'
+                        padding:'0.4rem 0.15rem',
+                        fontSize:'0.6rem'
+                      },
+                      '@media (max-width: 480px)': {
+                        padding:'0.3rem 0.1rem',
+                        fontSize:'0.55rem'
                       }
-                    }}>👤 Cliente</th>
+                    }}>Cliente</th>
                     <th style={{
-                      padding:'0.7rem 0.4rem',
-                      fontSize:'0.75rem',
-                      textAlign:'center',
-                      width:'35%',
-                      '@media (max-width: 768px)': {
-                        padding:'0.5rem 0.3rem',
-                        fontSize:'0.7rem'
-                      }
-                    }}>📦 Pacote</th>
-                    <th style={{
-                      padding:'0.7rem 0.4rem',
-                      fontSize:'0.75rem',
+                      padding:'0.5rem 0.2rem',
+                      fontSize:'0.65rem',
                       textAlign:'center',
                       width:'30%',
+                      whiteSpace:'nowrap',
                       '@media (max-width: 768px)': {
-                        padding:'0.5rem 0.3rem',
-                        fontSize:'0.7rem'
+                        padding:'0.4rem 0.15rem',
+                        fontSize:'0.6rem'
+                      },
+                      '@media (max-width: 480px)': {
+                        padding:'0.3rem 0.1rem',
+                        fontSize:'0.55rem'
                       }
-                    }}>📊 Status</th>
+                    }}>Pacote</th>
+                    <th style={{
+                      padding:'0.5rem 0.2rem',
+                      fontSize:'0.65rem',
+                      textAlign:'center',
+                      width:'30%',
+                      whiteSpace:'nowrap',
+                      '@media (max-width: 768px)': {
+                        padding:'0.4rem 0.15rem',
+                        fontSize:'0.6rem'
+                      },
+                      '@media (max-width: 480px)': {
+                        padding:'0.3rem 0.1rem',
+                        fontSize:'0.55rem'
+                      }
+                    }}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pacotes.map((p,i)=>(
                     <tr key={i} style={{borderBottom: i < pacotes.length - 1 ? '1px solid rgba(0, 255, 136, 0.2)' : 'none', background: i % 2 === 0 ? 'rgba(10, 11, 13, 0.5)' : 'transparent', transition:'all 0.3s ease'}} onMouseEnter={e=>{e.currentTarget.style.background='rgba(0, 255, 136, 0.08)'; e.currentTarget.style.transform='translateY(-1px)'}} onMouseLeave={e=>{e.currentTarget.style.background= i % 2 === 0 ? 'rgba(10, 11, 13, 0.5)' : 'transparent'; e.currentTarget.style.transform='translateY(0)'}}>
-                      <td style={{padding:'0.7rem 0.4rem', fontSize:'0.85rem', fontWeight:'500', color:'#FFF', textAlign:'center', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}} title={p.cliente}>{p.cliente}</td>
-                      <td style={{padding:'0.7rem 0.4rem', fontSize:'0.85rem', color:'#FFF', textAlign:'center'}}>
-                        <span style={{background:'rgba(0, 255, 136, 0.2)', color:'#00ff88', padding:'0.3rem 0.6rem', borderRadius:'16px', fontSize:'0.7rem', fontWeight:'700', boxShadow:'0 1px 6px rgba(0, 255, 136, 0.2)', border:'1px solid rgba(0, 255, 136, 0.3)', display:'inline-block'}}>
+                      <td style={{
+                        padding:'0.5rem 0.2rem', 
+                        fontSize:'0.75rem', 
+                        fontWeight:'500', 
+                        color:'#FFF', 
+                        textAlign:'center', 
+                        overflow:'hidden', 
+                        textOverflow:'ellipsis', 
+                        whiteSpace:'nowrap',
+                        '@media (max-width: 768px)': {
+                          padding:'0.4rem 0.15rem',
+                          fontSize:'0.7rem'
+                        },
+                        '@media (max-width: 480px)': {
+                          padding:'0.3rem 0.1rem',
+                          fontSize:'0.65rem'
+                        }
+                      }} title={p.cliente}>{p.cliente}</td>
+                      <td style={{
+                        padding:'0.5rem 0.2rem', 
+                        fontSize:'0.75rem', 
+                        color:'#FFF', 
+                        textAlign:'center',
+                        '@media (max-width: 768px)': {
+                          padding:'0.4rem 0.15rem',
+                          fontSize:'0.7rem'
+                        },
+                        '@media (max-width: 480px)': {
+                          padding:'0.3rem 0.1rem',
+                          fontSize:'0.65rem'
+                        }
+                      }}>
+                        <span style={{
+                          background:'rgba(0, 255, 136, 0.2)', 
+                          color:'#00ff88', 
+                          padding:'0.2rem 0.4rem', 
+                          borderRadius:'12px', 
+                          fontSize:'0.65rem', 
+                          fontWeight:'700', 
+                          boxShadow:'0 1px 4px rgba(0, 255, 136, 0.2)', 
+                          border:'1px solid rgba(0, 255, 136, 0.3)', 
+                          display:'inline-block',
+                          '@media (max-width: 480px)': {
+                            padding:'0.15rem 0.3rem',
+                            fontSize:'0.6rem'
+                          }
+                        }}>
                           {p.pacote}
                         </span>
                       </td>
-                      <td style={{padding:'0.7rem 0.4rem', textAlign:'center'}}>
+                      <td style={{
+                        padding:'0.5rem 0.2rem', 
+                        textAlign:'center',
+                        '@media (max-width: 768px)': {
+                          padding:'0.4rem 0.15rem'
+                        },
+                        '@media (max-width: 480px)': {
+                          padding:'0.3rem 0.1rem'
+                        }
+                      }}>
                         {p.status === 'liberado' ? 
-                          <span style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.3rem 0.6rem', borderRadius:'16px', fontSize:'0.7rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.2rem', boxShadow:'0 2px 10px rgba(0, 255, 136, 0.3)', textTransform:'uppercase', letterSpacing:'0.1px', whiteSpace:'nowrap'}}>
+                          <span style={{
+                            background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', 
+                            color:'#0a0f0a', 
+                            padding:'0.2rem 0.4rem', 
+                            borderRadius:'12px', 
+                            fontSize:'0.6rem', 
+                            fontWeight:'700', 
+                            display:'inline-flex', 
+                            alignItems:'center', 
+                            gap:'0.1rem', 
+                            boxShadow:'0 1px 6px rgba(0, 255, 136, 0.3)', 
+                            textTransform:'uppercase', 
+                            letterSpacing:'0.05px', 
+                            whiteSpace:'nowrap',
+                            '@media (max-width: 480px)': {
+                              padding:'0.15rem 0.3rem',
+                              fontSize:'0.55rem',
+                              gap:'0.05rem'
+                            }
+                          }}>
                             ✅ OK
                           </span> : 
-                          <span style={{background:'linear-gradient(135deg, #ffa500 0%, #ff8c00 100%)', color:'#FFF', padding:'0.3rem 0.6rem', borderRadius:'16px', fontSize:'0.7rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.2rem', boxShadow:'0 2px 10px rgba(255, 165, 0, 0.3)', textTransform:'uppercase', letterSpacing:'0.1px', whiteSpace:'nowrap'}}>
+                          <span style={{
+                            background:'linear-gradient(135deg, #ffa500 0%, #ff8c00 100%)', 
+                            color:'#FFF', 
+                            padding:'0.2rem 0.4rem', 
+                            borderRadius:'12px', 
+                            fontSize:'0.6rem', 
+                            fontWeight:'700', 
+                            display:'inline-flex', 
+                            alignItems:'center', 
+                            gap:'0.1rem', 
+                            boxShadow:'0 1px 6px rgba(255, 165, 0, 0.3)', 
+                            textTransform:'uppercase', 
+                            letterSpacing:'0.05px', 
+                            whiteSpace:'nowrap',
+                            '@media (max-width: 480px)': {
+                              padding:'0.15rem 0.3rem',
+                              fontSize:'0.55rem',
+                              gap:'0.05rem'
+                            }
+                          }}>
                             ⏳ Pend.
                           </span>
                         }
