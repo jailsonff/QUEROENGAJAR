@@ -3,7 +3,7 @@ run = "npm run dev"
 
 [nix]
 channel = "stable-24_05"
-packages = ["geckodriver", "glibcLocales", "nodejs-20_x"]
+packages = ["geckodriver", "glibcLocales"]
 
 [deployment]
 run = ["sh", "-c", "npm run dev"]
@@ -15,10 +15,6 @@ runButton = "Executar Site"
 name = "Executar Site"
 author = 43736867
 mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pip install -r requirements.txt"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"

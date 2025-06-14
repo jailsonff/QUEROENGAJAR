@@ -1,0 +1,76 @@
+2025-06-13 21:10:14,321 - BotProcessor - INFO - Iniciando Bot Processor...
+2025-06-13 21:10:14,322 - BotProcessor - INFO - Iniciando Bot Processor
+2025-06-13 21:10:14,323 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 21:10:44,324 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 21:11:14,327 - BotProcessor - INFO - Carregando usuários para o gênero: masculino
+2025-06-13 21:11:14,329 - BotProcessor - INFO - Carregados 63 usuários do Instagram para o gênero 'masculino'
+2025-06-13 21:11:14,330 - BotProcessor - INFO - Processando pedido: 1749859863054 - Detalhes: Comentários total: 1, Já processados: 0, Status: pendente
+2025-06-13 21:11:14,331 - BotProcessor - INFO - Inicializando controle de progresso para pedido 1749859863054: 1 comentários
+2025-06-13 21:11:14,333 - BotProcessor - INFO - Processando comentário 1/1 do pedido 1749859863054
+2025-06-13 21:11:14,334 - BotProcessor - INFO - Processando comentário 1/1 do pedido 1749859863054 com usuário f.abio.viniciusss
+2025-06-13 21:11:17,260 - BotProcessor - INFO - Carregando cookies para f.abio.viniciusss
+2025-06-13 21:11:23,794 - BotProcessor - INFO - Navegando para o post: https://www.instagram.com/p/DKdC7ebutAs/
+2025-06-13 21:11:37,392 - BotProcessor - INFO - Tentando encontrar campo de comentário...
+2025-06-13 21:11:37,413 - BotProcessor - INFO - Campo de comentário encontrado com seletor principal
+2025-06-13 21:11:37,601 - BotProcessor - INFO - Tentou clicar no botão Postar via JavaScript direto
+2025-06-13 21:11:37,604 - BotProcessor - INFO - JavaScript não funcionou, tentando método Selenium
+2025-06-13 21:11:47,643 - BotProcessor - WARNING - Erro ao clicar no botão com Selenium: TimeoutException: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff6b7fefe75+79173]
+	GetHandleVerifier [0x0x7ff6b7fefed0+79264]
+	(No symbol) [0x0x7ff6b7da9e5a]
+	(No symbol) [0x0x7ff6b7e00586]
+	(No symbol) [0x0x7ff6b7e0083c]
+	(No symbol) [0x0x7ff6b7e54247]
+	(No symbol) [0x0x7ff6b7e289af]
+	(No symbol) [0x0x7ff6b7e5100d]
+	(No symbol) [0x0x7ff6b7e28743]
+	(No symbol) [0x0x7ff6b7df14c1]
+	(No symbol) [0x0x7ff6b7df2253]
+	GetHandleVerifier [0x0x7ff6b82ba2ad+3004797]
+	GetHandleVerifier [0x0x7ff6b82b46fd+2981325]
+	GetHandleVerifier [0x0x7ff6b82d3350+3107360]
+	GetHandleVerifier [0x0x7ff6b800a9fe+188622]
+	GetHandleVerifier [0x0x7ff6b801228f+219487]
+	GetHandleVerifier [0x0x7ff6b7ff8dc4+115860]
+	GetHandleVerifier [0x0x7ff6b7ff8f79+116297]
+	GetHandleVerifier [0x0x7ff6b7fdf528+11256]
+	BaseThreadInitThunk [0x0x7ffdce93259d+29]
+	RtlUserThreadStart [0x0x7ffdd0acaf38+40]
+ | XPath usado: //*[@role="button" and contains(text(),"Postar")]
+2025-06-13 21:11:47,655 - BotProcessor - INFO - Enviou ENTER no campo de comentário como último recurso
+2025-06-13 21:11:47,656 - BotProcessor - WARNING - Erro ao verificar campo: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff6b7fefe75+79173]
+	GetHandleVerifier [0x0x7ff6b7fefed0+79264]
+	(No symbol) [0x0x7ff6b7da9e5a]
+	(No symbol) [0x0x7ff6b7e00586]
+	(No symbol) [0x0x7ff6b7e0083c]
+	(No symbol) [0x0x7ff6b7e54247]
+	(No symbol) [0x0x7ff6b7e289af]
+	(No symbol) [0x0x7ff6b7e5100d]
+	(No symbol) [0x0x7ff6b7e28743]
+	(No symbol) [0x0x7ff6b7df14c1]
+	(No symbol) [0x0x7ff6b7df2253]
+	GetHandleVerifier [0x0x7ff6b82ba2ad+3004797]
+	GetHandleVerifier [0x0x7ff6b82b46fd+2981325]
+	GetHandleVerifier [0x0x7ff6b82d3350+3107360]
+	GetHandleVerifier [0x0x7ff6b800a9fe+188622]
+	GetHandleVerifier [0x0x7ff6b801228f+219487]
+	GetHandleVerifier [0x0x7ff6b7ff8dc4+115860]
+	GetHandleVerifier [0x0x7ff6b7ff8f79+116297]
+	GetHandleVerifier [0x0x7ff6b7fdf528+11256]
+	BaseThreadInitThunk [0x0x7ffdce93259d+29]
+	RtlUserThreadStart [0x0x7ffdd0acaf38+40]
+
+2025-06-13 21:11:47,656 - BotProcessor - INFO - Fechando o navegador após o comentário...
+2025-06-13 21:11:50,783 - BotProcessor - INFO - Comentário 1/1 do pedido 1749859863054 processado com sucesso
+2025-06-13 21:11:50,785 - BotProcessor - INFO - Todos os 1 comentários do pedido 1749859863054 processados com sucesso!
+2025-06-13 21:12:21,459 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 21:12:51,462 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 21:13:21,464 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 21:13:51,467 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 21:14:21,469 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 21:14:51,471 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 21:15:21,472 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 21:15:51,474 - BotProcessor - INFO - Nenhum pedido disponível.

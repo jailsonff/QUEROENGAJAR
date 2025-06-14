@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5aaa9d503812138b72211949555afcf00319ef808ef83341b883e7fe8b001342
-size 631
+const fs = require('fs');
+const path = require('path');
+
+const PLANOS_PATH = path.join(__dirname, 'data', 'planos.json');
+
+function testWritePlano() {
+  let planos = [];
+  if (fs.existsSync(PLANOS_PATH)) {
+    planos = JSON.parse(fs.readFileSync(PLANOS_PATH, 'utf8'));
+  }
+  const novoPlano = { id: Date.now().toString(), nome: 'Plano Teste', quantidade: 1, preco: 0.99, descricao: 'Teste automático' };
+  planos.push(novoPlano);
+  fs.writeFileSync(PLANOS_PATH, JSON.stringify(planos, null, 2));
+  console.log('Plano gravado com sucesso!');
+  console.log('Conteúdo atual:', JSON.stringify(planos, null, 2));
+}
+
+testWritePlano();
