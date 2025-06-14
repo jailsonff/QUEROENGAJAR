@@ -1654,7 +1654,9 @@ export default function Admin() {
                 </tr>
               ))}
             </tbody>
-          </Table></old_str>
+          </Table>
+        </Section>
+      )}</old_str>
         </Section>
       )}
     {/* Popup de Cadastro */}
