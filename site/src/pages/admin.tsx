@@ -3,9 +3,9 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #0a0b0d 0%, #1a1d21 100%);
+  background: #000000;
   color: #ffffff;
-  padding: 2rem 1rem;
+  padding: 8rem 1rem 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -41,11 +41,11 @@ const Title = styled.h2`
   }
 `;
 const Section = styled.div`
-  background: rgba(26, 29, 33, 0.9);
-  border-radius: 16px;
-  padding: 2rem;
+  background: rgba(10, 11, 13, 0.95);
+  border-radius: 20px;
+  padding: 2.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
   max-width: 1400px;
   width: 100%;
   margin-left: auto;
@@ -54,16 +54,29 @@ const Section = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid rgba(0, 255, 136, 0.2);
-  backdrop-filter: blur(10px);
+  border: 2px solid rgba(0, 255, 136, 0.3);
+  backdrop-filter: blur(15px);
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.05) 0%, transparent 50%, rgba(0, 255, 136, 0.05) 100%);
+    border-radius: 20px;
+    pointer-events: none;
+  }
   
   @media (max-width: 768px) {
-    padding: 1.5rem;
+    padding: 2rem;
     margin: 0 0.5rem 2rem;
   }
   
   @media (max-width: 480px) {
-    padding: 1rem;
+    padding: 1.5rem;
     margin: 0 0.25rem 1.5rem;
   }
 `;
@@ -71,37 +84,56 @@ const Table = styled.table`
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
-  background: rgba(26, 29, 33, 0.95);
+  background: #000000;
   color: #ffffff;
-  border-radius: 12px;
+  border-radius: 16px;
   margin-top: 1rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   border-collapse: collapse;
   overflow: hidden;
+  border: 2px solid rgba(0, 255, 136, 0.2);
   
   th, td {
-    padding: 1rem 0.75rem;
+    padding: 1.2rem 0.75rem;
     text-align: center;
     vertical-align: middle;
-    border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+    border-bottom: 1px solid rgba(0, 255, 136, 0.15);
   }
   
   th {
     background: linear-gradient(135deg, #00ff88 0%, #00e67a 100%);
-    color: #0a0f0a;
-    font-weight: 700;
+    color: #000000;
+    font-weight: 800;
     text-align: center;
-    font-size: 0.95rem;
+    font-size: 1rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
+    text-shadow: none;
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #00ff88, #00e67a, #00ff88);
+    }
   }
   
   tbody tr {
     transition: all 0.3s ease;
+    background: rgba(10, 11, 13, 0.5);
+    
+    &:nth-child(even) {
+      background: rgba(0, 255, 136, 0.02);
+    }
     
     &:hover {
-      background: rgba(0, 255, 136, 0.05);
-      transform: translateY(-1px);
+      background: rgba(0, 255, 136, 0.08);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0, 255, 136, 0.1);
     }
   }
   
@@ -109,61 +141,79 @@ const Table = styled.table`
     font-size: 0.9rem;
     
     th, td {
-      padding: 0.75rem 0.5rem;
+      padding: 1rem 0.6rem;
     }
   }
   
   @media (max-width: 768px) {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     
     th, td {
-      padding: 0.6rem 0.4rem;
+      padding: 0.8rem 0.5rem;
     }
   }
   
   @media (max-width: 480px) {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     
     th, td {
-      padding: 0.5rem 0.3rem;
+      padding: 0.7rem 0.4rem;
     }
   }
 `;
 const Button = styled.button`
-  padding: 0.75rem 1.5rem;
+  padding: 0.8rem 1.6rem;
   background: linear-gradient(135deg, #00ff88 0%, #00e67a 100%);
-  color: #0a0f0a;
-  border: none;
-  border-radius: 8px;
+  color: #000000;
+  border: 2px solid transparent;
+  border-radius: 12px;
   font-size: 0.9rem;
-  font-weight: 700;
-  margin: 0.25rem;
+  font-weight: 800;
+  margin: 0.3rem;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+  letter-spacing: 0.6px;
+  box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
   
   &:hover {
     background: linear-gradient(135deg, #00e67a 0%, #00cc6a 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 255, 136, 0.5);
+    border-color: rgba(255, 255, 255, 0.3);
+    
+    &::before {
+      left: 100%;
+    }
   }
   
   &:active {
-    transform: translateY(0);
+    transform: translateY(-1px);
   }
   
   @media (max-width: 768px) {
-    padding: 0.6rem 1rem;
-    font-size: 0.8rem;
-    margin: 0.2rem;
+    padding: 0.7rem 1.2rem;
+    font-size: 0.85rem;
+    margin: 0.25rem;
   }
   
   @media (max-width: 480px) {
-    padding: 0.5rem 0.8rem;
-    font-size: 0.75rem;
-    margin: 0.1rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+    margin: 0.2rem;
   }
 `;
 
@@ -757,17 +807,18 @@ export default function Admin() {
           </div>
 
           {/* Card de busca */}
-          <div style={{background:'rgba(26, 29, 33, 0.7)', borderRadius:'16px', padding:'2rem', marginBottom:'2rem', border:'1px solid rgba(0, 255, 136, 0.2)', boxShadow:'0 4px 20px rgba(0, 255, 136, 0.1)', backdropFilter:'blur(10px)'}}>
-            <div style={{position:'relative'}}>
-              <span style={{position:'absolute', left:'1.2rem', top:'50%', transform:'translateY(-50%)', color:'#00ff88', fontSize:'1.3rem', textShadow:'0 0 10px rgba(0, 255, 136, 0.5)'}}>🔍</span>
+          <div style={{background:'#000000', borderRadius:'20px', padding:'2.5rem', marginBottom:'2.5rem', border:'2px solid rgba(0, 255, 136, 0.3)', boxShadow:'0 8px 32px rgba(0, 255, 136, 0.15)', backdropFilter:'blur(15px)', position:'relative'}}>
+            <div style={{position:'absolute', top:0, left:0, right:0, bottom:0, background:'linear-gradient(135deg, rgba(0, 255, 136, 0.03) 0%, transparent 50%, rgba(0, 255, 136, 0.03) 100%)', borderRadius:'20px', pointerEvents:'none'}}></div>
+            <div style={{position:'relative', zIndex:1}}>
+              <span style={{position:'absolute', left:'1.5rem', top:'50%', transform:'translateY(-50%)', color:'#00ff88', fontSize:'1.4rem', textShadow:'0 0 15px rgba(0, 255, 136, 0.6)', zIndex:2}}>🔍</span>
               <input
                 type="text"
                 placeholder="Buscar por nome ou email..."
                 value={busca}
                 onChange={e=>setBusca(e.target.value)}
-                style={{width:'100%', padding:'1.2rem 1.2rem 1.2rem 3.5rem', borderRadius:'12px', border:'2px solid rgba(0, 255, 136, 0.2)', background:'rgba(10, 11, 13, 0.8)', color:'#ffffff', fontSize:'1.1rem', transition:'all 0.3s ease', outline:'none', boxShadow:'0 2px 8px rgba(0, 0, 0, 0.2)'}}
-                onFocus={e=>{e.target.style.borderColor='#00ff88'; e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)'}}
-                onBlur={e=>{e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)'}}
+                style={{width:'100%', padding:'1.5rem 1.5rem 1.5rem 4rem', borderRadius:'16px', border:'2px solid rgba(0, 255, 136, 0.3)', background:'rgba(0, 0, 0, 0.8)', color:'#ffffff', fontSize:'1.2rem', transition:'all 0.3s ease', outline:'none', boxShadow:'0 4px 15px rgba(0, 0, 0, 0.3)', fontWeight:'500'}}
+                onFocus={e=>{e.target.style.borderColor='#00ff88'; e.target.style.boxShadow='0 0 0 4px rgba(0, 255, 136, 0.15), 0 4px 15px rgba(0, 0, 0, 0.3)'}}
+                onBlur={e=>{e.target.style.borderColor='rgba(0, 255, 136, 0.3)'; e.target.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.3)'}}
               />
             </div>
           </div>
@@ -780,9 +831,10 @@ export default function Admin() {
           </div>
 
           {/* Tabela responsiva */}
-          <div style={{background:'rgba(26, 29, 33, 0.95)', borderRadius:'16px', overflow:'hidden', border:'1px solid rgba(0, 255, 136, 0.3)', boxShadow:'0 8px 32px rgba(0, 255, 136, 0.1)', backdropFilter:'blur(10px)'}}>
-            <div style={{overflowX:'auto'}}>
-              <Table style={{margin:0, borderRadius:0, boxShadow:'none', background:'transparent'}}>
+          <div style={{background:'#000000', borderRadius:'20px', overflow:'hidden', border:'2px solid rgba(0, 255, 136, 0.4)', boxShadow:'0 12px 40px rgba(0, 255, 136, 0.2)', backdropFilter:'blur(15px)', position:'relative'}}>
+            <div style={{position:'absolute', top:0, left:0, right:0, bottom:0, background:'linear-gradient(135deg, rgba(0, 255, 136, 0.02) 0%, transparent 50%, rgba(0, 255, 136, 0.02) 100%)', borderRadius:'20px', pointerEvents:'none'}}></div>
+            <div style={{overflowX:'auto', position:'relative', zIndex:1}}>
+              <Table style={{margin:0, borderRadius:0, boxShadow:'none', background:'transparent', border:'none'}}>
                 <thead>
                   <tr>
                     <th>👤 Nome</th>
@@ -1206,15 +1258,15 @@ export default function Admin() {
           padding: '2rem'
         }}>
           <div style={{
-            background: 'linear-gradient(135deg, #1a1d21 0%, #2d3340 100%)',
-            border: '2px solid rgba(0, 255, 136, 0.3)',
-            borderRadius: '20px',
-            padding: '2.5rem',
-            maxWidth: '600px',
+            background: '#000000',
+            border: '3px solid rgba(0, 255, 136, 0.5)',
+            borderRadius: '24px',
+            padding: '3rem',
+            maxWidth: '650px',
             width: '100%',
             maxHeight: '90vh',
             overflowY: 'auto',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
+            boxShadow: '0 25px 80px rgba(0, 255, 136, 0.3)',
             position: 'relative',
             animation: 'popupSlideIn 0.3s ease-out'
           }}>
