@@ -40,11 +40,11 @@ const Title = styled.h2`
   font-size: 2.5rem;
   font-weight: 700;
   text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
-  
+
   @media (max-width: 768px) {
     font-size: 2rem;
   }
-  
+
   @media (max-width: 480px) {
     font-size: 1.75rem;
   }
@@ -66,7 +66,7 @@ const Section = styled.div`
   border: 2px solid rgba(0, 255, 136, 0.3);
   backdrop-filter: blur(15px);
   position: relative;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -78,27 +78,27 @@ const Section = styled.div`
     border-radius: 16px;
     pointer-events: none;
   }
-  
+
   @media (max-width: 1200px) {
     max-width: 100%;
     margin: 0 1rem 2rem;
   }
-  
+
   @media (max-width: 768px) {
     padding: 1.5rem;
     margin: 0 0.5rem 1.5rem;
     border-radius: 12px;
-    
+
     &::before {
       border-radius: 12px;
     }
   }
-  
+
   @media (max-width: 480px) {
     padding: 1rem;
     margin: 0 0.25rem 1rem;
     border-radius: 8px;
-    
+
     &::before {
       border-radius: 8px;
     }
@@ -116,7 +116,7 @@ const Table = styled.table`
   border-collapse: collapse;
   overflow: hidden;
   border: 2px solid rgba(0, 255, 136, 0.2);
-  
+
   th, td {
     padding: 1.2rem 0.75rem;
     text-align: center;
@@ -125,7 +125,7 @@ const Table = styled.table`
     word-wrap: break-word;
     min-width: 0;
   }
-  
+
   th {
     background: linear-gradient(135deg, #00ff88 0%, #00e67a 100%);
     color: #000000;
@@ -137,7 +137,7 @@ const Table = styled.table`
     text-shadow: none;
     position: relative;
     white-space: nowrap;
-    
+
     &::after {
       content: '';
       position: absolute;
@@ -148,58 +148,58 @@ const Table = styled.table`
       background: linear-gradient(90deg, #00ff88, #00e67a, #00ff88);
     }
   }
-  
+
   tbody tr {
     transition: all 0.3s ease;
     background: rgba(10, 11, 13, 0.5);
-    
+
     &:nth-child(even) {
       background: rgba(0, 255, 136, 0.02);
     }
-    
+
     &:hover {
       background: rgba(0, 255, 136, 0.08);
       transform: translateY(-2px);
       box-shadow: 0 4px 20px rgba(0, 255, 136, 0.1);
     }
   }
-  
+
   @media (max-width: 1024px) {
     font-size: 0.9rem;
-    
+
     th, td {
       padding: 1rem 0.6rem;
     }
   }
-  
+
   @media (max-width: 768px) {
     font-size: 0.85rem;
     display: block;
     overflow-x: auto;
     white-space: nowrap;
-    
+
     th, td {
       padding: 0.8rem 0.4rem;
       min-width: 110px;
     }
-    
+
     th:first-child, td:first-child {
       min-width: 130px;
     }
   }
-  
+
   @media (max-width: 480px) {
     font-size: 0.75rem;
-    
+
     th, td {
       padding: 0.6rem 0.25rem;
       min-width: 90px;
     }
-    
+
     th:first-child, td:first-child {
       min-width: 110px;
     }
-    
+
     th {
       font-size: 0.7rem;
       letter-spacing: 0.3px;
@@ -222,7 +222,7 @@ const Button = styled.button`
   box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
   position: relative;
   overflow: hidden;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -233,28 +233,28 @@ const Button = styled.button`
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     transition: left 0.5s;
   }
-  
+
   &:hover {
     background: linear-gradient(135deg, #00e67a 0%, #00cc6a 100%);
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(0, 255, 136, 0.5);
     border-color: rgba(255, 255, 255, 0.3);
-    
+
     &::before {
       left: 100%;
     }
   }
-  
+
   &:active {
     transform: translateY(-1px);
   }
-  
+
   @media (max-width: 768px) {
     padding: 0.7rem 1.2rem;
     font-size: 0.85rem;
     margin: 0.25rem;
   }
-  
+
   @media (max-width: 480px) {
     padding: 0.6rem 1rem;
     font-size: 0.8rem;
@@ -428,24 +428,24 @@ export default function Admin() {
       console.log('Verificando status dos pedidos na área administrativa...');
       const timestamp = Date.now();
       const resposta = await fetch(`/api/status-pedidos?t=${timestamp}`);
-      
+
       if (!resposta.ok) {
         console.error('Erro ao buscar status dos pedidos');
         return;
       }
-      
+
       const { pendentes, processados } = await resposta.json();
       console.log('Pedidos pendentes:', pendentes.length);
       console.log('Pedidos processados:', processados.length);
-      
+
       // Sincronizar pedidos do localStorage com os dados da API
       if (typeof window !== 'undefined') {
         const localPedidos = JSON.parse(localStorage.getItem(PEDIDOS_KEY) || '[]');
         let pedidosAtualizados = [...localPedidos];
         let houveAlteracao = false;
-        
+
         console.log('Verificando pedidos processados:', processados.length, 'pendentes:', pendentes.length);
-        
+
         // Interface para o tipo de pedido processado
         interface PedidoProcessado {
           id?: string; 
@@ -457,7 +457,7 @@ export default function Admin() {
           cliente?: string;
           comentarios?: string[];
         }
-        
+
         // Adicionar pedidos processados que não estão no localStorage
         processados.forEach((pedidoProcessado: PedidoProcessado) => {
           // Encontrar o pedido no localStorage
@@ -465,7 +465,7 @@ export default function Admin() {
             (pedidoProcessado.id && p.id && pedidoProcessado.id === p.id) || 
             pedidoProcessado.link === p.link
           );
-          
+
           // Verificação mais abrangente: considera vários indicadores de conclusão
           const pedidoConcluido = 
             pedidoProcessado.status === 'concluido' || 
@@ -487,7 +487,7 @@ export default function Admin() {
               houveAlteracao = true;
             }
           }
-          
+
           if (idx !== -1) {
             // Pedido existe no localStorage, verificar se precisa atualizar
             if (pedidosAtualizados[idx].status !== 'concluido' && pedidoConcluido) {
@@ -507,7 +507,7 @@ export default function Admin() {
             houveAlteracao = true;
           }
         });
-        
+
         // Se houve alteração, atualizar localStorage e estado
         if (houveAlteracao) {
           localStorage.setItem(PEDIDOS_KEY, JSON.stringify(pedidosAtualizados));
@@ -516,7 +516,7 @@ export default function Admin() {
           setTimeout(() => setMsg(''), 1500);
         }
       }
-      
+
     } catch (error) {
       console.error('Erro ao verificar status dos pedidos:', error);
     }
@@ -1187,10 +1187,10 @@ export default function Admin() {
               onClick={async () => {
                 try {
                   setMsg('Sincronizando planos...');
-                  
+
                   // Adicionar timestamp para evitar cache
                   const timestamp = Date.now();
-                  
+
                   // Buscar planos atualizados da API com parâmetro de timestamp para evitar cache
                   const resp = await fetch(`/api/planos?t=${timestamp}`, {
                     headers: {
@@ -1199,23 +1199,23 @@ export default function Admin() {
                       'Expires': '0'
                     }
                   });
-                  
+
                   const data = await resp.json();
-                  
+
                   if (data.planos) {
                     console.log('[ADMIN] Planos recebidos para sincronização:', data.planos);
-                    
+
                     // Atualizar planos no localStorage
                     if (typeof window !== 'undefined') {
                       localStorage.setItem('admin_planos', JSON.stringify(data.planos));
-                      
+
                       // Criar um evento personalizado para notificar outras abas/janelas
                       try {
                         const syncEvent = new StorageEvent('storage', {
                           key: 'admin_planos',
                           newValue: JSON.stringify(data.planos)
                         });
-                        
+
                         // Disparar o evento para outras abas/janelas
                         window.dispatchEvent(syncEvent);
                         console.log('[ADMIN] Evento de sincronização disparado');
@@ -1223,10 +1223,10 @@ export default function Admin() {
                         console.error('[ADMIN] Erro ao disparar evento de sincronização:', e);
                       }
                     }
-                    
+
                     // Atualizar estado local
                     setPlanos(data.planos);
-                    
+
                     // Executar script de sincronização se disponível
                     if (data.syncScript && typeof window !== 'undefined') {
                       try {
@@ -1237,12 +1237,12 @@ export default function Admin() {
                         console.error('[ADMIN] Erro ao executar script de sincronização:', e);
                       }
                     }
-                    
+
                     // Forçar recarregamento da página de planos em todas as abas abertas
                     if (typeof window !== 'undefined') {
                       localStorage.setItem('force_planos_reload', timestamp.toString());
                     }
-                    
+
                     setMsg('Planos sincronizados com sucesso!');
                     setTimeout(() => setMsg(''), 2000);
                   } else {
@@ -1450,7 +1450,7 @@ export default function Admin() {
                 setTimeout(()=>setMsg(''), 2500);
                 return;
               }
-              
+
               try {
                 const resp = await fetch('/api/clientes', {
                   method: 'POST',
@@ -1473,16 +1473,20 @@ export default function Admin() {
                 setTimeout(()=>setMsg(''), 2500);
               }
             }} style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem'}}>
-              
+
               {/* Nome */}
               <div style={{gridColumn: 'span 2'}}>
                 <label style={{
                   color: '#00ff88',
                   fontSize: '0.95rem',
                   fontWeight: '700',
-                  marginBottom: '0.75rem',
+                  marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.85rem',
+                    marginBottom: '0.4rem'
+                  }
                 }}>
                   📝 Nome Completo
                 </label>
@@ -1520,9 +1524,13 @@ export default function Admin() {
                   color: '#00ff88',
                   fontSize: '0.95rem',
                   fontWeight: '700',
-                  marginBottom: '0.75rem',
+                  marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.85rem',
+                    marginBottom: '0.4rem'
+                  }
                 }}>
                   📧 Email
                 </label>
@@ -1560,9 +1568,13 @@ export default function Admin() {
                   color: '#00ff88',
                   fontSize: '0.95rem',
                   fontWeight: '700',
-                  marginBottom: '0.75rem',
+                  marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.85rem',
+                    marginBottom: '0.4rem'
+                  }
                 }}>
                   📱 WhatsApp
                 </label>
@@ -1600,9 +1612,13 @@ export default function Admin() {
                   color: '#00ff88',
                   fontSize: '0.95rem',
                   fontWeight: '700',
-                  marginBottom: '0.75rem',
+                  marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.85rem',
+                    marginBottom: '0.4rem'
+                  }
                 }}>
                   🔐 Senha
                 </label>
@@ -1640,9 +1656,13 @@ export default function Admin() {
                   color: '#00ff88',
                   fontSize: '0.95rem',
                   fontWeight: '700',
-                  marginBottom: '0.75rem',
+                  marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.85rem',
+                    marginBottom: '0.4rem'
+                  }
                 }}>
                   👑 Permissões
                 </label>
@@ -1673,9 +1693,13 @@ export default function Admin() {
                   color: '#00ff88',
                   fontSize: '0.95rem',
                   fontWeight: '700',
-                  marginBottom: '0.75rem',
+                  marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.85rem',
+                    marginBottom: '0.4rem'
+                  }
                 }}>
                   ⚡ Pedidos Simultâneos
                 </label>
@@ -1861,16 +1885,20 @@ export default function Admin() {
               e.preventDefault();
               await handleSave(editIdx);
             }} style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem'}}>
-              
+
               {/* Nome */}
               <div style={{gridColumn: 'span 2'}}>
                 <label style={{
                   color: '#00ff88',
                   fontSize: '0.95rem',
                   fontWeight: '700',
-                  marginBottom: '0.75rem',
+                  marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.85rem',
+                    marginBottom: '0.4rem'
+                  }
                 }}>
                   📝 Nome Completo
                 </label>
@@ -1908,9 +1936,13 @@ export default function Admin() {
                   color: '#00ff88',
                   fontSize: '0.95rem',
                   fontWeight: '700',
-                  marginBottom: '0.75rem',
+                  marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.85rem',
+                    marginBottom: '0.4rem'
+                  }
                 }}>
                   📧 Email
                 </label>
@@ -1948,9 +1980,13 @@ export default function Admin() {
                   color: '#00ff88',
                   fontSize: '0.95rem',
                   fontWeight: '700',
-                  marginBottom: '0.75rem',
+                  marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.85rem',
+                    marginBottom: '0.4rem'
+                  }
                 }}>
                   📱 WhatsApp
                 </label>
@@ -1988,9 +2024,13 @@ export default function Admin() {
                   color: '#00ff88',
                   fontSize: '0.95rem',
                   fontWeight: '700',
-                  marginBottom: '0.75rem',
+                  marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.85rem',
+                    marginBottom: '0.4rem'
+                  }
                 }}>
                   🔐 Senha
                 </label>
@@ -2028,9 +2068,13 @@ export default function Admin() {
                   color: '#00ff88',
                   fontSize: '0.95rem',
                   fontWeight: '700',
-                  marginBottom: '0.75rem',
+                  marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.85rem',
+                    marginBottom: '0.4rem'
+                  }
                 }}>
                   📊 Status
                 </label>
@@ -2061,9 +2105,13 @@ export default function Admin() {
                   color: '#00ff88',
                   fontSize: '0.95rem',
                   fontWeight: '700',
-                  marginBottom: '0.75rem',
+                  marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.85rem',
+                    marginBottom: '0.4rem'
+                  }
                 }}>
                   👑 Permissões
                 </label>
@@ -2094,9 +2142,13 @@ export default function Admin() {
                   color: '#00ff88',
                   fontSize: '0.95rem',
                   fontWeight: '700',
-                  marginBottom: '0.75rem',
+                  marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.85rem',
+                    marginBottom: '0.4rem'
+                  }
                 }}>
                   💬 Comentários
                 </label>
@@ -2134,9 +2186,13 @@ export default function Admin() {
                   color: '#00ff88',
                   fontSize: '0.95rem',
                   fontWeight: '700',
-                  marginBottom: '0.75rem',
+                  marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.85rem',
+                    marginBottom: '0.4rem'
+                  }
                 }}>
                   ⚡ Pedidos Simultâneos
                 </label>
@@ -2163,7 +2219,23 @@ export default function Admin() {
               </div>
 
               {/* Botões de ação */}
-              <div style={{gridColumn: 'span 2', display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '1.5rem'}}>
+              <div style={{
+                gridColumn: 'span 2', 
+                display: 'flex', 
+                gap: '1rem', 
+                justifyContent: 'center', 
+                marginTop: '1rem',
+                '@media (max-width: 768px)': {
+                  gridColumn: 'span 1',
+                  flexDirection: 'column',
+                  gap: '0.75rem',
+                  marginTop: '0.75rem'
+                },
+                '@media (max-width: 480px)': {
+                  gap: '0.5rem',
+                  marginTop: '0.5rem'
+                }
+              }}>
                 <Button 
                   type="submit" 
                   style={{
@@ -2182,7 +2254,11 @@ export default function Admin() {
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.75rem'
+                    gap: '0.75rem',
+                    '@media (max-width: 480px)': {
+                      padding: '0.8rem 1.5rem',
+                      fontSize: '1rem'
+                    }
                   }}
                   onMouseEnter={e=>{
                     e.currentTarget.style.transform='translateY(-3px)'; 
@@ -2216,7 +2292,11 @@ export default function Admin() {
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.75rem'
+                    gap: '0.75rem',
+                    '@media (max-width: 480px)': {
+                      padding: '0.8rem 1.5rem',
+                      fontSize: '1rem'
+                    }
                   }}
                   onMouseEnter={e=>{
                     e.currentTarget.style.transform='translateY(-3px)'; 
@@ -2240,4 +2320,3 @@ export default function Admin() {
     </Container>
   );
 }
-
