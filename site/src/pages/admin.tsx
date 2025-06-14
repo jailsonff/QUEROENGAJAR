@@ -599,32 +599,73 @@ export default function Admin() {
   const [showCadastroPopup, setShowCadastroPopup] = useState(false);
   // Controle do popup de edição
   const [showEditPopup, setShowEditPopup] = useState(false);
+  // Controle do popup de edição de pedido
+  const [showEditPedidoPopup, setShowEditPedidoPopup] = useState(false);
 
   // --- Pedidos: Funções admin ---
-  function handleStopPedido(idx:number) {
-    const novas = [...pedidos];
-    novas[idx].status = 'parado';
-    setPedidos(novas);
-    if(typeof window !== 'undefined'){
-      localStorage.setItem('admin_pedidos', JSON.stringify(novas));
+  async function handleStopPedido(idx:number) {
+    const pedido = pedidos[idx];
+    let tipo: 'pendente' | 'processado' = 'pendente';
+    if (pedido.status === 'concluido' || pedido.status === 'falha' || pedido.success === true || pedido.success === false) {
+      tipo = 'processado';
     }
-    setMsg('Pedido parado!');
-    setTimeout(()=>setMsg(''), 1500);
-  }
-  function handleEditPedido(idx:number) {
-    setEditIdx(idx);
-    setEditData({...pedidos[idx]});
-  }
-  function handleSavePedido(idx:number) {
-    const novas = [...pedidos];
-    novas[idx] = {...editData};
-    setPedidos(novas);
-    setEditIdx(null);
-    if(typeof window !== 'undefined'){
-      localStorage.setItem('admin_pedidos', JSON.stringify(novas));
+    try {
+      await fetch('/api/pedidos', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: pedido.id, link: pedido.link, tipo, status: 'parado' })
+      });
+      const novas = [...pedidos];
+      novas[idx].status = 'parado';
+      setPedidos(novas);
+      if(typeof window !== 'undefined'){
+        localStorage.setItem('admin_pedidos', JSON.stringify(novas));
+      }
+      setMsg('Pedido parado!');
+      setTimeout(()=>setMsg(''), 1500);
+    } catch (err) {
+      setMsg('Erro ao parar pedido!');
+      setTimeout(()=>setMsg(''), 2500);
     }
-    setMsg('Pedido atualizado!');
-    setTimeout(()=>setMsg(''), 1500);
+  }
+
+  async function handleSavePedidoPopup(idx:number) {
+    if (editIdx === null) return;
+    
+    const pedido = pedidos[editIdx];
+    let tipo: 'pendente' | 'processado' = 'pendente';
+    if (pedido.status === 'concluido' || pedido.status === 'falha' || pedido.success === true || pedido.success === false) {
+      tipo = 'processado';
+    }
+    
+    try {
+      await fetch('/api/pedidos', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          id: pedido.id, 
+          link: pedido.link, 
+          tipo, 
+          ...editData 
+        })
+      });
+      
+      const novas = [...pedidos];
+      novas[editIdx] = {...editData};
+      setPedidos(novas);
+      setEditIdx(null);
+      setShowEditPedidoPopup(false);
+      
+      if(typeof window !== 'undefined'){
+        localStorage.setItem('admin_pedidos', JSON.stringify(novas));
+      }
+      
+      setMsg('Pedido atualizado!');
+      setTimeout(()=>setMsg(''), 1500);
+    } catch (err) {
+      setMsg('Erro ao atualizar pedido!');
+      setTimeout(()=>setMsg(''), 2500);
+    }
   }
 
   // --- Hooks de autenticação admin ---
@@ -1082,65 +1123,184 @@ export default function Admin() {
       )}
       {section==='pedidos' && (
         <Section>
-          <h3>Pedidos</h3>
-          <input
-            type="text"
-            placeholder="Filtrar por cliente..."
-            value={filtroPedido}
-            onChange={e=>setFiltroPedido(e.target.value)}
-            style={{width:'100%',padding:8,borderRadius:6,border:'1px solid #292B2E',marginBottom:14,background:'#181A1B',color:'#FFF'}}
-          />
-          <Table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Cliente</th>
-                <th>Link</th>
-                <th>Qtd. Comentários</th>
-                <th>Status</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pedidosFiltrados.map((p,i)=>(
-                editIdx === i && section==='pedidos' ? (
-                  <tr key={i} style={{background:'#232528'}}>
-                    <td>{i + 1}</td>
-                    <td>{p.cliente}</td>
-                    <td>
-                      <input type="text" value={editData.link} onChange={e=>setEditData({...editData,link:e.target.value})} style={{width:'100%',padding:4,borderRadius:4,border:'1px solid #FFD600',background:'#181A1B',color:'#FFD600'}} />
-                    </td>
-                    <td>
-                      <input type="number" value={editData.enviados} onChange={e=>setEditData({...editData,enviados:Number(e.target.value)})} style={{width:70,padding:4,borderRadius:4,border:'1px solid #FFD600',background:'#181A1B',color:'#FFD600'}} />
-                    </td>
-                    <td>
-                      <select value={editData.status} onChange={e=>setEditData({...editData,status:e.target.value})} style={{padding:4,borderRadius:4,border:'1px solid #FFD600',background:'#181A1B',color:'#FFD600'}}>
-                        <option value="processando">Em processamento</option>
-                        <option value="parado">Parado</option>
-                        <option value="concluido">Concluído</option>
-                      </select>
-                    </td>
-                    <td>
-                      <Button style={{background:'#8FFF8F',color:'#181A1B'}} onClick={()=>handleSavePedido(i)}>Salvar</Button>
-                      <Button style={{background:'#FFD600',color:'#181A1B'}} onClick={()=>setEditIdx(null)}>Cancelar</Button>
-                    </td>
+          <div style={{display:'flex', alignItems:'center', justifyContent:'center', width:'100%', marginBottom:'2rem'}}>
+            <h3 style={{color:'#00ff88', fontSize:'2.2rem', fontWeight:'700', margin:0, display:'flex', alignItems:'center', gap:'0.75rem', textShadow:'0 0 15px rgba(0, 255, 136, 0.4)', textAlign:'center'}}>
+              <span style={{fontSize:'2rem'}}>📋</span>
+              Pedidos
+            </h3>
+          </div>
+
+          {/* Área de controles - Filtro */}
+          <div style={{
+            display:'flex', 
+            justifyContent:'center',
+            marginBottom:'2rem'
+          }}>
+            <div style={{
+              background:'#000000', 
+              borderRadius:'16px', 
+              padding:'1.5rem', 
+              border:'2px solid rgba(0, 255, 136, 0.3)', 
+              boxShadow:'0 6px 24px rgba(0, 255, 136, 0.12)', 
+              backdropFilter:'blur(15px)', 
+              position:'relative',
+              maxWidth:'500px',
+              width:'100%'
+            }}>
+              <div style={{position:'absolute', top:0, left:0, right:0, bottom:0, background:'linear-gradient(135deg, rgba(0, 255, 136, 0.03) 0%, transparent 50%, rgba(0, 255, 136, 0.03) 100%)', borderRadius:'16px', pointerEvents:'none'}}></div>
+              <div style={{position:'relative', zIndex:1}}>
+                <span style={{position:'absolute', left:'1.2rem', top:'50%', transform:'translateY(-50%)', color:'#00ff88', fontSize:'1.2rem', textShadow:'0 0 10px rgba(0, 255, 136, 0.6)', zIndex:2}}>🔍</span>
+                <input
+                  type="text"
+                  placeholder="Filtrar por cliente..."
+                  value={filtroPedido}
+                  onChange={e=>setFiltroPedido(e.target.value)}
+                  style={{
+                    width:'100%', 
+                    padding:'1rem 1rem 1rem 3.2rem', 
+                    borderRadius:'12px', 
+                    border:'2px solid rgba(0, 255, 136, 0.2)', 
+                    background:'rgba(0, 0, 0, 0.6)', 
+                    color:'#ffffff', 
+                    fontSize:'1rem', 
+                    transition:'all 0.3s ease', 
+                    outline:'none', 
+                    boxShadow:'0 2px 8px rgba(0, 0, 0, 0.2)', 
+                    fontWeight:'400'
+                  }}
+                  onFocus={e=>{e.target.style.borderColor='#00ff88'; e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2)'}}
+                  onBlur={e=>{e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)'}}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Divisor decorativo */}
+          <div style={{display:'flex', alignItems:'center', margin:'2.5rem 0', opacity:0.8}}>
+            <div style={{flex:1, height:'2px', background:'linear-gradient(90deg, transparent 0%, #00ff88 50%, transparent 100%)', boxShadow:'0 0 10px rgba(0, 255, 136, 0.3)'}}></div>
+            <span style={{color:'#00ff88', padding:'0 1.5rem', fontSize:'1.5rem', textShadow:'0 0 15px rgba(0, 255, 136, 0.5)'}}>⚡</span>
+            <div style={{flex:1, height:'2px', background:'linear-gradient(90deg, transparent 0%, #00ff88 50%, transparent 100%)', boxShadow:'0 0 10px rgba(0, 255, 136, 0.3)'}}></div>
+          </div>
+
+          {/* Tabela responsiva */}
+          <div style={{
+            background:'#000000', 
+            borderRadius:'16px', 
+            overflow:'hidden', 
+            border:'2px solid rgba(0, 255, 136, 0.3)', 
+            boxShadow:'0 8px 32px rgba(0, 255, 136, 0.15)', 
+            backdropFilter:'blur(15px)', 
+            position:'relative',
+            maxWidth:'100%'
+          }}>
+            <div style={{position:'absolute', top:0, left:0, right:0, bottom:0, background:'linear-gradient(135deg, rgba(0, 255, 136, 0.02) 0%, transparent 50%, rgba(0, 255, 136, 0.02) 100%)', borderRadius:'16px', pointerEvents:'none'}}></div>
+            <div style={{overflowX:'auto', position:'relative', zIndex:1, maxWidth:'100%'}}>
+              <Table style={{
+                margin:0, 
+                borderRadius:0, 
+                boxShadow:'none', 
+                background:'transparent', 
+                border:'none',
+                minWidth:'800px',
+                '@media (max-width: 768px)': {
+                  minWidth:'700px'
+                }
+              }}>
+                <thead>
+                  <tr>
+                    <th style={{
+                      padding:'0.8rem 0.6rem',
+                      fontSize:'0.85rem',
+                      textAlign:'center',
+                      '@media (max-width: 768px)': {
+                        padding:'0.6rem 0.4rem',
+                        fontSize:'0.8rem'
+                      }
+                    }}>🆔 ID</th>
+                    <th style={{
+                      padding:'0.8rem 0.6rem',
+                      fontSize:'0.85rem',
+                      '@media (max-width: 768px)': {
+                        padding:'0.6rem 0.4rem',
+                        fontSize:'0.8rem'
+                      }
+                    }}>👤 Cliente</th>
+                    <th style={{
+                      padding:'0.8rem 0.6rem',
+                      fontSize:'0.85rem',
+                      '@media (max-width: 768px)': {
+                        padding:'0.6rem 0.4rem',
+                        fontSize:'0.8rem'
+                      }
+                    }}>💬 Qtd. Comentários</th>
+                    <th style={{
+                      padding:'0.8rem 0.6rem',
+                      fontSize:'0.85rem',
+                      '@media (max-width: 768px)': {
+                        padding:'0.6rem 0.4rem',
+                        fontSize:'0.8rem'
+                      }
+                    }}>📊 Status</th>
+                    <th style={{
+                      padding:'0.8rem 0.6rem',
+                      fontSize:'0.85rem',
+                      minWidth:'120px',
+                      '@media (max-width: 768px)': {
+                        padding:'0.6rem 0.4rem',
+                        fontSize:'0.8rem',
+                        minWidth:'100px'
+                      }
+                    }}>⚙️ Ações</th>
                   </tr>
-                ) : (
-                  <tr key={i}>
-                    <td>{p.cliente}</td>
-                    <td><a href={p.link} target="_blank" rel="noopener noreferrer" style={{color:'#FFD600'}}>Ver Post</a></td>
-                    <td>{Array.isArray(p.comentarios) ? p.comentarios.length : (p.enviados || 0)}</td>
-                    <td>{p.status === 'concluido' ? 'Concluído' : (p.status === 'parado' ? 'Parado' : 'Em processamento')}</td>
-                    <td>
-                      <Button style={{background:'#F44336',color:'#FFF'}} onClick={()=>handleDeletePedido(i)}>Deletar</Button>
-                      <Button style={{background:'#FFD600',color:'#181A1B'}} onClick={()=>handleStopPedido(i)}>Parar</Button>
-                      <Button style={{background:'#232528',color:'#FFD600'}} onClick={()=>handleEditPedido(i)}>Editar</Button>
-                    </td>
-                  </tr>
-                )
-              ))}
-            </tbody>
-          </Table>
+                </thead>
+                <tbody>
+                  {pedidosFiltrados.filter(p => !filtroPedido || p.cliente.toLowerCase().includes(filtroPedido.toLowerCase())).map((p, i) => (
+                    <tr key={i} style={{borderBottom: i < pedidosFiltrados.length - 1 ? '1px solid rgba(0, 255, 136, 0.2)' : 'none', background: i % 2 === 0 ? 'rgba(10, 11, 13, 0.5)' : 'transparent', transition:'all 0.3s ease'}} onMouseEnter={e=>{e.currentTarget.style.background='rgba(0, 255, 136, 0.08)'; e.currentTarget.style.transform='translateY(-1px)'}} onMouseLeave={e=>{e.currentTarget.style.background= i % 2 === 0 ? 'rgba(10, 11, 13, 0.5)' : 'transparent'; e.currentTarget.style.transform='translateY(0)'}}>
+                      <td style={{padding:'0.8rem 0.5rem', fontSize:'0.9rem', fontWeight:'700', color:'#00ff88', textAlign:'center'}}>#{i + 1}</td>
+                      <td style={{padding:'0.8rem 0.5rem', fontSize:'0.9rem', fontWeight:'500', color:'#FFF', textAlign:'center', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', maxWidth:'150px'}} title={p.cliente}>{p.cliente}</td>
+                      <td style={{padding:'0.8rem 0.5rem', textAlign:'center'}}>
+                        <span style={{background:'rgba(0, 255, 136, 0.2)', color:'#00ff88', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', boxShadow:'0 1px 6px rgba(0, 255, 136, 0.2)', border:'1px solid rgba(0, 255, 136, 0.3)'}}>
+                          {Array.isArray(p.comentarios) ? p.comentarios.length : (p.enviados || 0)}
+                        </span>
+                      </td>
+                      <td style={{padding:'0.8rem 0.5rem', textAlign:'center'}}>
+                        {p.status === 'concluido' ? 
+                          <span style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.3rem', boxShadow:'0 2px 10px rgba(0, 255, 136, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px'}}>
+                            ✅ Concluído
+                          </span> : 
+                          p.status === 'parado' ?
+                          <span style={{background:'linear-gradient(135deg, #ffa500 0%, #ff8c00 100%)', color:'#FFF', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.3rem', boxShadow:'0 2px 10px rgba(255, 165, 0, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px'}}>
+                            ⏸️ Parado
+                          </span> :
+                          <span style={{background:'linear-gradient(135deg, #4169e1 0%, #1e90ff 100%)', color:'#FFF', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.3rem', boxShadow:'0 2px 10px rgba(65, 105, 225, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px'}}>
+                            ⚡ Processando
+                          </span>
+                        }
+                      </td>
+                      <td style={{padding:'0.8rem 0.5rem', textAlign:'center', verticalAlign:'middle'}}>
+                        <Button onClick={()=>{
+                          setEditIdx(i);
+                          setEditData({...p});
+                          setShowEditPedidoPopup(true);
+                        }} style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.6rem 1.2rem', fontSize:'0.85rem', fontWeight:'700', boxShadow:'0 4px 15px rgba(0, 255, 136, 0.3)', display:'flex', alignItems:'center', gap:'0.5rem', textTransform:'uppercase', letterSpacing:'0.3px', borderRadius:'8px', height:'40px', justifyContent:'center', transition:'all 0.3s ease'}} onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 6px 20px rgba(0, 255, 136, 0.5)';}} onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 4px 15px rgba(0, 255, 136, 0.3)';}}>
+                          ✏️ Editar
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+            {pedidosFiltrados.filter(p => !filtroPedido || p.cliente.toLowerCase().includes(filtroPedido.toLowerCase())).length === 0 && (
+              <div style={{padding:'4rem', textAlign:'center', color:'rgba(255, 255, 255, 0.6)'}}>
+                <div style={{fontSize:'4rem', marginBottom:'1.5rem', filter:'drop-shadow(0 0 15px rgba(0, 255, 136, 0.3))'}}>📋</div>
+                <h3 style={{color:'#00ff88', marginBottom:'1rem', fontSize:'1.5rem', fontWeight:'700', textShadow:'0 0 15px rgba(0, 255, 136, 0.3)'}}>Nenhum pedido encontrado</h3>
+                <p style={{color:'rgba(255, 255, 255, 0.7)', fontSize:'1.1rem', lineHeight:'1.6'}}>
+                  {filtroPedido ? 'Tente ajustar os filtros de busca' : 'Não há pedidos cadastrados no momento'}
+                </p>
+              </div>
+            )}
+          </div>
         </Section>
       )}
       {section==='pacotes' && (
@@ -2305,6 +2465,406 @@ export default function Admin() {
                   onMouseLeave={e=>{
                     e.currentTarget.style.transform='translateY(0)'; 
                     e.currentTarget.style.boxShadow='0 4px 20px rgba(255, 71, 87, 0.4)';
+                  }}
+                >
+                  <span>❌</span>
+                  Cancelar
+                </Button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Popup de Edição de Pedido */}
+      {showEditPedidoPopup && editIdx !== null && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.85)',
+          backdropFilter: 'blur(10px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '2rem'
+        }}>
+          <div style={{
+            background: '#000000',
+            border: '3px solid rgba(0, 255, 136, 0.5)',
+            borderRadius: '24px',
+            padding: '3rem',
+            maxWidth: '650px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            boxShadow: '0 25px 80px rgba(0, 255, 136, 0.3)',
+            position: 'relative',
+            animation: 'popupSlideIn 0.3s ease-out'
+          }}>
+            {/* Botão de fechar */}
+            <button
+              onClick={() => {setShowEditPedidoPopup(false); setEditIdx(null);}}
+              style={{
+                position: 'absolute',
+                top: '1rem',
+                right: '1rem',
+                background: 'none',
+                border: 'none',
+                color: '#00ff88',
+                fontSize: '2rem',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'rgba(255, 71, 87, 0.2)';
+                e.currentTarget.style.color = '#ff4757';
+                e.currentTarget.style.transform = 'rotate(90deg)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'none';
+                e.currentTarget.style.color = '#00ff88';
+                e.currentTarget.style.transform = 'rotate(0deg)';
+              }}
+            >
+              ✕
+            </button>
+
+            {/* Título do popup */}
+            <h3 style={{
+              color: '#00ff88',
+              fontSize: '1.8rem',
+              marginBottom: '2rem',
+              textAlign: 'center',
+              fontWeight: '700',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.75rem',
+              textShadow: '0 0 15px rgba(0, 255, 136, 0.4)'
+            }}>
+              <span style={{fontSize: '1.6rem'}}>✏️</span>
+              Editar Pedido #{editIdx + 1}
+            </h3>
+
+            {/* Formulário */}
+            <form onSubmit={async e => {
+              e.preventDefault();
+              await handleSavePedidoPopup(editIdx);
+            }} style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem'}}>
+
+              {/* Nome do Cliente */}
+              <div style={{gridColumn: 'span 2'}}>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.5rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  👤 Cliente
+                </label>
+                <input 
+                  type="text" 
+                  placeholder="Nome do cliente" 
+                  value={editData.cliente || ''} 
+                  onChange={e=>setEditData({...editData,cliente:e.target.value})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease',
+                    outline: 'none',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+                  }}
+                  onFocus={e=>{
+                    e.target.style.borderColor='#00ff88'; 
+                    e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)';
+                  }} 
+                  onBlur={e=>{
+                    e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; 
+                    e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)';
+                  }} 
+                />
+              </div>
+
+              {/* Link do Post */}
+              <div style={{gridColumn: 'span 2'}}>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.5rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  🔗 Link do Post
+                </label>
+                <input 
+                  type="url" 
+                  placeholder="https://instagram.com/p/..." 
+                  value={editData.link || ''} 
+                  onChange={e=>setEditData({...editData,link:e.target.value})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease',
+                    outline: 'none',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+                  }}
+                  onFocus={e=>{
+                    e.target.style.borderColor='#00ff88'; 
+                    e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)';
+                  }} 
+                  onBlur={e=>{
+                    e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; 
+                    e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)';
+                  }} 
+                />
+              </div>
+
+              {/* Quantidade de Comentários */}
+              <div>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.5rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  💬 Comentários Enviados
+                </label>
+                <input 
+                  type="number" 
+                  placeholder="0" 
+                  value={editData.enviados || 0} 
+                  onChange={e=>setEditData({...editData,enviados:Number(e.target.value)})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease',
+                    outline: 'none',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+                  }}
+                  onFocus={e=>{
+                    e.target.style.borderColor='#00ff88'; 
+                    e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)';
+                  }} 
+                  onBlur={e=>{
+                    e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; 
+                    e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)';
+                  }} 
+                />
+              </div>
+
+              {/* Status */}
+              <div>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.5rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  📊 Status
+                </label>
+                <select 
+                  value={editData.status || 'processando'} 
+                  onChange={e=>setEditData({...editData,status:e.target.value})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+                    outline: 'none'
+                  }}
+                >
+                  <option value="processando">⚡ Processando</option>
+                  <option value="parado">⏸️ Parado</option>
+                  <option value="concluido">✅ Concluído</option>
+                </select>
+              </div>
+
+              {/* Botões de ação */}
+              <div style={{
+                gridColumn: 'span 2', 
+                display: 'flex', 
+                gap: '1rem', 
+                justifyContent: 'center', 
+                marginTop: '1rem',
+                flexWrap: 'wrap'
+              }}>
+                <Button 
+                  type="submit" 
+                  style={{
+                    background: 'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)',
+                    color: '#0a0f0a',
+                    padding: '1rem 2rem',
+                    fontSize: '1.1rem',
+                    fontWeight: '700',
+                    boxShadow: '0 4px 20px rgba(0, 255, 136, 0.4)',
+                    transform: 'translateY(0)',
+                    transition: 'all 0.3s ease',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    border: 'none',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem'
+                  }}
+                  onMouseEnter={e=>{
+                    e.currentTarget.style.transform='translateY(-3px)'; 
+                    e.currentTarget.style.boxShadow='0 8px 25px rgba(0, 255, 136, 0.6)';
+                  }} 
+                  onMouseLeave={e=>{
+                    e.currentTarget.style.transform='translateY(0)'; 
+                    e.currentTarget.style.boxShadow='0 4px 20px rgba(0, 255, 136, 0.4)';
+                  }}
+                >
+                  <span>✅</span>
+                  Salvar Alterações
+                </Button>
+
+                <Button 
+                  type="button"
+                  onClick={async () => {
+                    if (editIdx !== null) {
+                      await handleStopPedido(editIdx);
+                    }
+                  }}
+                  style={{
+                    background: 'linear-gradient(135deg, #ffa500 0%, #ff8c00 100%)',
+                    color: '#FFF',
+                    padding: '1rem 2rem',
+                    fontSize: '1.1rem',
+                    fontWeight: '700',
+                    boxShadow: '0 4px 20px rgba(255, 165, 0, 0.4)',
+                    transform: 'translateY(0)',
+                    transition: 'all 0.3s ease',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    border: 'none',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem'
+                  }}
+                  onMouseEnter={e=>{
+                    e.currentTarget.style.transform='translateY(-3px)'; 
+                    e.currentTarget.style.boxShadow='0 8px 25px rgba(255, 165, 0, 0.6)';
+                  }} 
+                  onMouseLeave={e=>{
+                    e.currentTarget.style.transform='translateY(0)'; 
+                    e.currentTarget.style.boxShadow='0 4px 20px rgba(255, 165, 0, 0.4)';
+                  }}
+                >
+                  <span>⏸️</span>
+                  Parar Pedido
+                </Button>
+
+                <Button 
+                  type="button"
+                  onClick={async () => {
+                    if (editIdx !== null && window.confirm('Tem certeza que deseja deletar este pedido?')) {
+                      await handleDeletePedido(editIdx);
+                      setShowEditPedidoPopup(false);
+                      setEditIdx(null);
+                    }
+                  }}
+                  style={{
+                    background: 'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)',
+                    color: '#FFF',
+                    padding: '1rem 2rem',
+                    fontSize: '1.1rem',
+                    fontWeight: '700',
+                    boxShadow: '0 4px 20px rgba(255, 71, 87, 0.4)',
+                    transform: 'translateY(0)',
+                    transition: 'all 0.3s ease',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    border: 'none',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem'
+                  }}
+                  onMouseEnter={e=>{
+                    e.currentTarget.style.transform='translateY(-3px)'; 
+                    e.currentTarget.style.boxShadow='0 8px 25px rgba(255, 71, 87, 0.6)';
+                  }} 
+                  onMouseLeave={e=>{
+                    e.currentTarget.style.transform='translateY(0)'; 
+                    e.currentTarget.style.boxShadow='0 4px 20px rgba(255, 71, 87, 0.4)';
+                  }}
+                >
+                  <span>🗑️</span>
+                  Deletar Pedido
+                </Button>
+
+                <Button 
+                  type="button"
+                  onClick={() => {setShowEditPedidoPopup(false); setEditIdx(null);}}
+                  style={{
+                    background: 'linear-gradient(135deg, #6c757d 0%, #5a6268 100%)',
+                    color: '#FFF',
+                    padding: '1rem 2rem',
+                    fontSize: '1.1rem',
+                    fontWeight: '700',
+                    boxShadow: '0 4px 20px rgba(108, 117, 125, 0.4)',
+                    transform: 'translateY(0)',
+                    transition: 'all 0.3s ease',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    border: 'none',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem'
+                  }}
+                  onMouseEnter={e=>{
+                    e.currentTarget.style.transform='translateY(-3px)'; 
+                    e.currentTarget.style.boxShadow='0 8px 25px rgba(108, 117, 125, 0.6)';
+                  }} 
+                  onMouseLeave={e=>{
+                    e.currentTarget.style.transform='translateY(0)'; 
+                    e.currentTarget.style.boxShadow='0 4px 20px rgba(108, 117, 125, 0.4)';
                   }}
                 >
                   <span>❌</span>
