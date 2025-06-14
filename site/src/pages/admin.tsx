@@ -1055,10 +1055,10 @@ export default function Admin() {
                             {[1,2,3,4,5].map(q=> <option key={q} value={q}>{q} simultâneo{q>1?'s':''}</option>)}
                           </select>
                         </td>
-                        <td style={{padding:'0.6rem 0.4rem'}}>
-                          <div style={{display:'flex', gap:'0.3rem', flexWrap:'wrap', justifyContent:'center'}}>
-                            <Button style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.5rem 0.8rem', fontSize:'0.75rem', fontWeight:'700', boxShadow:'0 2px 10px rgba(0, 255, 136, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'auto'}} onClick={()=>handleSave(i)}>✅ Salvar</Button>
-                            <Button style={{background:'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)', color:'#FFF', padding:'0.5rem 0.8rem', fontSize:'0.75rem', fontWeight:'700', boxShadow:'0 2px 10px rgba(255, 71, 87, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'auto'}} onClick={()=>setEditIdx(null)}>❌ Cancelar</Button>
+                        <td style={{padding:'0.6rem 0.4rem', textAlign:'center', verticalAlign:'middle'}}>
+                          <div style={{display:'flex', gap:'0.5rem', flexWrap:'wrap', justifyContent:'center', alignItems:'center', minHeight:'60px'}}>
+                            <Button style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.5rem 0.8rem', fontSize:'0.75rem', fontWeight:'700', boxShadow:'0 2px 10px rgba(0, 255, 136, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'80px', height:'36px', display:'flex', alignItems:'center', justifyContent:'center', borderRadius:'6px'}} onClick={()=>handleSave(i)}>✅ Salvar</Button>
+                            <Button style={{background:'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)', color:'#FFF', padding:'0.5rem 0.8rem', fontSize:'0.75rem', fontWeight:'700', boxShadow:'0 2px 10px rgba(255, 71, 87, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'90px', height:'36px', display:'flex', alignItems:'center', justifyContent:'center', borderRadius:'6px'}} onClick={()=>setEditIdx(null)}>❌ Cancelar</Button>
                           </div>
                         </td>
                       </tr>
@@ -1096,21 +1096,21 @@ export default function Admin() {
                             {c.simultaneos || 1}
                           </span>
                         </td>
-                        <td style={{padding:'0.8rem 0.5rem'}}>
-                          <div style={{display:'flex', flexDirection:'column', alignItems:'center', gap:'0.3rem', justifyContent:'center'}}>
-                            <div style={{display:'flex', gap:'0.3rem', flexWrap:'wrap', justifyContent:'center'}}>
-                              <Button onClick={()=>handleEdit(i)} style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.4rem 0.7rem', fontSize:'0.7rem', fontWeight:'700', boxShadow:'0 2px 8px rgba(0, 255, 136, 0.3)', display:'flex', alignItems:'center', gap:'0.2rem', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'auto', borderRadius:'6px'}}>
+                        <td style={{padding:'0.8rem 0.5rem', textAlign:'center', verticalAlign:'middle'}}>
+                          <div style={{display:'flex', flexDirection:'column', alignItems:'center', gap:'0.5rem', justifyContent:'center', minHeight:'80px'}}>
+                            <div style={{display:'flex', gap:'0.3rem', flexWrap:'wrap', justifyContent:'center', alignItems:'center'}}>
+                              <Button onClick={()=>handleEdit(i)} style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.4rem 0.7rem', fontSize:'0.7rem', fontWeight:'700', boxShadow:'0 2px 8px rgba(0, 255, 136, 0.3)', display:'flex', alignItems:'center', gap:'0.2rem', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'75px', borderRadius:'6px', height:'32px', justifyContent:'center'}}>
                                 ✏️ Editar
                               </Button>
-                              <Button onClick={()=>handleBlock(i)} style={{background: c.status === 'ativo' ? 'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)' : 'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color: c.status === 'ativo' ? '#FFF' : '#0a0f0a', padding:'0.4rem 0.7rem', fontSize:'0.7rem', fontWeight:'700', boxShadow: c.status === 'ativo' ? '0 2px 8px rgba(255, 71, 87, 0.3)' : '0 2px 8px rgba(0, 255, 136, 0.3)', display:'flex', alignItems:'center', gap:'0.2rem', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'auto', borderRadius:'6px'}}>
+                              <Button onClick={()=>handleBlock(i)} style={{background: c.status === 'ativo' ? 'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)' : 'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color: c.status === 'ativo' ? '#FFF' : '#0a0f0a', padding:'0.4rem 0.7rem', fontSize:'0.7rem', fontWeight:'700', boxShadow: c.status === 'ativo' ? '0 2px 8px rgba(255, 71, 87, 0.3)' : '0 2px 8px rgba(0, 255, 136, 0.3)', display:'flex', alignItems:'center', gap:'0.2rem', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'85px', borderRadius:'6px', height:'32px', justifyContent:'center'}}>
                                 {c.status === 'ativo' ? '🚫 Bloquear' : '✅ Liberar'}
                               </Button>
                             </div>
-                            <div style={{display:'flex', gap:'0.3rem', flexWrap:'wrap', justifyContent:'center'}}>
-                              <Button onClick={()=>handleToggleAdmin(i)} style={{background: c.admin ? 'linear-gradient(135deg, #ffa726 0%, #ff9800 100%)' : 'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color: c.admin ? '#FFF' : '#0a0f0a', padding:'0.4rem 0.7rem', fontSize:'0.7rem', fontWeight:'700', boxShadow: c.admin ? '0 2px 8px rgba(255, 167, 38, 0.3)' : '0 2px 8px rgba(0, 255, 136, 0.3)', display:'flex', alignItems:'center', gap:'0.2rem', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'auto', borderRadius:'6px'}}>
+                            <div style={{display:'flex', gap:'0.3rem', flexWrap:'wrap', justifyContent:'center', alignItems:'center'}}>
+                              <Button onClick={()=>handleToggleAdmin(i)} style={{background: c.admin ? 'linear-gradient(135deg, #ffa726 0%, #ff9800 100%)' : 'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color: c.admin ? '#FFF' : '#0a0f0a', padding:'0.4rem 0.7rem', fontSize:'0.7rem', fontWeight:'700', boxShadow: c.admin ? '0 2px 8px rgba(255, 167, 38, 0.3)' : '0 2px 8px rgba(0, 255, 136, 0.3)', display:'flex', alignItems:'center', gap:'0.2rem', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'95px', borderRadius:'6px', height:'32px', justifyContent:'center'}}>
                                 {c.admin ? '👤 Rem. Admin' : '👑 Admin'}
                               </Button>
-                              <Button style={{background:'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)', color:'#FFF', padding:'0.4rem 0.7rem', fontSize:'0.7rem', fontWeight:'700', boxShadow:'0 2px 8px rgba(255, 71, 87, 0.3)', display:'flex', alignItems:'center', gap:'0.2rem', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'auto', borderRadius:'6px'}} onClick={()=>handleDeleteUser(i)}>
+                              <Button style={{background:'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)', color:'#FFF', padding:'0.4rem 0.7rem', fontSize:'0.7rem', fontWeight:'700', boxShadow:'0 2px 8px rgba(255, 71, 87, 0.3)', display:'flex', alignItems:'center', gap:'0.2rem', textTransform:'uppercase', letterSpacing:'0.2px', minWidth:'75px', borderRadius:'6px', height:'32px', justifyContent:'center'}} onClick={()=>handleDeleteUser(i)}>
                                 🗑️ Excluir
                               </Button>
                             </div>
