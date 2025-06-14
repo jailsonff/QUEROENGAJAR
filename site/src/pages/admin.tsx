@@ -12,6 +12,17 @@ const Container = styled.div`
   justify-content: flex-start;
   width: 100vw;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  @keyframes popupSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-30px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
 `;
 const Title = styled.h2`
   color: #00ff88;
@@ -489,6 +500,8 @@ export default function Admin() {
   const [msg, setMsg] = useState('');
   // Novo usuário
   const [novoUsuario, setNovoUsuario] = useState({nome:'', email:'', whatsapp:'', senha:'', comentarios:0, admin:false, simultaneos:1});
+  // Controle do popup de cadastro
+  const [showCadastroPopup, setShowCadastroPopup] = useState(false);
 
   // --- Pedidos: Funções admin ---
   function handleStopPedido(idx:number) {
@@ -707,51 +720,40 @@ export default function Admin() {
             </div>
           </div>
 
-          {/* Card do formulário de novo usuário */}
-          <div style={{background:'rgba(26, 29, 33, 0.7)', borderRadius:'16px', padding:'2rem', marginBottom:'2rem', border:'1px solid rgba(0, 255, 136, 0.3)', boxShadow:'0 8px 32px rgba(0, 255, 136, 0.1)', backdropFilter:'blur(10px)'}}>
-            <h4 style={{color:'#00ff88', fontSize:'1.4rem', marginBottom:'1.5rem', display:'flex', alignItems:'center', gap:'0.75rem', fontWeight:'700', textShadow:'0 0 10px rgba(0, 255, 136, 0.3)'}}>
-              <span style={{fontSize:'1.3rem'}}>➕</span>
-              Adicionar Novo Cliente
-            </h4>
-            <form onSubmit={e=>{e.preventDefault();
-              if(!novoUsuario.nome||!novoUsuario.email||!novoUsuario.whatsapp||!novoUsuario.senha) return setMsg('Preencha todos os campos!');
-              setClientes([...clientes, {...novoUsuario, status:'ativo'}]);
-              setNovoUsuario({nome:'',email:'',whatsapp:'',senha:'',comentarios:0, admin:false, simultaneos:1});
-              setMsg('Usuário criado!'); setTimeout(()=>setMsg(''), 1500);}} style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(200px, 1fr))', gap:'1rem', alignItems:'end'}}>
-              <div>
-                <label style={{color:'#00ff88', fontSize:'0.95rem', fontWeight:'700', marginBottom:'0.75rem', display:'block', textShadow:'0 0 5px rgba(0, 255, 136, 0.3)'}}>Nome Completo</label>
-                <input type="text" placeholder="Digite o nome" value={novoUsuario.nome} onChange={e=>setNovoUsuario({...novoUsuario,nome:e.target.value})} style={{width:'100%', padding:'1rem', borderRadius:'12px', border:'2px solid rgba(0, 255, 136, 0.2)', background:'rgba(10, 11, 13, 0.8)', color:'#ffffff', fontSize:'1rem', transition:'all 0.3s ease', outline:'none', boxShadow:'0 2px 8px rgba(0, 0, 0, 0.2)'}} onFocus={e=>{e.target.style.borderColor='#00ff88'; e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)'}} onBlur={e=>{e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)'}} />
-              </div>
-              <div>
-                <label style={{color:'#00ff88', fontSize:'0.95rem', fontWeight:'700', marginBottom:'0.75rem', display:'block', textShadow:'0 0 5px rgba(0, 255, 136, 0.3)'}}>Email</label>
-                <input type="email" placeholder="email@exemplo.com" value={novoUsuario.email} onChange={e=>setNovoUsuario({...novoUsuario,email:e.target.value})} style={{width:'100%', padding:'1rem', borderRadius:'12px', border:'2px solid rgba(0, 255, 136, 0.2)', background:'rgba(10, 11, 13, 0.8)', color:'#ffffff', fontSize:'1rem', transition:'all 0.3s ease', outline:'none', boxShadow:'0 2px 8px rgba(0, 0, 0, 0.2)'}} onFocus={e=>{e.target.style.borderColor='#00ff88'; e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)'}} onBlur={e=>{e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)'}} />
-              </div>
-              <div>
-                <label style={{color:'#00ff88', fontSize:'0.95rem', fontWeight:'700', marginBottom:'0.75rem', display:'block', textShadow:'0 0 5px rgba(0, 255, 136, 0.3)'}}>WhatsApp</label>
-                <input type="text" placeholder="(11) 99999-9999" value={novoUsuario.whatsapp} onChange={e=>setNovoUsuario({...novoUsuario,whatsapp:e.target.value})} style={{width:'100%', padding:'1rem', borderRadius:'12px', border:'2px solid rgba(0, 255, 136, 0.2)', background:'rgba(10, 11, 13, 0.8)', color:'#ffffff', fontSize:'1rem', transition:'all 0.3s ease', outline:'none', boxShadow:'0 2px 8px rgba(0, 0, 0, 0.2)'}} onFocus={e=>{e.target.style.borderColor='#00ff88'; e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)'}} onBlur={e=>{e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)'}} />
-              </div>
-              <div>
-                <label style={{color:'#00ff88', fontSize:'0.95rem', fontWeight:'700', marginBottom:'0.75rem', display:'block', textShadow:'0 0 5px rgba(0, 255, 136, 0.3)'}}>Senha</label>
-                <input type="password" placeholder="Senha segura" value={novoUsuario.senha} onChange={e=>setNovoUsuario({...novoUsuario,senha:e.target.value})} style={{width:'100%', padding:'1rem', borderRadius:'12px', border:'2px solid rgba(0, 255, 136, 0.2)', background:'rgba(10, 11, 13, 0.8)', color:'#ffffff', fontSize:'1rem', transition:'all 0.3s ease', outline:'none', boxShadow:'0 2px 8px rgba(0, 0, 0, 0.2)'}} onFocus={e=>{e.target.style.borderColor='#00ff88'; e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)'}} onBlur={e=>{e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)'}} />
-              </div>
-              <div>
-                <label style={{color:'#00ff88', fontSize:'0.95rem', fontWeight:'700', marginBottom:'0.75rem', display:'block', textShadow:'0 0 5px rgba(0, 255, 136, 0.3)'}}>Admin</label>
-                <select value={novoUsuario.admin ? 'sim' : 'não'} onChange={e=>setNovoUsuario({...novoUsuario,admin:e.target.value==='sim'})} style={{width:'100%', padding:'1rem', borderRadius:'12px', border:'2px solid rgba(0, 255, 136, 0.2)', background:'rgba(10, 11, 13, 0.8)', color:'#ffffff', fontSize:'1rem', cursor:'pointer', boxShadow:'0 2px 8px rgba(0, 0, 0, 0.2)'}}>
-                  <option value="não">Não</option>
-                  <option value="sim">Sim</option>
-                </select>
-              </div>
-              <div>
-                <label style={{color:'#00ff88', fontSize:'0.95rem', fontWeight:'700', marginBottom:'0.75rem', display:'block', textShadow:'0 0 5px rgba(0, 255, 136, 0.3)'}}>Simultâneos</label>
-                <select value={novoUsuario.simultaneos} onChange={e=>setNovoUsuario({...novoUsuario,simultaneos:Number(e.target.value)})} style={{width:'100%', padding:'1rem', borderRadius:'12px', border:'2px solid rgba(0, 255, 136, 0.2)', background:'rgba(10, 11, 13, 0.8)', color:'#ffffff', fontSize:'1rem', cursor:'pointer', boxShadow:'0 2px 8px rgba(0, 0, 0, 0.2)'}}>
-                  {[1,2,3,4,5].map(q=> <option key={q} value={q}>{q} simultâneo{q>1?'s':''}</option>)}
-                </select>
-              </div>
-              <Button type="submit" style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'1rem 2rem', fontSize:'1.1rem', fontWeight:'700', boxShadow:'0 4px 20px rgba(0, 255, 136, 0.4)', transform:'translateY(0)', transition:'all 0.3s ease', textTransform:'uppercase', letterSpacing:'0.5px'}} onMouseEnter={e=>{e.target.style.transform='translateY(-3px)'; e.target.style.boxShadow='0 8px 25px rgba(0, 255, 136, 0.6)'}} onMouseLeave={e=>{e.target.style.transform='translateY(0)'; e.target.style.boxShadow='0 4px 20px rgba(0, 255, 136, 0.4)'}}>
-                <span style={{marginRight:'0.75rem'}}>✨</span>
-                Criar Cliente
-              </Button>
-            </form>
+          {/* Botão para abrir popup de cadastro */}
+          <div style={{display:'flex', justifyContent:'center', marginBottom:'2rem'}}>
+            <Button 
+              onClick={() => setShowCadastroPopup(true)}
+              style={{
+                background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', 
+                color:'#0a0f0a', 
+                padding:'1.2rem 2.5rem', 
+                fontSize:'1.2rem', 
+                fontWeight:'700', 
+                boxShadow:'0 6px 25px rgba(0, 255, 136, 0.4)', 
+                transform:'translateY(0)', 
+                transition:'all 0.3s ease', 
+                textTransform:'uppercase', 
+                letterSpacing:'0.8px',
+                border:'none',
+                borderRadius:'12px',
+                cursor:'pointer',
+                display:'flex',
+                alignItems:'center',
+                gap:'0.75rem'
+              }}
+              onMouseEnter={e=>{
+                e.currentTarget.style.transform='translateY(-3px)'; 
+                e.currentTarget.style.boxShadow='0 8px 30px rgba(0, 255, 136, 0.6)';
+              }} 
+              onMouseLeave={e=>{
+                e.currentTarget.style.transform='translateY(0)'; 
+                e.currentTarget.style.boxShadow='0 6px 25px rgba(0, 255, 136, 0.4)';
+              }}
+            >
+              <span style={{fontSize:'1.4rem'}}>➕</span>
+              Cadastrar Novo Cliente
+            </Button>
           </div>
 
           {/* Card de busca */}
@@ -1187,6 +1189,420 @@ export default function Admin() {
           </Table>
         </Section>
       )}
+    {/* Popup de Cadastro */}
+      {showCadastroPopup && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.85)',
+          backdropFilter: 'blur(10px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '2rem'
+        }}>
+          <div style={{
+            background: 'linear-gradient(135deg, #1a1d21 0%, #2d3340 100%)',
+            border: '2px solid rgba(0, 255, 136, 0.3)',
+            borderRadius: '20px',
+            padding: '2.5rem',
+            maxWidth: '600px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
+            position: 'relative',
+            animation: 'popupSlideIn 0.3s ease-out'
+          }}>
+            {/* Botão de fechar */}
+            <button
+              onClick={() => setShowCadastroPopup(false)}
+              style={{
+                position: 'absolute',
+                top: '1rem',
+                right: '1rem',
+                background: 'none',
+                border: 'none',
+                color: '#00ff88',
+                fontSize: '2rem',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'rgba(255, 71, 87, 0.2)';
+                e.currentTarget.style.color = '#ff4757';
+                e.currentTarget.style.transform = 'rotate(90deg)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'none';
+                e.currentTarget.style.color = '#00ff88';
+                e.currentTarget.style.transform = 'rotate(0deg)';
+              }}
+            >
+              ✕
+            </button>
+
+            {/* Título do popup */}
+            <h3 style={{
+              color: '#00ff88',
+              fontSize: '1.8rem',
+              marginBottom: '2rem',
+              textAlign: 'center',
+              fontWeight: '700',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.75rem',
+              textShadow: '0 0 15px rgba(0, 255, 136, 0.4)'
+            }}>
+              <span style={{fontSize: '1.6rem'}}>👤</span>
+              Cadastrar Novo Cliente
+            </h3>
+
+            {/* Formulário */}
+            <form onSubmit={async e => {
+              e.preventDefault();
+              if(!novoUsuario.nome||!novoUsuario.email||!novoUsuario.whatsapp||!novoUsuario.senha) {
+                setMsg('Preencha todos os campos!');
+                setTimeout(()=>setMsg(''), 2500);
+                return;
+              }
+              
+              try {
+                const resp = await fetch('/api/clientes', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({...novoUsuario, status:'ativo'})
+                });
+                const data = await resp.json();
+                if (resp.ok && data.success) {
+                  await fetchClientes();
+                  setNovoUsuario({nome:'',email:'',whatsapp:'',senha:'',comentarios:0, admin:false, simultaneos:1});
+                  setShowCadastroPopup(false);
+                  setMsg('Cliente criado com sucesso!');
+                  setTimeout(()=>setMsg(''), 2000);
+                } else {
+                  setMsg(data.error || 'Erro ao criar cliente!');
+                  setTimeout(()=>setMsg(''), 2500);
+                }
+              } catch (err) {
+                setMsg('Erro ao criar cliente!');
+                setTimeout(()=>setMsg(''), 2500);
+              }
+            }} style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem'}}>
+              
+              {/* Nome */}
+              <div style={{gridColumn: 'span 2'}}>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  📝 Nome Completo
+                </label>
+                <input 
+                  type="text" 
+                  placeholder="Digite o nome completo" 
+                  value={novoUsuario.nome} 
+                  onChange={e=>setNovoUsuario({...novoUsuario,nome:e.target.value})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease',
+                    outline: 'none',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+                  }}
+                  onFocus={e=>{
+                    e.target.style.borderColor='#00ff88'; 
+                    e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)';
+                  }} 
+                  onBlur={e=>{
+                    e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; 
+                    e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)';
+                  }} 
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  📧 Email
+                </label>
+                <input 
+                  type="email" 
+                  placeholder="email@exemplo.com" 
+                  value={novoUsuario.email} 
+                  onChange={e=>setNovoUsuario({...novoUsuario,email:e.target.value})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease',
+                    outline: 'none',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+                  }}
+                  onFocus={e=>{
+                    e.target.style.borderColor='#00ff88'; 
+                    e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)';
+                  }} 
+                  onBlur={e=>{
+                    e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; 
+                    e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)';
+                  }} 
+                />
+              </div>
+
+              {/* WhatsApp */}
+              <div>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  📱 WhatsApp
+                </label>
+                <input 
+                  type="text" 
+                  placeholder="(11) 99999-9999" 
+                  value={novoUsuario.whatsapp} 
+                  onChange={e=>setNovoUsuario({...novoUsuario,whatsapp:e.target.value})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease',
+                    outline: 'none',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+                  }}
+                  onFocus={e=>{
+                    e.target.style.borderColor='#00ff88'; 
+                    e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)';
+                  }} 
+                  onBlur={e=>{
+                    e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; 
+                    e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)';
+                  }} 
+                />
+              </div>
+
+              {/* Senha */}
+              <div>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  🔐 Senha
+                </label>
+                <input 
+                  type="password" 
+                  placeholder="Senha segura" 
+                  value={novoUsuario.senha} 
+                  onChange={e=>setNovoUsuario({...novoUsuario,senha:e.target.value})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease',
+                    outline: 'none',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+                  }}
+                  onFocus={e=>{
+                    e.target.style.borderColor='#00ff88'; 
+                    e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.1)';
+                  }} 
+                  onBlur={e=>{
+                    e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; 
+                    e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)';
+                  }} 
+                />
+              </div>
+
+              {/* Admin */}
+              <div>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  👑 Permissões
+                </label>
+                <select 
+                  value={novoUsuario.admin ? 'sim' : 'não'} 
+                  onChange={e=>setNovoUsuario({...novoUsuario,admin:e.target.value==='sim'})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+                    outline: 'none'
+                  }}
+                >
+                  <option value="não">👤 Usuário Normal</option>
+                  <option value="sim">👑 Administrador</option>
+                </select>
+              </div>
+
+              {/* Simultâneos */}
+              <div>
+                <label style={{
+                  color: '#00ff88',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  marginBottom: '0.75rem',
+                  display: 'block',
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+                }}>
+                  ⚡ Pedidos Simultâneos
+                </label>
+                <select 
+                  value={novoUsuario.simultaneos} 
+                  onChange={e=>setNovoUsuario({...novoUsuario,simultaneos:Number(e.target.value)})} 
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(0, 255, 136, 0.2)',
+                    background: 'rgba(10, 11, 13, 0.8)',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+                    outline: 'none'
+                  }}
+                >
+                  {[1,2,3,4,5].map(q=> 
+                    <option key={q} value={q}>⚡ {q} simultâneo{q>1?'s':''}</option>
+                  )}
+                </select>
+              </div>
+
+              {/* Botões de ação */}
+              <div style={{gridColumn: 'span 2', display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '1.5rem'}}>
+                <Button 
+                  type="submit" 
+                  style={{
+                    background: 'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)',
+                    color: '#0a0f0a',
+                    padding: '1rem 2rem',
+                    fontSize: '1.1rem',
+                    fontWeight: '700',
+                    boxShadow: '0 4px 20px rgba(0, 255, 136, 0.4)',
+                    transform: 'translateY(0)',
+                    transition: 'all 0.3s ease',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    border: 'none',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem'
+                  }}
+                  onMouseEnter={e=>{
+                    e.currentTarget.style.transform='translateY(-3px)'; 
+                    e.currentTarget.style.boxShadow='0 8px 25px rgba(0, 255, 136, 0.6)';
+                  }} 
+                  onMouseLeave={e=>{
+                    e.currentTarget.style.transform='translateY(0)'; 
+                    e.currentTarget.style.boxShadow='0 4px 20px rgba(0, 255, 136, 0.4)';
+                  }}
+                >
+                  <span>✨</span>
+                  Criar Cliente
+                </Button>
+
+                <Button 
+                  type="button"
+                  onClick={() => setShowCadastroPopup(false)}
+                  style={{
+                    background: 'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)',
+                    color: '#FFF',
+                    padding: '1rem 2rem',
+                    fontSize: '1.1rem',
+                    fontWeight: '700',
+                    boxShadow: '0 4px 20px rgba(255, 71, 87, 0.4)',
+                    transform: 'translateY(0)',
+                    transition: 'all 0.3s ease',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    border: 'none',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem'
+                  }}
+                  onMouseEnter={e=>{
+                    e.currentTarget.style.transform='translateY(-3px)'; 
+                    e.currentTarget.style.boxShadow='0 8px 25px rgba(255, 71, 87, 0.6)';
+                  }} 
+                  onMouseLeave={e=>{
+                    e.currentTarget.style.transform='translateY(0)'; 
+                    e.currentTarget.style.boxShadow='0 4px 20px rgba(255, 71, 87, 0.4)';
+                  }}
+                >
+                  <span>❌</span>
+                  Cancelar
+                </Button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      )}
+
     </Container>
   );
 }
