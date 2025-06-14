@@ -12,6 +12,15 @@ const Container = styled.div`
   justify-content: flex-start;
   width: 100vw;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+
+  @media (max-width: 768px) {
+    padding: 6rem 0.5rem 1rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 5rem 0.25rem 1rem;
+  }
 
   @keyframes popupSlideIn {
     from {
@@ -98,6 +107,8 @@ const Table = styled.table`
     text-align: center;
     vertical-align: middle;
     border-bottom: 1px solid rgba(0, 255, 136, 0.15);
+    word-wrap: break-word;
+    min-width: 0;
   }
   
   th {
@@ -110,6 +121,7 @@ const Table = styled.table`
     letter-spacing: 0.8px;
     text-shadow: none;
     position: relative;
+    white-space: nowrap;
     
     &::after {
       content: '';
@@ -147,17 +159,27 @@ const Table = styled.table`
   
   @media (max-width: 768px) {
     font-size: 0.85rem;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
     
     th, td {
       padding: 0.8rem 0.5rem;
+      min-width: 120px;
     }
   }
   
   @media (max-width: 480px) {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     
     th, td {
-      padding: 0.7rem 0.4rem;
+      padding: 0.6rem 0.3rem;
+      min-width: 100px;
+    }
+    
+    th {
+      font-size: 0.7rem;
+      letter-spacing: 0.3px;
     }
   }
 `;

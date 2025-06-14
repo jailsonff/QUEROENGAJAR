@@ -31,6 +31,16 @@ const LoginWrapper = styled.div`
     max-width: 400px;
     gap: 2rem;
   }
+
+  @media (max-width: 480px) {
+    max-width: 350px;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 360px) {
+    max-width: 300px;
+    gap: 1rem;
+  }
 `;
 
 const LeftContent = styled.div`

@@ -17,11 +17,23 @@ const MenuBar = styled.nav`
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   z-index: 100;
   margin-bottom: 0;
+  overflow-x: auto;
+
+  @media (max-width: 968px) {
+    padding: 0.75rem 0;
+    justify-content: flex-start;
+  }
 
   @media (max-width: 768px) {
-    padding: 0.75rem 0;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    padding: 0.5rem 0;
+    flex-wrap: nowrap;
+    gap: 0.25rem;
+    min-height: 60px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.4rem 0;
+    min-height: 50px;
   }
 `;
 
@@ -30,14 +42,31 @@ const MenuContainer = styled.div`
   gap: 0.5rem;
   align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   max-width: 1200px;
   width: 100%;
   padding: 0 1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (max-width: 968px) {
+    justify-content: flex-start;
+    padding: 0 0.75rem;
+  }
 
   @media (max-width: 768px) {
-    gap: 0.25rem;
+    gap: 0.3rem;
     padding: 0 0.5rem;
+  }
+
+  @media (max-width: 480px) {
+    gap: 0.25rem;
+    padding: 0 0.25rem;
   }
 `;
 
@@ -69,6 +98,8 @@ const MenuLink = styled.button<{$active?: boolean}>`
       ? '0 4px 20px rgba(0, 255, 136, 0.4)' 
       : '0 2px 8px rgba(0, 0, 0, 0.2)'
   };
+  white-space: nowrap;
+  flex-shrink: 0;
 
   &::before {
     content: '';
@@ -101,16 +132,29 @@ const MenuLink = styled.button<{$active?: boolean}>`
     transform: translateY(0);
   }
 
+  @media (max-width: 968px) {
+    font-size: 0.9rem;
+    padding: 0.65rem 1.2rem;
+  }
+
   @media (max-width: 768px) {
-    font-size: 0.85rem;
-    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+    padding: 0.55rem 0.9rem;
     letter-spacing: 0.3px;
+    border-radius: 8px;
   }
 
   @media (max-width: 480px) {
-    font-size: 0.75rem;
-    padding: 0.5rem 0.8rem;
+    font-size: 0.7rem;
+    padding: 0.45rem 0.7rem;
     letter-spacing: 0.2px;
+    border-radius: 6px;
+  }
+
+  @media (max-width: 360px) {
+    font-size: 0.65rem;
+    padding: 0.4rem 0.6rem;
+    letter-spacing: 0.1px;
   }
 `;
 

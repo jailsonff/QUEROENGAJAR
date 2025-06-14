@@ -1,4 +1,3 @@
-
 import React from 'react';
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
@@ -9,6 +8,15 @@ const Container = styled.div`
   background: #0a0b0d;
   color: #ffffff;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 0.5rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem 0.25rem;
+  }
 `;
 
 const Header = styled.div`
@@ -362,7 +370,7 @@ export default function Dashboard() {
       console.log('[DASHBOARD] Iniciando busca de planos...');
       const resp = await fetch('/api/planos');
       const data = await resp.json();
-      
+
       // Executar script de sincronização se disponível
       if (data.syncScript && typeof window !== 'undefined') {
         try {
@@ -373,7 +381,7 @@ export default function Dashboard() {
           console.error('[DASHBOARD] Erro ao executar script de sincronização:', e);
         }
       }
-      
+
       if (data.planos && data.planos.length > 0) {
         console.log('[DASHBOARD] Planos recebidos da API:', data.planos);
         setPlanos(data.planos);
@@ -432,30 +440,30 @@ export default function Dashboard() {
   // Função para verificar status dos pedidos
   async function verificarStatusPedidos() {
     if (atualizandoStatus) return; // Evita múltiplas requisições simultâneas
-    
+
     try {
       setAtualizandoStatus(true);
       console.log('Verificando status dos pedidos...');
-      
+
       // Buscar status atualizado dos pedidos com timestamp para evitar cache
       const timestamp = Date.now();
       const resposta = await fetch(`/api/status-pedidos?t=${timestamp}`);
-      
+
       if (!resposta.ok) {
         console.error('Erro ao buscar status dos pedidos');
         return;
       }
-      
+
       const { pendentes, processados } = await resposta.json();
       console.log('Pedidos pendentes:', pendentes.length);
       console.log('Pedidos processados:', processados.length);
-      
+
       // Se temos ordens na interface
       if (ordens.length > 0) {
         console.log('Ordens atuais na interface:', ordens);
         let algumPedidoAtualizado = false;
         const ordensAtualizadas = [...ordens];
-        
+
         // Verificar pedidos processados explicitamente
         // Esta parte é crucial para identificar pedidos que já foram processados pelo bot
         processados.forEach((pedidoProcessado: any) => {
@@ -468,23 +476,23 @@ export default function Dashboard() {
             // Se não tiver ID, usar o link como fallback
             return ordem.link === pedidoProcessado.link;
           });
-          
+
           // Se encontramos o pedido E ele está em processamento OU pendente E o processado está concluído
           if (idx !== -1 && 
               (ordensAtualizadas[idx].status === 'processando' || ordensAtualizadas[idx].status === 'pendente') && 
               pedidoProcessado.status === 'concluido') {
-            
+
             console.log(`Pedido para ${pedidoProcessado.link} encontrado como CONCLUÍDO, atualizando status`);
             // Atualizar status na interface
             ordensAtualizadas[idx].status = 'concluido';
             algumPedidoAtualizado = true;
-            
+
             // Mostrar mensagem de sucesso
             setSuccessMsg(`Pedido de comentários concluído para o link ${pedidoProcessado.link}`);
             setShowSuccess(true);
           }
         });
-        
+
         // Depois verificar pedidos em processamento que não estão mais na lista de pendentes
         // Isso é uma verificação adicional para casos onde o pedido saiu da lista de pendentes
         // mas não apareceu na lista de processados
@@ -493,15 +501,15 @@ export default function Dashboard() {
             // Aqui apenas lógica de atualização, sem JSX
           }
         });
-        
+
         // Apenas atualizar se houve mudanças
         if (algumPedidoAtualizado) {
           console.log('Atualizando ordens com novos status:', ordensAtualizadas);
-          
+
           // Atualizar no localStorage
           if (typeof window !== 'undefined') {
             const pedidosStorage = JSON.parse(localStorage.getItem('admin_pedidos') || '[]');
-            
+
             // Atualizar status no localStorage para todos os pedidos atualizados
             // Buscar por ID primeiro e depois por link para maior precisão
             ordensAtualizadas.forEach((ordem: any) => {
@@ -511,18 +519,18 @@ export default function Dashboard() {
                 }
                 return p.link === ordem.link;
               });
-              
+
               if (idxStorage !== -1 && pedidosStorage[idxStorage].status !== ordem.status) {
                 console.log(`Atualizando status no localStorage para ${ordem.id || ordem.link}: ${pedidosStorage[idxStorage].status} -> ${ordem.status}`);
                 pedidosStorage[idxStorage].status = ordem.status;
               }
             });
-            
+
             // Salvar as mudanças no localStorage
             localStorage.setItem('admin_pedidos', JSON.stringify(pedidosStorage));
           }
         }
-        
+
         // Atualizar estado na interface
         setOrdens(ordensAtualizadas);
       }
@@ -532,7 +540,7 @@ export default function Dashboard() {
       setAtualizandoStatus(false);
     }
   }
-  
+
   // Função para buscar pedidos do backend e sincronizar status para o usuário logado
   async function fetchPedidosUsuario() {
     const usuarioLogado = JSON.parse(localStorage.getItem('usuario_logado') || 'null');
@@ -591,13 +599,13 @@ export default function Dashboard() {
 
     // Verificar status inicial
     verificarStatusPedidos();
-    
+
     // Verificar com mais frequência para manter a fila fluindo
     const intervalId = setInterval(() => {
       verificarStatusPedidos();
       fetchPedidosUsuario(); // Sincronizar com backend a cada ciclo
     }, 5000);
-    
+
     if (typeof window !== 'undefined') {
       // Listener para sincronizar em tempo real
       const onStorage = (e: StorageEvent) => {
@@ -607,7 +615,7 @@ export default function Dashboard() {
         }
       };
       window.addEventListener('storage', onStorage);
-      
+
       // Listener para recarregar ao focar/voltar para a aba
       const onVisibility = () => {
         if (document.visibilityState === 'visible') {
@@ -617,7 +625,7 @@ export default function Dashboard() {
         }
       };
       document.addEventListener('visibilitychange', onVisibility);
-      
+
       // Limpar todos os event listeners e intervalos quando o componente for desmontado
       return () => {
         clearInterval(intervalId);
@@ -679,14 +687,14 @@ export default function Dashboard() {
       return;
     }
     setLinkInvalido(false);
-    
+
     // Obter lista de comentários
     const linhas = comentariosEnvio.split('\n').filter(Boolean);
     if (linhas.length > comentarios) {
       alert('Você não tem comentários suficientes. Compre um novo pacote!');
       return;
     }
-    
+
     // Criar o pedido
     const novoSaldo = comentarios - linhas.length;
     const novaOrdem = { 
@@ -697,11 +705,11 @@ export default function Dashboard() {
       email: user?.email, 
       data: new Date().toLocaleString() 
     };
-    
+
     try {
       // Enviar para a API de comentários
       setShowSuccess(true); // Mostrar mensagem de "processando"
-      
+
       // Enviar pedido para o bot
       const resposta = await fetch('/api/comentarios', {
         method: 'POST',
@@ -714,15 +722,15 @@ export default function Dashboard() {
           generoComentario
         })
       });
-      
+
       const resultado = await resposta.json();
-      
+
       if (!resposta.ok) {
         throw new Error(resultado.error || 'Erro ao enviar comentários');
       }
-      
+
       console.log('Comentários enviados para processamento:', resultado);
-      
+
       // Atualizar saldo no localStorage (usuario_logado e admin_clientes)
       if (typeof window !== 'undefined' && user) {
         // Atualiza usuario_logado
@@ -736,44 +744,44 @@ export default function Dashboard() {
           localStorage.setItem('admin_clientes', JSON.stringify(clientes));
         }
       }
-      
+
       // Atualizar interface
       setComentarios(novoSaldo);
       const novasOrdens = [...ordens, novaOrdem];
       setOrdens(novasOrdens);
-      
+
       // Salvar o pedido com seu ID para referência futura
       const pedidoComId = {
         ...novaOrdem,
         pedido_id: resultado.pedido_id
       };
-      
+
       // Atualiza no localStorage para persistir o status
       if (typeof window !== 'undefined') {
         const pedidos = JSON.parse(localStorage.getItem('admin_pedidos') || '[]');
         pedidos.push(pedidoComId);
         localStorage.setItem('admin_pedidos', JSON.stringify(pedidos));
       }
-      
+
       // Configurar uma verificação imediata do status após alguns segundos
       setTimeout(() => {
         verificarStatusPedidos();
       }, 2000);
-      
+
       // Configurar verificações adicionais em intervalos mais frequentes por um curto período
       const checkInterval = setInterval(() => {
         verificarStatusPedidos();
       }, 5000); // Verificar a cada 5 segundos
-      
+
       // Limpar o intervalo após 2 minutos (quando provavelmente já terá sido processado)
       setTimeout(() => {
         clearInterval(checkInterval);
       }, 120000);
-      
+
       // Limpar campos
       setLink('');
       setComentariosEnvio('');
-      
+
       // Mostrar mensagem de sucesso
       setSuccessMsg('Comentários enviados com sucesso! O bot está processando seu pedido.');
       setShowSuccess(true);
@@ -821,7 +829,7 @@ export default function Dashboard() {
 
         <FormContainer>
           <SectionTitle>Enviar Comentários</SectionTitle>
-          
+
           <form onSubmit={enviarComentarios}>
             <FormGroup>
               <label>Tipo de Comentário</label>

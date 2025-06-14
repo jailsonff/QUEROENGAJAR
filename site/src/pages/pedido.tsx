@@ -7,6 +7,15 @@ const Container = styled.div`
   background: linear-gradient(135deg, #0a0b0d 0%, #1a1d21 100%);
   color: #ffffff;
   padding: 2rem 1rem;
+  overflow-x: hidden;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 0.5rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem 0.25rem;
+  }
 `;
 
 const Header = styled.div`

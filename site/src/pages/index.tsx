@@ -8,6 +8,15 @@ const Container = styled.div`
   background: #0a0b0d;
   color: #ffffff;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 0.5rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem 0.25rem;
+  }
 `;
 
 const Header = styled.header`
@@ -96,7 +105,7 @@ const MainSection = styled.section`
 
 const MainContent = styled.div`
   text-align: center;
-  
+
   @media (min-width: 968px) {
     text-align: center;
   }
@@ -944,7 +953,7 @@ export default function Home() {
         <ModalOverlay onClick={(e) => e.target === e.currentTarget && setShowModal(false)}>
           <ModalContent>
             <CloseButton onClick={() => setShowModal(false)}>×</CloseButton>
-            
+
             <LoginHeader>
               <h3>QUERO ENGAJAR</h3>
               <p>{activeTab === 'cadastro' ? 'Realize seu cadastro para conseguir enviar comentários' : 'Faça seu login para conseguir enviar comentários'}</p>
