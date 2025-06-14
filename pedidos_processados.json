@@ -435,5 +435,24 @@
     "comentarios_processados": 1,
     "total_comentarios": 1,
     "mensagem": "Todos os 1 comentários foram postados com sucesso!"
+  },
+  {
+    "id": "1749870378919",
+    "link": "https://www.instagram.com/p/DKpvILWSjQr/",
+    "comentarios": [
+      "top"
+    ],
+    "cliente": "jfsilvavip",
+    "email": "jfsilvavip@gmail.com",
+    "generoComentario": "masculino",
+    "status": "concluido",
+    "data_criacao": "2025-06-14T03:06:18.919Z",
+    "data_processamento": "2025-06-14T00:08:28.590334",
+    "comentarios_processados": 1,
+    "total_comentarios": 1,
+    "tentativas_comentario": {
+      "0": 1
+    },
+    "mensagem": "Todos os 1 comentários foram postados com sucesso!"
   }
 ]

@@ -157,3 +157,114 @@ Stacktrace:
 2025-06-13 23:59:52,709 - BotProcessor - INFO - Nenhum pedido disponível.
 2025-06-14 00:00:22,711 - BotProcessor - INFO - Nenhum pedido disponível.
 2025-06-14 00:00:52,714 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-14 00:01:22,715 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-14 00:01:52,718 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-14 00:02:22,721 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-14 00:02:52,724 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-14 00:03:22,727 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-14 00:03:52,728 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-14 00:04:22,729 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-14 00:04:52,732 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-14 00:05:22,735 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-14 00:05:52,737 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-14 00:06:22,739 - BotProcessor - INFO - Carregando usuários para o gênero: masculino
+2025-06-14 00:06:22,740 - BotProcessor - INFO - Carregados 63 usuários do Instagram para o gênero 'masculino'
+2025-06-14 00:06:22,740 - BotProcessor - INFO - Processando pedido: 1749870378919 - Detalhes: Comentários total: 1, Já processados: 0, Status: pendente
+2025-06-14 00:06:22,741 - BotProcessor - INFO - Inicializando controle de progresso para pedido 1749870378919: 1 comentários
+2025-06-14 00:06:22,742 - BotProcessor - INFO - Processando comentário 1/1 do pedido 1749870378919
+2025-06-14 00:06:22,742 - BotProcessor - INFO - Processando comentário 1/1 do pedido 1749870378919 com usuário _carlos.elias.s
+2025-06-14 00:06:25,393 - BotProcessor - INFO - Carregando cookies para _carlos.elias.s
+2025-06-14 00:06:29,376 - BotProcessor - INFO - Navegando para o post: https://www.instagram.com/p/DKpvILWSjQr/
+2025-06-14 00:06:41,686 - BotProcessor - INFO - Tentando encontrar campo de comentário...
+2025-06-14 00:07:01,742 - BotProcessor - ERROR - Erro ao encontrar campo de comentário: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff6c6bdfe75+79173]
+	GetHandleVerifier [0x0x7ff6c6bdfed0+79264]
+	(No symbol) [0x0x7ff6c6999e5a]
+	(No symbol) [0x0x7ff6c69f0586]
+	(No symbol) [0x0x7ff6c69f083c]
+	(No symbol) [0x0x7ff6c6a44247]
+	(No symbol) [0x0x7ff6c6a189af]
+	(No symbol) [0x0x7ff6c6a4100d]
+	(No symbol) [0x0x7ff6c6a18743]
+	(No symbol) [0x0x7ff6c69e14c1]
+	(No symbol) [0x0x7ff6c69e2253]
+	GetHandleVerifier [0x0x7ff6c6eaa2ad+3004797]
+	GetHandleVerifier [0x0x7ff6c6ea46fd+2981325]
+	GetHandleVerifier [0x0x7ff6c6ec3350+3107360]
+	GetHandleVerifier [0x0x7ff6c6bfa9fe+188622]
+	GetHandleVerifier [0x0x7ff6c6c0228f+219487]
+	GetHandleVerifier [0x0x7ff6c6be8dc4+115860]
+	GetHandleVerifier [0x0x7ff6c6be8f79+116297]
+	GetHandleVerifier [0x0x7ff6c6bcf528+11256]
+	BaseThreadInitThunk [0x0x7ffdce93259d+29]
+	RtlUserThreadStart [0x0x7ffdd0acaf38+40]
+
+2025-06-14 00:07:04,891 - BotProcessor - WARNING - Falha ao processar comentário 1/1 do pedido 1749870378919: Não foi possível encontrar o campo de comentário
+2025-06-14 00:07:04,892 - BotProcessor - INFO - Erro ao tentar comentar 1, aguardando 5 segundos antes da próxima tentativa
+2025-06-14 00:07:53,820 - BotProcessor - INFO - Carregando usuários para o gênero: masculino
+2025-06-14 00:07:53,821 - BotProcessor - INFO - Carregados 63 usuários do Instagram para o gênero 'masculino'
+2025-06-14 00:07:53,821 - BotProcessor - INFO - Processando pedido: 1749870378919 - Detalhes: Comentários total: 1, Já processados: 0, Status: processando
+2025-06-14 00:07:53,821 - BotProcessor - INFO - Processando comentário 1/1 do pedido 1749870378919
+2025-06-14 00:07:53,821 - BotProcessor - INFO - Processando comentário 1/1 do pedido 1749870378919 com usuário homerodosremedios
+2025-06-14 00:07:56,430 - BotProcessor - INFO - Carregando cookies para homerodosremedios
+2025-06-14 00:08:02,705 - BotProcessor - INFO - Navegando para o post: https://www.instagram.com/p/DKpvILWSjQr/
+2025-06-14 00:08:15,249 - BotProcessor - INFO - Tentando encontrar campo de comentário...
+2025-06-14 00:08:15,272 - BotProcessor - INFO - Campo de comentário encontrado com seletor principal
+2025-06-14 00:08:15,495 - BotProcessor - INFO - Tentou clicar no botão Postar via JavaScript direto
+2025-06-14 00:08:15,498 - BotProcessor - INFO - JavaScript não funcionou, tentando método Selenium
+2025-06-14 00:08:25,522 - BotProcessor - WARNING - Erro ao clicar no botão com Selenium: TimeoutException: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff6c6bdfe75+79173]
+	GetHandleVerifier [0x0x7ff6c6bdfed0+79264]
+	(No symbol) [0x0x7ff6c6999e5a]
+	(No symbol) [0x0x7ff6c69f0586]
+	(No symbol) [0x0x7ff6c69f083c]
+	(No symbol) [0x0x7ff6c6a44247]
+	(No symbol) [0x0x7ff6c6a189af]
+	(No symbol) [0x0x7ff6c6a4100d]
+	(No symbol) [0x0x7ff6c6a18743]
+	(No symbol) [0x0x7ff6c69e14c1]
+	(No symbol) [0x0x7ff6c69e2253]
+	GetHandleVerifier [0x0x7ff6c6eaa2ad+3004797]
+	GetHandleVerifier [0x0x7ff6c6ea46fd+2981325]
+	GetHandleVerifier [0x0x7ff6c6ec3350+3107360]
+	GetHandleVerifier [0x0x7ff6c6bfa9fe+188622]
+	GetHandleVerifier [0x0x7ff6c6c0228f+219487]
+	GetHandleVerifier [0x0x7ff6c6be8dc4+115860]
+	GetHandleVerifier [0x0x7ff6c6be8f79+116297]
+	GetHandleVerifier [0x0x7ff6c6bcf528+11256]
+	BaseThreadInitThunk [0x0x7ffdce93259d+29]
+	RtlUserThreadStart [0x0x7ffdd0acaf38+40]
+ | XPath usado: //*[@role="button" and contains(text(),"Postar")]
+2025-06-14 00:08:25,537 - BotProcessor - INFO - Enviou ENTER no campo de comentário como último recurso
+2025-06-14 00:08:25,537 - BotProcessor - WARNING - Erro ao verificar campo: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff6c6bdfe75+79173]
+	GetHandleVerifier [0x0x7ff6c6bdfed0+79264]
+	(No symbol) [0x0x7ff6c6999e5a]
+	(No symbol) [0x0x7ff6c69f0586]
+	(No symbol) [0x0x7ff6c69f083c]
+	(No symbol) [0x0x7ff6c6a44247]
+	(No symbol) [0x0x7ff6c6a189af]
+	(No symbol) [0x0x7ff6c6a4100d]
+	(No symbol) [0x0x7ff6c6a18743]
+	(No symbol) [0x0x7ff6c69e14c1]
+	(No symbol) [0x0x7ff6c69e2253]
+	GetHandleVerifier [0x0x7ff6c6eaa2ad+3004797]
+	GetHandleVerifier [0x0x7ff6c6ea46fd+2981325]
+	GetHandleVerifier [0x0x7ff6c6ec3350+3107360]
+	GetHandleVerifier [0x0x7ff6c6bfa9fe+188622]
+	GetHandleVerifier [0x0x7ff6c6c0228f+219487]
+	GetHandleVerifier [0x0x7ff6c6be8dc4+115860]
+	GetHandleVerifier [0x0x7ff6c6be8f79+116297]
+	GetHandleVerifier [0x0x7ff6c6bcf528+11256]
+	BaseThreadInitThunk [0x0x7ffdce93259d+29]
+	RtlUserThreadStart [0x0x7ffdd0acaf38+40]
+
+2025-06-14 00:08:25,537 - BotProcessor - INFO - Fechando o navegador após o comentário...
+2025-06-14 00:08:28,588 - BotProcessor - INFO - Comentário 1/1 do pedido 1749870378919 processado com sucesso
+2025-06-14 00:08:28,589 - BotProcessor - INFO - Todos os 1 comentários do pedido 1749870378919 processados com sucesso!
+2025-06-14 00:09:02,918 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-14 00:09:32,921 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-14 00:10:02,922 - BotProcessor - INFO - Nenhum pedido disponível.

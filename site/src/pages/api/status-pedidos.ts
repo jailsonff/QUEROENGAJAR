@@ -45,6 +45,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return pedido;
     });
     
+    // Ordena os pedidos pela data de criação, do mais recente para o mais antigo
+    const sortPedidos = (a: any, b: any) => {
+      const dateA = a.data_criacao ? new Date(a.data_criacao).getTime() : 0;
+      const dateB = b.data_criacao ? new Date(b.data_criacao).getTime() : 0;
+      return dateB - dateA;
+    };
+
+    pedidosPendentes.sort(sortPedidos);
+    pedidosProcessados.sort(sortPedidos);
+
     // Combinar os resultados
     const resultado = {
       pendentes: pedidosPendentes,
