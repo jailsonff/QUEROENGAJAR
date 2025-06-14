@@ -2491,16 +2491,16 @@ export default function Admin() {
           alignItems: 'center',
           justifyContent: 'center',
           zIndex: 1000,
-          padding: '2rem'
+          padding: '1rem'
         }}>
           <div style={{
             background: '#000000',
             border: '3px solid rgba(0, 255, 136, 0.5)',
-            borderRadius: '24px',
-            padding: '3rem',
-            maxWidth: '650px',
+            borderRadius: '20px',
+            padding: '1.5rem',
+            maxWidth: '500px',
             width: '100%',
-            maxHeight: '90vh',
+            maxHeight: '85vh',
             overflowY: 'auto',
             boxShadow: '0 25px 80px rgba(0, 255, 136, 0.3)',
             position: 'relative',
@@ -2511,16 +2511,16 @@ export default function Admin() {
               onClick={() => {setShowEditPedidoPopup(false); setEditIdx(null);}}
               style={{
                 position: 'absolute',
-                top: '1rem',
-                right: '1rem',
+                top: '0.75rem',
+                right: '0.75rem',
                 background: 'none',
                 border: 'none',
                 color: '#00ff88',
-                fontSize: '2rem',
+                fontSize: '1.5rem',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
-                width: '40px',
-                height: '40px',
+                width: '30px',
+                height: '30px',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
@@ -2543,33 +2543,67 @@ export default function Admin() {
             {/* Título do popup */}
             <h3 style={{
               color: '#00ff88',
-              fontSize: '1.8rem',
-              marginBottom: '2rem',
+              fontSize: '1.4rem',
+              marginBottom: '1rem',
               textAlign: 'center',
               fontWeight: '700',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '0.75rem',
+              gap: '0.5rem',
               textShadow: '0 0 15px rgba(0, 255, 136, 0.4)'
             }}>
-              <span style={{fontSize: '1.6rem'}}>✏️</span>
+              <span style={{fontSize: '1.2rem'}}>✏️</span>
               Editar Pedido #{editIdx + 1}
             </h3>
+
+            {/* Status no topo */}
+            <div style={{marginBottom: '1rem'}}>
+              <label style={{
+                color: '#00ff88',
+                fontSize: '0.85rem',
+                fontWeight: '700',
+                marginBottom: '0.4rem',
+                display: 'block',
+                textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
+              }}>
+                📊 Status
+              </label>
+              <select 
+                value={editData.status || 'processando'} 
+                onChange={e=>setEditData({...editData,status:e.target.value})} 
+                style={{
+                  width: '100%',
+                  padding: '0.7rem',
+                  borderRadius: '10px',
+                  border: '2px solid rgba(0, 255, 136, 0.2)',
+                  background: 'rgba(10, 11, 13, 0.8)',
+                  color: '#ffffff',
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+                  outline: 'none'
+                }}
+              >
+                <option value="processando">⚡ Processando</option>
+                <option value="parado">⏸️ Parado</option>
+                <option value="concluido">✅ Concluído</option>
+              </select>
+            </div>
 
             {/* Formulário */}
             <form onSubmit={async e => {
               e.preventDefault();
               await handleSavePedidoPopup(editIdx);
-            }} style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem'}}>
+            }} style={{display: 'flex', flexDirection: 'column', gap: '0.8rem'}}>
 
               {/* Nome do Cliente */}
-              <div style={{gridColumn: 'span 2'}}>
+              <div>
                 <label style={{
                   color: '#00ff88',
-                  fontSize: '0.95rem',
+                  fontSize: '0.85rem',
                   fontWeight: '700',
-                  marginBottom: '0.5rem',
+                  marginBottom: '0.4rem',
                   display: 'block',
                   textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
                 }}>
@@ -2582,12 +2616,12 @@ export default function Admin() {
                   onChange={e=>setEditData({...editData,cliente:e.target.value})} 
                   style={{
                     width: '100%',
-                    padding: '1rem',
-                    borderRadius: '12px',
+                    padding: '0.7rem',
+                    borderRadius: '10px',
                     border: '2px solid rgba(0, 255, 136, 0.2)',
                     background: 'rgba(10, 11, 13, 0.8)',
                     color: '#ffffff',
-                    fontSize: '1rem',
+                    fontSize: '0.9rem',
                     transition: 'all 0.3s ease',
                     outline: 'none',
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
@@ -2604,12 +2638,12 @@ export default function Admin() {
               </div>
 
               {/* Link do Post */}
-              <div style={{gridColumn: 'span 2'}}>
+              <div>
                 <label style={{
                   color: '#00ff88',
-                  fontSize: '0.95rem',
+                  fontSize: '0.85rem',
                   fontWeight: '700',
-                  marginBottom: '0.5rem',
+                  marginBottom: '0.4rem',
                   display: 'block',
                   textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
                 }}>
@@ -2622,12 +2656,12 @@ export default function Admin() {
                   onChange={e=>setEditData({...editData,link:e.target.value})} 
                   style={{
                     width: '100%',
-                    padding: '1rem',
-                    borderRadius: '12px',
+                    padding: '0.7rem',
+                    borderRadius: '10px',
                     border: '2px solid rgba(0, 255, 136, 0.2)',
                     background: 'rgba(10, 11, 13, 0.8)',
                     color: '#ffffff',
-                    fontSize: '1rem',
+                    fontSize: '0.9rem',
                     transition: 'all 0.3s ease',
                     outline: 'none',
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
@@ -2647,9 +2681,9 @@ export default function Admin() {
               <div>
                 <label style={{
                   color: '#00ff88',
-                  fontSize: '0.95rem',
+                  fontSize: '0.85rem',
                   fontWeight: '700',
-                  marginBottom: '0.5rem',
+                  marginBottom: '0.4rem',
                   display: 'block',
                   textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
                 }}>
@@ -2662,12 +2696,12 @@ export default function Admin() {
                   onChange={e=>setEditData({...editData,enviados:Number(e.target.value)})} 
                   style={{
                     width: '100%',
-                    padding: '1rem',
-                    borderRadius: '12px',
+                    padding: '0.7rem',
+                    borderRadius: '10px',
                     border: '2px solid rgba(0, 255, 136, 0.2)',
                     background: 'rgba(10, 11, 13, 0.8)',
                     color: '#ffffff',
-                    fontSize: '1rem',
+                    fontSize: '0.9rem',
                     transition: 'all 0.3s ease',
                     outline: 'none',
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
@@ -2683,80 +2717,45 @@ export default function Admin() {
                 />
               </div>
 
-              {/* Status */}
-              <div>
-                <label style={{
-                  color: '#00ff88',
-                  fontSize: '0.95rem',
-                  fontWeight: '700',
-                  marginBottom: '0.5rem',
-                  display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
-                }}>
-                  📊 Status
-                </label>
-                <select 
-                  value={editData.status || 'processando'} 
-                  onChange={e=>setEditData({...editData,status:e.target.value})} 
-                  style={{
-                    width: '100%',
-                    padding: '1rem',
-                    borderRadius: '12px',
-                    border: '2px solid rgba(0, 255, 136, 0.2)',
-                    background: 'rgba(10, 11, 13, 0.8)',
-                    color: '#ffffff',
-                    fontSize: '1rem',
-                    cursor: 'pointer',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
-                    outline: 'none'
-                  }}
-                >
-                  <option value="processando">⚡ Processando</option>
-                  <option value="parado">⏸️ Parado</option>
-                  <option value="concluido">✅ Concluído</option>
-                </select>
-              </div>
-
               {/* Botões de ação */}
               <div style={{
-                gridColumn: 'span 2', 
-                display: 'flex', 
-                gap: '1rem', 
-                justifyContent: 'center', 
-                marginTop: '1rem',
-                flexWrap: 'wrap'
+                display: 'grid', 
+                gridTemplateColumns: '1fr 1fr',
+                gap: '0.5rem', 
+                marginTop: '1rem'
               }}>
                 <Button 
                   type="submit" 
                   style={{
                     background: 'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)',
                     color: '#0a0f0a',
-                    padding: '1rem 2rem',
-                    fontSize: '1.1rem',
+                    padding: '0.6rem 1rem',
+                    fontSize: '0.8rem',
                     fontWeight: '700',
-                    boxShadow: '0 4px 20px rgba(0, 255, 136, 0.4)',
+                    boxShadow: '0 4px 15px rgba(0, 255, 136, 0.4)',
                     transform: 'translateY(0)',
                     transition: 'all 0.3s ease',
                     textTransform: 'uppercase',
-                    letterSpacing: '0.5px',
+                    letterSpacing: '0.3px',
                     border: 'none',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.75rem'
+                    justifyContent: 'center',
+                    gap: '0.4rem'
                   }}
                   onMouseEnter={e=>{
-                    e.currentTarget.style.transform='translateY(-3px)'; 
-                    e.currentTarget.style.boxShadow='0 8px 25px rgba(0, 255, 136, 0.6)';
+                    e.currentTarget.style.transform='translateY(-2px)'; 
+                    e.currentTarget.style.boxShadow='0 6px 20px rgba(0, 255, 136, 0.6)';
                   }} 
                   onMouseLeave={e=>{
                     e.currentTarget.style.transform='translateY(0)'; 
-                    e.currentTarget.style.boxShadow='0 4px 20px rgba(0, 255, 136, 0.4)';
+                    e.currentTarget.style.boxShadow='0 4px 15px rgba(0, 255, 136, 0.4)';
                   }}
                 >
                   <span>✅</span>
-                  Salvar Alterações
+                  Salvar
                 </Button>
 
                 <Button 
@@ -2769,32 +2768,33 @@ export default function Admin() {
                   style={{
                     background: 'linear-gradient(135deg, #ffa500 0%, #ff8c00 100%)',
                     color: '#FFF',
-                    padding: '1rem 2rem',
-                    fontSize: '1.1rem',
+                    padding: '0.6rem 1rem',
+                    fontSize: '0.8rem',
                     fontWeight: '700',
-                    boxShadow: '0 4px 20px rgba(255, 165, 0, 0.4)',
+                    boxShadow: '0 4px 15px rgba(255, 165, 0, 0.4)',
                     transform: 'translateY(0)',
                     transition: 'all 0.3s ease',
                     textTransform: 'uppercase',
-                    letterSpacing: '0.5px',
+                    letterSpacing: '0.3px',
                     border: 'none',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.75rem'
+                    justifyContent: 'center',
+                    gap: '0.4rem'
                   }}
                   onMouseEnter={e=>{
-                    e.currentTarget.style.transform='translateY(-3px)'; 
-                    e.currentTarget.style.boxShadow='0 8px 25px rgba(255, 165, 0, 0.6)';
+                    e.currentTarget.style.transform='translateY(-2px)'; 
+                    e.currentTarget.style.boxShadow='0 6px 20px rgba(255, 165, 0, 0.6)';
                   }} 
                   onMouseLeave={e=>{
                     e.currentTarget.style.transform='translateY(0)'; 
-                    e.currentTarget.style.boxShadow='0 4px 20px rgba(255, 165, 0, 0.4)';
+                    e.currentTarget.style.boxShadow='0 4px 15px rgba(255, 165, 0, 0.4)';
                   }}
                 >
                   <span>⏸️</span>
-                  Parar Pedido
+                  Parar
                 </Button>
 
                 <Button 
@@ -2809,32 +2809,33 @@ export default function Admin() {
                   style={{
                     background: 'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)',
                     color: '#FFF',
-                    padding: '1rem 2rem',
-                    fontSize: '1.1rem',
+                    padding: '0.6rem 1rem',
+                    fontSize: '0.8rem',
                     fontWeight: '700',
-                    boxShadow: '0 4px 20px rgba(255, 71, 87, 0.4)',
+                    boxShadow: '0 4px 15px rgba(255, 71, 87, 0.4)',
                     transform: 'translateY(0)',
                     transition: 'all 0.3s ease',
                     textTransform: 'uppercase',
-                    letterSpacing: '0.5px',
+                    letterSpacing: '0.3px',
                     border: 'none',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.75rem'
+                    justifyContent: 'center',
+                    gap: '0.4rem'
                   }}
                   onMouseEnter={e=>{
-                    e.currentTarget.style.transform='translateY(-3px)'; 
-                    e.currentTarget.style.boxShadow='0 8px 25px rgba(255, 71, 87, 0.6)';
+                    e.currentTarget.style.transform='translateY(-2px)'; 
+                    e.currentTarget.style.boxShadow='0 6px 20px rgba(255, 71, 87, 0.6)';
                   }} 
                   onMouseLeave={e=>{
                     e.currentTarget.style.transform='translateY(0)'; 
-                    e.currentTarget.style.boxShadow='0 4px 20px rgba(255, 71, 87, 0.4)';
+                    e.currentTarget.style.boxShadow='0 4px 15px rgba(255, 71, 87, 0.4)';
                   }}
                 >
                   <span>🗑️</span>
-                  Deletar Pedido
+                  Deletar
                 </Button>
 
                 <Button 
@@ -2843,28 +2844,29 @@ export default function Admin() {
                   style={{
                     background: 'linear-gradient(135deg, #6c757d 0%, #5a6268 100%)',
                     color: '#FFF',
-                    padding: '1rem 2rem',
-                    fontSize: '1.1rem',
+                    padding: '0.6rem 1rem',
+                    fontSize: '0.8rem',
                     fontWeight: '700',
-                    boxShadow: '0 4px 20px rgba(108, 117, 125, 0.4)',
+                    boxShadow: '0 4px 15px rgba(108, 117, 125, 0.4)',
                     transform: 'translateY(0)',
                     transition: 'all 0.3s ease',
                     textTransform: 'uppercase',
-                    letterSpacing: '0.5px',
+                    letterSpacing: '0.3px',
                     border: 'none',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.75rem'
+                    justifyContent: 'center',
+                    gap: '0.4rem'
                   }}
                   onMouseEnter={e=>{
-                    e.currentTarget.style.transform='translateY(-3px)'; 
-                    e.currentTarget.style.boxShadow='0 8px 25px rgba(108, 117, 125, 0.6)';
+                    e.currentTarget.style.transform='translateY(-2px)'; 
+                    e.currentTarget.style.boxShadow='0 6px 20px rgba(108, 117, 125, 0.6)';
                   }} 
                   onMouseLeave={e=>{
                     e.currentTarget.style.transform='translateY(0)'; 
-                    e.currentTarget.style.boxShadow='0 4px 20px rgba(108, 117, 125, 0.4)';
+                    e.currentTarget.style.boxShadow='0 4px 15px rgba(108, 117, 125, 0.4)';
                   }}
                 >
                   <span>❌</span>
