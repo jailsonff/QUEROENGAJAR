@@ -33,6 +33,7 @@ const Container = styled.div`
     }
   }
 `;
+
 const Title = styled.h2`
   color: #00ff88;
   margin-bottom: 2rem;
@@ -49,6 +50,7 @@ const Title = styled.h2`
     font-size: 1.75rem;
   }
 `;
+
 const Section = styled.div`
   background: rgba(10, 11, 13, 0.95);
   border-radius: 16px;
@@ -104,6 +106,7 @@ const Section = styled.div`
     }
   }
 `;
+
 const Table = styled.table`
   width: 100%;
   max-width: 100%;
@@ -206,6 +209,7 @@ const Table = styled.table`
     }
   }
 `;
+
 const Button = styled.button`
   padding: 0.8rem 1.6rem;
   background: linear-gradient(135deg, #00ff88 0%, #00e67a 100%);
@@ -273,9 +277,6 @@ interface Plano {
   id?: string;
 }
 
-// Planos agora são buscados da API
-// const planosMock: Plano[] = [ ... ];
-
 const CLIENTES_KEY = 'admin_clientes';
 const PEDIDOS_KEY = 'admin_pedidos';
 const PACOTES_KEY = 'admin_pacotes';
@@ -285,7 +286,7 @@ const mockClientes = [
   { nome: 'João', email: 'joao@email.com', whatsapp: '11999999999', senha: 'senha123', status: 'ativo', comentarios: 20, admin: true, simultaneos: 1 },
   { nome: 'Maria', email: 'maria@email.com', whatsapp: '11888888888', senha: 'senha456', status: 'bloqueado', comentarios: 10, admin: false, simultaneos: 1 },
 ];
-// Incluindo status na interface de pedidos
+
 interface Pedido {
   id?: string;
   cliente: string;
@@ -295,13 +296,14 @@ interface Pedido {
   comentarios?: string[];
   data_criacao?: string;
   data_processamento?: string;
-  visualId?: number; // ID sequencial para exibição
+  visualId?: number;
 }
 
 const mockPedidos: Pedido[] = [
   { cliente: 'Ricardo', link: 'https://instagram.com/p/abc123', enviados: 30, status: 'concluido' },
   { cliente: 'Maria', link: 'https://instagram.com/p/xyz789', enviados: 10, status: 'processando' }
 ];
+
 const mockPacotes = [
   { cliente: 'Ricardo', pacote: '100', status: 'liberado' },
   { cliente: 'Maria', pacote: '50', status: 'aguardando' }
@@ -332,19 +334,16 @@ export default function Admin() {
       }
     }
   }
-  // MOCK: clientes, pedidos e pacotes
+
   const [clientes, setClientes] = useState(mockClientes);
   const [pedidos, setPedidos] = useState(mockPedidos);
   const [pacotes, setPacotes] = useState(mockPacotes);
 
-  // Função global para atualizar pedidos do backend
   async function fetchPedidosAdmin() {
     try {
       const resp = await fetch('/api/status-pedidos');
       const data = await resp.json();
-      // Juntar todos os pedidos (pendentes + processados) vindos da API
       const todosPedidos = [...(data.pendentes || []), ...(data.processados || [])];
-      // Filtrar duplicados por id (ou link se não tiver id)
       const pedidosUnicos = todosPedidos.filter((pedido, idx, arr) => {
         if (pedido.id) {
           return arr.findIndex(p => p.id === pedido.id) === idx;
@@ -357,7 +356,6 @@ export default function Admin() {
         localStorage.setItem('admin_pedidos', JSON.stringify(pedidosUnicos));
       }
     } catch (err) {
-      // fallback para localStorage SOMENTE se a API falhar
       if (typeof window !== 'undefined') {
         const localPedidos = localStorage.getItem('admin_pedidos');
         if (localPedidos) setPedidos(JSON.parse(localPedidos));
@@ -365,27 +363,22 @@ export default function Admin() {
     }
   }
 
-  // Função para deletar pedido (admin) e refletir para cliente/localStorage/backend
   async function handleDeletePedido(idx:number) {
     if(window.confirm('Tem certeza que deseja deletar este pedido?')){
       const pedido = pedidos[idx];
-      // Determinar tipo do pedido (pendente ou processado)
       let tipo: 'pendente' | 'processado' = 'pendente';
       if (pedido.status === 'concluido' || pedido.status === 'falha' || pedido.success === true || pedido.success === false) {
         tipo = 'processado';
       }
       try {
-        // Remove do backend
         const resp = await fetch('/api/pedidos', {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: pedido.id, link: pedido.link, tipo })
         });
-        // Remove do localStorage
         let pedidosLocal = JSON.parse(localStorage.getItem('admin_pedidos') || '[]');
         pedidosLocal = pedidosLocal.filter((p:any) => (p.id && p.id !== pedido.id) || (!p.id && p.link !== pedido.link));
         localStorage.setItem('admin_pedidos', JSON.stringify(pedidosLocal));
-        // Remove do estado
         setPedidos(pedidos.filter((p, i) => i !== idx));
       } catch (err) {
         alert('Erro ao deletar pedido!');
@@ -393,7 +386,6 @@ export default function Admin() {
     }
   }
 
-  // Função para editar pedido (admin) e refletir para cliente/localStorage/backend
   async function handleEditPedido(idx:number, novoPedido:any) {
     const pedido = pedidos[idx];
     let tipo: 'pendente' | 'processado' = 'pendente';
@@ -401,17 +393,14 @@ export default function Admin() {
       tipo = 'processado';
     }
     try {
-      // Atualiza no backend
       await fetch('/api/pedidos', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: pedido.id, link: pedido.link, tipo, ...novoPedido })
       });
-      // Atualiza no localStorage
       let pedidosLocal = JSON.parse(localStorage.getItem('admin_pedidos') || '[]');
       pedidosLocal = pedidosLocal.map((p:any) => ((p.id && p.id === pedido.id) || (!p.id && p.link === pedido.link)) ? { ...p, ...novoPedido } : p);
       localStorage.setItem('admin_pedidos', JSON.stringify(pedidosLocal));
-      // Atualiza no estado
       setPedidos(pedidos.map((p, i) => i === idx ? { ...p, ...novoPedido } : p));
     } catch (err) {
       alert('Erro ao editar pedido!');
@@ -421,8 +410,6 @@ export default function Admin() {
   const [planos, setPlanos] = useState<any[]>([]);
   const [clientesLoaded, setClientesLoaded] = useState(false);
 
-  // Carrega dados do localStorage só no client
-  // Função para verificar status dos pedidos com a API
   const verificarStatusPedidos = async () => {
     try {
       console.log('Verificando status dos pedidos na área administrativa...');
@@ -438,7 +425,6 @@ export default function Admin() {
       console.log('Pedidos pendentes:', pendentes.length);
       console.log('Pedidos processados:', processados.length);
 
-      // Sincronizar pedidos do localStorage com os dados da API
       if (typeof window !== 'undefined') {
         const localPedidos = JSON.parse(localStorage.getItem(PEDIDOS_KEY) || '[]');
         let pedidosAtualizados = [...localPedidos];
@@ -446,7 +432,6 @@ export default function Admin() {
 
         console.log('Verificando pedidos processados:', processados.length, 'pendentes:', pendentes.length);
 
-        // Interface para o tipo de pedido processado
         interface PedidoProcessado {
           id?: string; 
           link: string; 
@@ -458,15 +443,12 @@ export default function Admin() {
           comentarios?: string[];
         }
 
-        // Adicionar pedidos processados que não estão no localStorage
         processados.forEach((pedidoProcessado: PedidoProcessado) => {
-          // Encontrar o pedido no localStorage
           const idx = pedidosAtualizados.findIndex(p => 
             (pedidoProcessado.id && p.id && pedidoProcessado.id === p.id) || 
             pedidoProcessado.link === p.link
           );
 
-          // Verificação mais abrangente: considera vários indicadores de conclusão
           const pedidoConcluido = 
             pedidoProcessado.status === 'concluido' || 
             pedidoProcessado.success === true ||
@@ -479,9 +461,7 @@ export default function Admin() {
               (pedidoProcessado.message.includes('Todos os') && pedidoProcessado.message.includes('comentários'))
             ));
 
-          // Se o pedido processado veio do backend e tem status concluido, garantir que o status do admin e do usuário também seja atualizado
           if (pedidoProcessado.status === 'concluido') {
-            // Forçar status concluído no local
             if (idx !== -1 && pedidosAtualizados[idx].status !== 'concluido') {
               pedidosAtualizados[idx].status = 'concluido';
               houveAlteracao = true;
@@ -489,14 +469,12 @@ export default function Admin() {
           }
 
           if (idx !== -1) {
-            // Pedido existe no localStorage, verificar se precisa atualizar
             if (pedidosAtualizados[idx].status !== 'concluido' && pedidoConcluido) {
               console.log(`Atualizando pedido ${pedidoProcessado.id || pedidoProcessado.link} para concluído`);
               pedidosAtualizados[idx].status = 'concluido';
               houveAlteracao = true;
             }
           } else if (pedidoConcluido) {
-            // Pedido processado não existe no localStorage, adicionar
             console.log(`Adicionando pedido processado ${pedidoProcessado.id || pedidoProcessado.link} ao localStorage`);
             pedidosAtualizados.push({
               ...pedidoProcessado,
@@ -508,7 +486,6 @@ export default function Admin() {
           }
         });
 
-        // Se houve alteração, atualizar localStorage e estado
         if (houveAlteracao) {
           localStorage.setItem(PEDIDOS_KEY, JSON.stringify(pedidosAtualizados));
           setPedidos(pedidosAtualizados);
@@ -522,19 +499,16 @@ export default function Admin() {
     }
   };
 
-  // Buscar planos da API
   async function fetchPlanos() {
     try {
       const resp = await fetch('/api/planos');
       const data = await resp.json();
       setPlanos(data.planos || []);
     } catch (err) {
-      // Se der erro, apenas zere os planos
       setPlanos([]);
     }
   }
 
-  // Função global para atualizar clientes do backend
   async function fetchClientes() {
     try {
       const resp = await fetch('/api/clientes');
@@ -545,7 +519,6 @@ export default function Admin() {
       }
       setClientesLoaded(true);
     } catch (err) {
-      // fallback para localStorage
       if (typeof window !== 'undefined') {
         const localClientes = localStorage.getItem(CLIENTES_KEY);
         if (localClientes) setClientes(JSON.parse(localClientes));
@@ -557,52 +530,40 @@ export default function Admin() {
   React.useEffect(() => {
     fetchPlanos();
     fetchClientes();
-    fetchPedidosAdmin(); // <-- Buscar pedidos do backend sempre ao abrir o admin
+    fetchPedidosAdmin();
 
     if (typeof window !== 'undefined') {
       const localPacotes = localStorage.getItem(PACOTES_KEY);
       if (localPacotes) setPacotes(JSON.parse(localPacotes));
-      // Verificar status inicial
       verificarStatusPedidos();
-      // Configurar verificação automática a cada 10 segundos
       const intervalId = setInterval(() => {
         console.log('Verificação automática de status dos pedidos...');
         verificarStatusPedidos();
-      }, 10000); // 10 segundos
-      // Limpar intervalo quando o componente for desmontado
+      }, 10000);
       return () => clearInterval(intervalId);
     }
   }, []);
 
-  // Persistência dos dados administrativos
   React.useEffect(() => {
     if (clientesLoaded) {
       localStorage.setItem(CLIENTES_KEY, JSON.stringify(clientes));
       localStorage.setItem(PEDIDOS_KEY, JSON.stringify(pedidos));
       localStorage.setItem(PACOTES_KEY, JSON.stringify(pacotes));
-      // Não persiste mais planos no localStorage
     }
   }, [clientes, pedidos, pacotes, planos, clientesLoaded]);
 
-  // Menu de seção
   const [section, setSection] = useState<'clientes'|'pedidos'|'pacotes'|'planos'>('clientes');
-  // Busca e edição
   const [busca, setBusca] = useState('');
   const [editIdx, setEditIdx] = useState<number|null>(null);
   const [editData, setEditData] = useState<any>({});
   const [novoPacote, setNovoPacote] = useState({cliente:'', pacote:'', status:'aguardando'});
   const [filtroPedido, setFiltroPedido] = useState('');
   const [msg, setMsg] = useState('');
-  // Novo usuário
   const [novoUsuario, setNovoUsuario] = useState({nome:'', email:'', whatsapp:'', senha:'', comentarios:0, admin:false, simultaneos:1});
-  // Controle do popup de cadastro
   const [showCadastroPopup, setShowCadastroPopup] = useState(false);
-  // Controle do popup de edição
   const [showEditPopup, setShowEditPopup] = useState(false);
-  // Controle do popup de edição de pedido
   const [showEditPedidoPopup, setShowEditPedidoPopup] = useState(false);
 
-  // --- Pedidos: Funções admin ---
   async function handleStopPedido(idx:number) {
     const pedido = pedidos[idx];
     let tipo: 'pendente' | 'processado' = 'pendente';
@@ -631,13 +592,13 @@ export default function Admin() {
 
   async function handleSavePedidoPopup(idx:number) {
     if (editIdx === null) return;
-    
+
     const pedido = pedidos[editIdx];
     let tipo: 'pendente' | 'processado' = 'pendente';
     if (pedido.status === 'concluido' || pedido.status === 'falha' || pedido.success === true || pedido.success === false) {
       tipo = 'processado';
     }
-    
+
     try {
       await fetch('/api/pedidos', {
         method: 'PUT',
@@ -649,17 +610,17 @@ export default function Admin() {
           ...editData 
         })
       });
-      
+
       const novas = [...pedidos];
       novas[editIdx] = {...editData};
       setPedidos(novas);
       setEditIdx(null);
       setShowEditPedidoPopup(false);
-      
+
       if(typeof window !== 'undefined'){
         localStorage.setItem('admin_pedidos', JSON.stringify(novas));
       }
-      
+
       setMsg('Pedido atualizado!');
       setTimeout(()=>setMsg(''), 1500);
     } catch (err) {
@@ -668,7 +629,6 @@ export default function Admin() {
     }
   }
 
-  // --- Hooks de autenticação admin ---
   const [isClient, setIsClient] = useState(false);
   const [usuarioLogado, setUsuarioLogado] = useState<any>(null);
   const [loginEmail, setLoginEmail] = useState('');
@@ -684,7 +644,6 @@ export default function Admin() {
     }
   }, []);
 
-  // Adicionar comentários manualmente
   async function handleAddComentarios(idx:number, qtd:number) {
     if(isNaN(qtd) || qtd<=0) return setMsg('Informe um número válido!');
     const cliente = { ...clientes[idx], comentarios: clientes[idx].comentarios + qtd };
@@ -708,7 +667,7 @@ export default function Admin() {
       setTimeout(()=>setMsg(''), 2500);
     }
   }
-  // Planos CRUD
+
   const [novoPlano, setNovoPlano] = useState({nome:'', quantidade:0, preco:0, descricao:''});
   const [editPlanoIdx, setEditPlanoIdx] = useState<number|null>(null);
   const [editPlanoData, setEditPlanoData] = useState<any>({descricao: ''});
@@ -718,6 +677,7 @@ export default function Admin() {
     setEditData({...clientes[idx]});
     setShowEditPopup(true);
   }
+
   async function handleSave(idx:number) {
     const cliente = { ...editData, simultaneos: Number(editData.simultaneos) > 0 ? Number(editData.simultaneos) : 1 };
     try {
@@ -742,6 +702,7 @@ export default function Admin() {
       setTimeout(()=>setMsg(''), 2500);
     }
   }
+
   async function handleToggleAdmin(idx:number) {
     const cliente = { ...clientes[idx], admin: !clientes[idx].admin };
     try {
@@ -764,6 +725,7 @@ export default function Admin() {
       setTimeout(()=>setMsg(''), 2500);
     }
   }
+
   async function handleBlock(idx:number) {
     const cliente = { ...clientes[idx], status: clientes[idx].status === 'ativo' ? 'bloqueado' : 'ativo' };
     try {
@@ -786,6 +748,7 @@ export default function Admin() {
       setTimeout(()=>setMsg(''), 2500);
     }
   }
+
   function handlePacoteAdd(e:any) {
     e.preventDefault();
     if(!novoPacote.cliente || !novoPacote.pacote) return setMsg('Preencha todos os campos do pacote!');
@@ -794,7 +757,7 @@ export default function Admin() {
     setMsg('Pacote criado!');
     setTimeout(()=>setMsg(''), 1500);
   }
-  // Filtros
+
   const clientesFiltrados = clientes.filter(c =>
     c.nome.toLowerCase().includes(busca.toLowerCase()) ||
     c.email.toLowerCase().includes(busca.toLowerCase())
@@ -833,7 +796,7 @@ export default function Admin() {
           <h2 style={{color:'#FFD600',marginBottom:24,textAlign:'center'}}>Login Administrador</h2>
           <form onSubmit={handleAdminLogin} style={{display:'flex',flexDirection:'column',gap:16}}>
             <input type="email" placeholder="Email" value={loginEmail} onChange={e=>setLoginEmail(e.target.value)} style={{padding:12,borderRadius:6,border:'1.5px solid #FFD600',background:'#181A1B',color:'#FFD600',fontSize:'1rem',marginBottom:6}} required />
-            <input type="password" placeholder="Senha" value={loginSenha} onChange={e=>setLoginSenha(e.target.value)} style={{padding:12,borderRadius:6,border:'1.5px solid #FFD600',background:'#181A1B',color:'#FFD600',fontSize:'1rem'}} required />
+            <input type="password" type="password" placeholder="Senha" value={loginSenha} onChange={e=>setLoginSenha(e.target.value)} style={{padding:12,borderRadius:6,border:'1.5px solid #FFD600',background:'#181A1B',color:'#FFD600',fontSize:'1rem'}} required />
             <button type="submit" style={{marginTop:10,padding:'0.7rem',borderRadius:6,background:'#FFD600',color:'#181A1B',fontWeight:'bold',fontSize:'1.07rem',border:'none',cursor:'pointer',transition:'0.2s',letterSpacing:0.5}} disabled={loginLoading}>{loginLoading ? 'Entrando...' : 'Entrar'}</button>
             {loginErro && <div style={{color:'#F44336',marginTop:8,textAlign:'center',fontWeight:'bold'}}>{loginErro}</div>}
           </form>
@@ -848,6 +811,7 @@ export default function Admin() {
       <Title style={{textAlign:'center', width:'100%'}}>Área Administrativa</Title>
       <AdminMenu active={section} onSelect={setSection} />
       {msg && <div style={{background:'#FFD600',color:'#181A1B',padding:'8px 16px',borderRadius:8,marginBottom:16,fontWeight:'bold'}}>{msg}</div>}
+
       {section==='clientes' && (
         <Section>
           <div style={{display:'flex', alignItems:'center', justifyContent:'center', width:'100%', marginBottom:'2rem'}}>
@@ -857,19 +821,13 @@ export default function Admin() {
             </h3>
           </div>
 
-          {/* Área de controles - Busca e Botão de cadastro */}
           <div style={{
             display:'flex', 
             gap:'1.5rem', 
             marginBottom:'2rem', 
             alignItems:'stretch',
-            flexWrap:'wrap',
-            '@media (max-width: 768px)': {
-              flexDirection:'column',
-              gap:'1rem'
-            }
+            flexWrap:'wrap'
           }}>
-            {/* Card de busca */}
             <div style={{
               background:'#000000', 
               borderRadius:'16px', 
@@ -908,14 +866,7 @@ export default function Admin() {
               </div>
             </div>
 
-            {/* Botão de cadastro */}
-            <div style={{
-              display:'flex', 
-              alignItems:'center',
-              '@media (max-width: 768px)': {
-                justifyContent:'center'
-              }
-            }}>
+            <div style={{display:'flex', alignItems:'center'}}>
               <Button 
                 onClick={() => setShowCadastroPopup(true)}
                 style={{
@@ -948,20 +899,17 @@ export default function Admin() {
                 }}
               >
                 <span style={{fontSize:'1.2rem'}}>➕</span>
-                <span style={{'@media (max-width: 480px)': {display:'none'}}}>Cadastrar Novo Cliente</span>
-                <span style={{display:'none', '@media (max-width: 480px)': {display:'inline'}}}>Cadastrar</span>
+                Cadastrar Novo Cliente
               </Button>
             </div>
           </div>
 
-          {/* Divisor decorativo */}
           <div style={{display:'flex', alignItems:'center', margin:'2.5rem 0', opacity:0.8}}>
             <div style={{flex:1, height:'2px', background:'linear-gradient(90deg, transparent 0%, #00ff88 50%, transparent 100%)', boxShadow:'0 0 10px rgba(0, 255, 136, 0.3)'}}></div>
             <span style={{color:'#00ff88', padding:'0 1.5rem', fontSize:'1.5rem', textShadow:'0 0 15px rgba(0, 255, 136, 0.5)'}}>📋</span>
             <div style={{flex:1, height:'2px', background:'linear-gradient(90deg, transparent 0%, #00ff88 50%, transparent 100%)', boxShadow:'0 0 10px rgba(0, 255, 136, 0.3)'}}></div>
           </div>
 
-          {/* Tabela responsiva */}
           <div style={{
             background:'#000000', 
             borderRadius:'16px', 
@@ -980,94 +928,25 @@ export default function Admin() {
                 boxShadow:'none', 
                 background:'transparent', 
                 border:'none',
-                minWidth:'1000px',
-                '@media (max-width: 768px)': {
-                  minWidth:'900px'
-                }
+                minWidth:'1000px'
               }}>
                 <thead>
                   <tr>
-                    <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.85rem',
-                      textAlign:'center',
-                      '@media (max-width: 768px)': {
-                        padding:'0.6rem 0.4rem',
-                        fontSize:'0.8rem'
-                      }
-                    }}>👤 Nome</th>
-                    <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.85rem',
-                      '@media (max-width: 768px)': {
-                        padding:'0.6rem 0.4rem',
-                        fontSize:'0.8rem'
-                      }
-                    }}>📧 Email</th>
-                    <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.85rem',
-                      '@media (max-width: 768px)': {
-                        padding:'0.6rem 0.4rem',
-                        fontSize:'0.8rem'
-                      }
-                    }}>📱 WhatsApp</th>
-                    <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.85rem',
-                      '@media (max-width: 768px)': {
-                        padding:'0.6rem 0.4rem',
-                        fontSize:'0.8rem'
-                      }
-                    }}>🔐 Senha</th>
-                    <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.85rem',
-                      '@media (max-width: 768px)': {
-                        padding:'0.6rem 0.4rem',
-                        fontSize:'0.8rem'
-                      }
-                    }}>📊 Status</th>
-                    <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.85rem',
-                      '@media (max-width: 768px)': {
-                        padding:'0.6rem 0.4rem',
-                        fontSize:'0.8rem'
-                      }
-                    }}>👑 Admin</th>
-                    <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.85rem',
-                      '@media (max-width: 768px)': {
-                        padding:'0.6rem 0.4rem',
-                        fontSize:'0.8rem'
-                      }
-                    }}>💬 Comentários</th>
-                    <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.85rem',
-                      '@media (max-width: 768px)': {
-                        padding:'0.6rem 0.4rem',
-                        fontSize:'0.8rem'
-                      }
-                    }}>⚡ Simultâneos</th>
-                    <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.85rem',
-                      minWidth:'240px',
-                      '@media (max-width: 768px)': {
-                        padding:'0.6rem 0.4rem',
-                        fontSize:'0.8rem',
-                        minWidth:'220px'
-                      }
-                    }}>⚙️ Ações</th>
+                    <th>👤 Nome</th>
+                    <th>📧 Email</th>
+                    <th>📱 WhatsApp</th>
+                    <th>🔐 Senha</th>
+                    <th>📊 Status</th>
+                    <th>👑 Admin</th>
+                    <th>💬 Comentários</th>
+                    <th>⚡ Simultâneos</th>
+                    <th>⚙️ Ações</th>
                   </tr>
                 </thead>
                 <tbody>
                   {clientesFiltrados.map((c, i) => (
-                      <tr key={i} style={{borderBottom: i < clientesFiltrados.length - 1 ? '1px solid rgba(255, 214, 0, 0.2)' : 'none', background: i % 2 === 0 ? 'rgba(35, 37, 40, 0.5)' : 'transparent', transition:'all 0.3s ease'}} onMouseEnter={e=>{e.target.style.background='rgba(255, 214, 0, 0.1)'; e.target.style.transform='scale(1.01)'}} onMouseLeave={e=>{e.target.style.background= i % 2 === 0 ? 'rgba(35, 37, 40, 0.5)' : 'transparent'; e.target.style.transform='scale(1)'}}>
-                        <td style={{padding:'0.8rem 0.5rem', fontSize:'0.9rem', fontWeight:'500', color:'#FFF', textAlign:'center', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', maxWidth:'150px', '@media (max-width: 480px)': {maxWidth:'120px', fontSize:'0.85rem'}}} title={c.nome}>{c.nome}</td>
+                      <tr key={i}>
+                        <td style={{padding:'0.8rem 0.5rem', fontSize:'0.9rem', fontWeight:'500', color:'#FFF', textAlign:'center', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', maxWidth:'150px'}} title={c.nome}>{c.nome}</td>
                         <td style={{padding:'0.8rem 0.5rem', fontSize:'0.85rem', color:'#B0B0B0'}}>{c.email}</td>
                         <td style={{padding:'0.8rem 0.5rem', fontSize:'0.85rem', color:'#B0B0B0'}}>{c.whatsapp}</td>
                         <td style={{padding:'0.8rem 0.5rem', fontSize:'0.85rem'}}>{c.senha ? <span style={{color:'#FFD600', fontSize:'1rem'}}>🔒 ••••••••</span> : <span style={{color:'#FF6B6B', fontWeight:'bold'}}>⚠️ Não definida</span>}</td>
@@ -1100,7 +979,7 @@ export default function Admin() {
                           </span>
                         </td>
                         <td style={{padding:'0.8rem 0.5rem', textAlign:'center', verticalAlign:'middle'}}>
-                          <Button onClick={()=>handleEdit(i)} style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.6rem 1.2rem', fontSize:'0.85rem', fontWeight:'700', boxShadow:'0 4px 15px rgba(0, 255, 136, 0.3)', display:'flex', alignItems:'center', gap:'0.5rem', textTransform:'uppercase', letterSpacing:'0.3px', borderRadius:'8px', height:'40px', justifyContent:'center', transition:'all 0.3s ease'}} onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 6px 20px rgba(0, 255, 136, 0.5)';}} onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 4px 15px rgba(0, 255, 136, 0.3)';}}>
+                          <Button onClick={()=>handleEdit(i)} style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.6rem 1.2rem', fontSize:'0.85rem', fontWeight:'700', boxShadow:'0 4px 15px rgba(0, 255, 136, 0.3)', display:'flex', alignItems:'center', gap:'0.5rem', textTransform:'uppercase', letterSpacing:'0.3px', borderRadius:'8px', height:'40px', justifyContent:'center', transition:'all 0.3s ease'}}>
                             ✏️ Editar
                           </Button>
                         </td>
@@ -1109,207 +988,41 @@ export default function Admin() {
                 </tbody>
               </Table>
             </div>
-            {clientesFiltrados.length === 0 && (
-              <div style={{padding:'4rem', textAlign:'center', color:'rgba(255, 255, 255, 0.6)'}}>
-                <div style={{fontSize:'4rem', marginBottom:'1.5rem', filter:'drop-shadow(0 0 15px rgba(0, 255, 136, 0.3))'}}>👥</div>
-                <h3 style={{color:'#00ff88', marginBottom:'1rem', fontSize:'1.5rem', fontWeight:'700', textShadow:'0 0 15px rgba(0, 255, 136, 0.3)'}}>Nenhum cliente encontrado</h3>
-                <p style={{color:'rgba(255, 255, 255, 0.7)', fontSize:'1.1rem', lineHeight:'1.6'}}>
-                  {busca ? 'Tente ajustar os filtros de busca' : 'Comece adicionando seu primeiro cliente'}
-                </p>
-              </div>
-            )}
           </div>
         </Section>
       )}
+
       {section==='pedidos' && (
         <Section>
-          <div style={{display:'flex', alignItems:'center', justifyContent:'center', width:'100%', marginBottom:'2rem'}}>
-            <h3 style={{color:'#00ff88', fontSize:'2.2rem', fontWeight:'700', margin:0, display:'flex', alignItems:'center', gap:'0.75rem', textShadow:'0 0 15px rgba(0, 255, 136, 0.4)', textAlign:'center'}}>
-              <span style={{fontSize:'2rem'}}>📋</span>
-              Pedidos
-            </h3>
-          </div>
-
-          {/* Área de controles - Filtro */}
-          <div style={{
-            display:'flex', 
-            justifyContent:'center',
-            marginBottom:'2rem'
-          }}>
-            <div style={{
-              background:'#000000', 
-              borderRadius:'16px', 
-              padding:'1.5rem', 
-              border:'2px solid rgba(0, 255, 136, 0.3)', 
-              boxShadow:'0 6px 24px rgba(0, 255, 136, 0.12)', 
-              backdropFilter:'blur(15px)', 
-              position:'relative',
-              maxWidth:'500px',
-              width:'100%'
-            }}>
-              <div style={{position:'absolute', top:0, left:0, right:0, bottom:0, background:'linear-gradient(135deg, rgba(0, 255, 136, 0.03) 0%, transparent 50%, rgba(0, 255, 136, 0.03) 100%)', borderRadius:'16px', pointerEvents:'none'}}></div>
-              <div style={{position:'relative', zIndex:1}}>
-                <span style={{position:'absolute', left:'1.2rem', top:'50%', transform:'translateY(-50%)', color:'#00ff88', fontSize:'1.2rem', textShadow:'0 0 10px rgba(0, 255, 136, 0.6)', zIndex:2}}>🔍</span>
-                <input
-                  type="text"
-                  placeholder="Filtrar por cliente..."
-                  value={filtroPedido}
-                  onChange={e=>setFiltroPedido(e.target.value)}
-                  style={{
-                    width:'100%', 
-                    padding:'1rem 1rem 1rem 3.2rem', 
-                    borderRadius:'12px', 
-                    border:'2px solid rgba(0, 255, 136, 0.2)', 
-                    background:'rgba(0, 0, 0, 0.6)', 
-                    color:'#ffffff', 
-                    fontSize:'1rem', 
-                    transition:'all 0.3s ease', 
-                    outline:'none', 
-                    boxShadow:'0 2px 8px rgba(0, 0, 0, 0.2)', 
-                    fontWeight:'400'
-                  }}
-                  onFocus={e=>{e.target.style.borderColor='#00ff88'; e.target.style.boxShadow='0 0 0 3px rgba(0, 255, 136, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2)'}}
-                  onBlur={e=>{e.target.style.borderColor='rgba(0, 255, 136, 0.2)'; e.target.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)'}}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Divisor decorativo */}
-          <div style={{display:'flex', alignItems:'center', margin:'2.5rem 0', opacity:0.8}}>
-            <div style={{flex:1, height:'2px', background:'linear-gradient(90deg, transparent 0%, #00ff88 50%, transparent 100%)', boxShadow:'0 0 10px rgba(0, 255, 136, 0.3)'}}></div>
-            <span style={{color:'#00ff88', padding:'0 1.5rem', fontSize:'1.5rem', textShadow:'0 0 15px rgba(0, 255, 136, 0.5)'}}>⚡</span>
-            <div style={{flex:1, height:'2px', background:'linear-gradient(90deg, transparent 0%, #00ff88 50%, transparent 100%)', boxShadow:'0 0 10px rgba(0, 255, 136, 0.3)'}}></div>
-          </div>
-
-          {/* Tabela responsiva */}
-          <div style={{
-            background:'#000000', 
-            borderRadius:'16px', 
-            overflow:'hidden', 
-            border:'2px solid rgba(0, 255, 136, 0.3)', 
-            boxShadow:'0 8px 32px rgba(0, 255, 136, 0.15)', 
-            backdropFilter:'blur(15px)', 
-            position:'relative',
-            maxWidth:'100%'
-          }}>
-            <div style={{position:'absolute', top:0, left:0, right:0, bottom:0, background:'linear-gradient(135deg, rgba(0, 255, 136, 0.02) 0%, transparent 50%, rgba(0, 255, 136, 0.02) 100%)', borderRadius:'16px', pointerEvents:'none'}}></div>
-            <div style={{overflowX:'auto', position:'relative', zIndex:1, maxWidth:'100%'}}>
-              <Table style={{
-                margin:0, 
-                borderRadius:0, 
-                boxShadow:'none', 
-                background:'transparent', 
-                border:'none',
-                minWidth:'800px',
-                '@media (max-width: 768px)': {
-                  minWidth:'700px'
-                }
-              }}>
-                <thead>
-                  <tr>
-                    <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.85rem',
-                      textAlign:'center',
-                      '@media (max-width: 768px)': {
-                        padding:'0.6rem 0.4rem',
-                        fontSize:'0.8rem'
-                      }
-                    }}>🆔 ID</th>
-                    <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.85rem',
-                      '@media (max-width: 768px)': {
-                        padding:'0.6rem 0.4rem',
-                        fontSize:'0.8rem'
-                      }
-                    }}>👤 Cliente</th>
-                    <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.85rem',
-                      '@media (max-width: 768px)': {
-                        padding:'0.6rem 0.4rem',
-                        fontSize:'0.8rem'
-                      }
-                    }}>💬 Qtd. Comentários</th>
-                    <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.85rem',
-                      '@media (max-width: 768px)': {
-                        padding:'0.6rem 0.4rem',
-                        fontSize:'0.8rem'
-                      }
-                    }}>📊 Status</th>
-                    <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.85rem',
-                      minWidth:'120px',
-                      '@media (max-width: 768px)': {
-                        padding:'0.6rem 0.4rem',
-                        fontSize:'0.8rem',
-                        minWidth:'100px'
-                      }
-                    }}>⚙️ Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pedidosFiltrados.filter(p => !filtroPedido || p.cliente.toLowerCase().includes(filtroPedido.toLowerCase())).map((p, i) => (
-                    <tr key={i} style={{borderBottom: i < pedidosFiltrados.length - 1 ? '1px solid rgba(0, 255, 136, 0.2)' : 'none', background: i % 2 === 0 ? 'rgba(10, 11, 13, 0.5)' : 'transparent', transition:'all 0.3s ease'}} onMouseEnter={e=>{e.currentTarget.style.background='rgba(0, 255, 136, 0.08)'; e.currentTarget.style.transform='translateY(-1px)'}} onMouseLeave={e=>{e.currentTarget.style.background= i % 2 === 0 ? 'rgba(10, 11, 13, 0.5)' : 'transparent'; e.currentTarget.style.transform='translateY(0)'}}>
-                      <td style={{padding:'0.8rem 0.5rem', fontSize:'0.9rem', fontWeight:'700', color:'#00ff88', textAlign:'center'}}>#{i + 1}</td>
-                      <td style={{padding:'0.8rem 0.5rem', fontSize:'0.9rem', fontWeight:'500', color:'#FFF', textAlign:'center', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', maxWidth:'150px'}} title={p.cliente}>{p.cliente}</td>
-                      <td style={{padding:'0.8rem 0.5rem', textAlign:'center'}}>
-                        <span style={{background:'rgba(0, 255, 136, 0.2)', color:'#00ff88', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', boxShadow:'0 1px 6px rgba(0, 255, 136, 0.2)', border:'1px solid rgba(0, 255, 136, 0.3)'}}>
-                          {Array.isArray(p.comentarios) ? p.comentarios.length : (p.enviados || 0)}
-                        </span>
-                      </td>
-                      <td style={{padding:'0.8rem 0.5rem', textAlign:'center'}}>
-                        {p.status === 'concluido' ? 
-                          <span style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.3rem', boxShadow:'0 2px 10px rgba(0, 255, 136, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px'}}>
-                            ✅ Concluído
-                          </span> : 
-                          p.status === 'parado' ?
-                          <span style={{background:'linear-gradient(135deg, #ffa500 0%, #ff8c00 100%)', color:'#FFF', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.3rem', boxShadow:'0 2px 10px rgba(255, 165, 0, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px'}}>
-                            ⏸️ Parado
-                          </span> :
-                          <span style={{background:'linear-gradient(135deg, #4169e1 0%, #1e90ff 100%)', color:'#FFF', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.3rem', boxShadow:'0 2px 10px rgba(65, 105, 225, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px'}}>
-                            ⚡ Processando
-                          </span>
-                        }
-                      </td>
-                      <td style={{padding:'0.8rem 0.5rem', textAlign:'center', verticalAlign:'middle'}}>
-                        <Button onClick={()=>{
-                          setEditIdx(i);
-                          setEditData({...p});
-                          setShowEditPedidoPopup(true);
-                        }} style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.6rem 1.2rem', fontSize:'0.85rem', fontWeight:'700', boxShadow:'0 4px 15px rgba(0, 255, 136, 0.3)', display:'flex', alignItems:'center', gap:'0.5rem', textTransform:'uppercase', letterSpacing:'0.3px', borderRadius:'8px', height:'40px', justifyContent:'center', transition:'all 0.3s ease'}} onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 6px 20px rgba(0, 255, 136, 0.5)';}} onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 4px 15px rgba(0, 255, 136, 0.3)';}}>
-                          ✏️ Editar
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </div>
-            {pedidosFiltrados.filter(p => !filtroPedido || p.cliente.toLowerCase().includes(filtroPedido.toLowerCase())).length === 0 && (
-              <div style={{padding:'4rem', textAlign:'center', color:'rgba(255, 255, 255, 0.6)'}}>
-                <div style={{fontSize:'4rem', marginBottom:'1.5rem', filter:'drop-shadow(0 0 15px rgba(0, 255, 136, 0.3))'}}>📋</div>
-                <h3 style={{color:'#00ff88', marginBottom:'1rem', fontSize:'1.5rem', fontWeight:'700', textShadow:'0 0 15px rgba(0, 255, 136, 0.3)'}}>Nenhum pedido encontrado</h3>
-                <p style={{color:'rgba(255, 255, 255, 0.7)', fontSize:'1.1rem', lineHeight:'1.6'}}>
-                  {filtroPedido ? 'Tente ajustar os filtros de busca' : 'Não há pedidos cadastrados no momento'}
-                </p>
-              </div>
-            )}
-          </div>
+          <h3>Pedidos</h3>
+          <Table>
+            <thead>
+              <tr><th>ID</th><th>Cliente</th><th>Comentários</th><th>Status</th><th>Ações</th></tr>
+            </thead>
+            <tbody>
+              {pedidosFiltrados.map((p, i) => (
+                <tr key={i}>
+                  <td>#{i + 1}</td>
+                  <td>{p.cliente}</td>
+                  <td>{Array.isArray(p.comentarios) ? p.comentarios.length : (p.enviados || 0)}</td>
+                  <td>{p.status || 'processando'}</td>
+                  <td>
+                    <Button onClick={()=>{
+                      setEditIdx(i);
+                      setEditData({...p});
+                      setShowEditPedidoPopup(true);
+                    }}>Editar</Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
         </Section>
       )}
+
       {section==='pacotes' && (
         <Section>
-          <div style={{display:'flex', alignItems:'center', justifyContent:'center', width:'100%', marginBottom:'1.5rem'}}>
-            <h3 style={{color:'#00ff88', fontSize:'2rem', fontWeight:'700', margin:0, textShadow:'0 0 15px rgba(0, 255, 136, 0.4)', textAlign:'center'}}>
-              Recargas
-            </h3>
-          </div>
+          <h3>Recargas</h3>
           <form onSubmit={handlePacoteAdd} style={{display:'flex',gap:8,marginBottom:14,flexWrap:'wrap'}}>
             <input
               type="text"
@@ -1331,237 +1044,29 @@ export default function Admin() {
             </select>
             <Button type="submit">Adicionar Pacote</Button>
           </form>
-
-          {/* Divisor decorativo */}
-          <div style={{display:'flex', alignItems:'center', margin:'1.5rem 0', opacity:0.8}}>
-            <div style={{flex:1, height:'2px', background:'linear-gradient(90deg, transparent 0%, #00ff88 50%, transparent 100%)', boxShadow:'0 0 10px rgba(0, 255, 136, 0.3)'}}></div>
-            <div style={{flex:1, height:'2px', background:'linear-gradient(90deg, transparent 0%, #00ff88 50%, transparent 100%)', boxShadow:'0 0 10px rgba(0, 255, 136, 0.3)'}}></div>
-          </div>
-
-          {/* Tabela responsiva centralizada */}
-          <div style={{
-            background:'#000000', 
-            borderRadius:'16px', 
-            overflow:'hidden', 
-            border:'2px solid rgba(0, 255, 136, 0.3)', 
-            boxShadow:'0 8px 32px rgba(0, 255, 136, 0.15)', 
-            backdropFilter:'blur(15px)', 
-            position:'relative',
-            maxWidth:'100%'
-          }}>
-            <div style={{position:'absolute', top:0, left:0, right:0, bottom:0, background:'linear-gradient(135deg, rgba(0, 255, 136, 0.02) 0%, transparent 50%, rgba(0, 255, 136, 0.02) 100%)', borderRadius:'16px', pointerEvents:'none'}}></div>
-            <div style={{position:'relative', zIndex:1, maxWidth:'100%'}}>
-              <Table style={{
-                margin:0, 
-                borderRadius:0, 
-                boxShadow:'none', 
-                background:'transparent', 
-                border:'none',
-                width:'100%',
-                tableLayout:'fixed'
-              }}>
-                <thead>
-                  <tr>
-                    <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.9rem',
-                      textAlign:'center',
-                      width:'40%',
-                      whiteSpace:'nowrap'
-                    }}>Cliente</th>
-                    <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.9rem',
-                      textAlign:'center',
-                      width:'30%',
-                      whiteSpace:'nowrap'
-                    }}>Pacote</th>
-                    <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.9rem',
-                      textAlign:'center',
-                      width:'30%',
-                      whiteSpace:'nowrap'
-                    }}>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pacotes.map((p,i)=>(
-                    <tr key={i} style={{borderBottom: i < pacotes.length - 1 ? '1px solid rgba(0, 255, 136, 0.2)' : 'none', background: i % 2 === 0 ? 'rgba(10, 11, 13, 0.5)' : 'transparent', transition:'all 0.3s ease'}} onMouseEnter={e=>{e.currentTarget.style.background='rgba(0, 255, 136, 0.08)'; e.currentTarget.style.transform='translateY(-1px)'}} onMouseLeave={e=>{e.currentTarget.style.background= i % 2 === 0 ? 'rgba(10, 11, 13, 0.5)' : 'transparent'; e.currentTarget.style.transform='translateY(0)'}}>
-                      <td style={{
-                        padding:'0.8rem 0.6rem', 
-                        fontSize:'0.9rem', 
-                        fontWeight:'500', 
-                        color:'#FFF', 
-                        textAlign:'center', 
-                        overflow:'hidden', 
-                        textOverflow:'ellipsis', 
-                        whiteSpace:'nowrap'
-                      }} title={p.cliente}>{p.cliente}</td>
-                      <td style={{
-                        padding:'0.8rem 0.6rem', 
-                        fontSize:'0.9rem', 
-                        color:'#FFF', 
-                        textAlign:'center'
-                      }}>
-                        <span style={{
-                          background:'rgba(0, 255, 136, 0.2)', 
-                          color:'#00ff88', 
-                          padding:'0.4rem 0.8rem', 
-                          borderRadius:'12px', 
-                          fontSize:'0.85rem', 
-                          fontWeight:'700', 
-                          boxShadow:'0 1px 4px rgba(0, 255, 136, 0.2)', 
-                          border:'1px solid rgba(0, 255, 136, 0.3)', 
-                          display:'inline-block'
-                        }}>
-                          {p.pacote}
-                        </span>
-                      </td>
-                      <td style={{
-                        padding:'0.8rem 0.6rem', 
-                        textAlign:'center'
-                      }}>
-                        {p.status === 'liberado' ? 
-                          <span style={{
-                            background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', 
-                            color:'#0a0f0a', 
-                            padding:'0.4rem 0.8rem', 
-                            borderRadius:'12px', 
-                            fontSize:'0.8rem', 
-                            fontWeight:'700', 
-                            display:'inline-flex', 
-                            alignItems:'center', 
-                            gap:'0.3rem', 
-                            boxShadow:'0 1px 6px rgba(0, 255, 136, 0.3)', 
-                            textTransform:'uppercase', 
-                            letterSpacing:'0.1px', 
-                            whiteSpace:'nowrap'
-                          }}>
-                            ✅ Liberado
-                          </span> : 
-                          <span style={{
-                            background:'linear-gradient(135deg, #ffa500 0%, #ff8c00 100%)', 
-                            color:'#FFF', 
-                            padding:'0.4rem 0.8rem', 
-                            borderRadius:'12px', 
-                            fontSize:'0.8rem', 
-                            fontWeight:'700', 
-                            display:'inline-flex', 
-                            alignItems:'center', 
-                            gap:'0.3rem', 
-                            boxShadow:'0 1px 6px rgba(255, 165, 0, 0.3)', 
-                            textTransform:'uppercase', 
-                            letterSpacing:'0.1px', 
-                            whiteSpace:'nowrap'
-                          }}>
-                            ⏳ Aguardando
-                          </span>
-                        }
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </div>
-            {pacotes.length === 0 && (
-              <div style={{padding:'4rem', textAlign:'center', color:'rgba(255, 255, 255, 0.6)'}}>
-                <div style={{fontSize:'4rem', marginBottom:'1.5rem', filter:'drop-shadow(0 0 15px rgba(0, 255, 136, 0.3))'}}>🔄</div>
-                <h3 style={{color:'#00ff88', marginBottom:'1rem', fontSize:'1.5rem', fontWeight:'700', textShadow:'0 0 15px rgba(0, 255, 136, 0.3)'}}>Nenhuma recarga encontrada</h3>
-                <p style={{color:'rgba(255, 255, 255, 0.7)', fontSize:'1.1rem', lineHeight:'1.6'}}>
-                  Não há recargas cadastradas no momento
-                </p>
-              </div>
-            )}
-          </div>
+          <Table>
+            <thead>
+              <tr><th>Cliente</th><th>Pacote</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              {pacotes.map((p,i)=>(
+                <tr key={i}>
+                  <td>{p.cliente}</td>
+                  <td>{p.pacote}</td>
+                  <td>{p.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
         </Section>
       )}
+
       {section==='planos' && (
         <Section>
-          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%'}}>
-            <h3>Planos Disponíveis</h3>
-            <Button 
-              onClick={async () => {
-                try {
-                  setMsg('Sincronizando planos...');
-
-                  // Adicionar timestamp para evitar cache
-                  const timestamp = Date.now();
-
-                  // Buscar planos atualizados da API com parâmetro de timestamp para evitar cache
-                  const resp = await fetch(`/api/planos?t=${timestamp}`, {
-                    headers: {
-                      'Cache-Control': 'no-cache, no-store, must-revalidate',
-                      'Pragma': 'no-cache',
-                      'Expires': '0'
-                    }
-                  });
-
-                  const data = await resp.json();
-
-                  if (data.planos) {
-                    console.log('[ADMIN] Planos recebidos para sincronização:', data.planos);
-
-                    // Atualizar planos no localStorage
-                    if (typeof window !== 'undefined') {
-                      localStorage.setItem('admin_planos', JSON.stringify(data.planos));
-
-                      // Criar um evento personalizado para notificar outras abas/janelas
-                      try {
-                        const syncEvent = new StorageEvent('storage', {
-                          key: 'admin_planos',
-                          newValue: JSON.stringify(data.planos)
-                        });
-
-                        // Disparar o evento para outras abas/janelas
-                        window.dispatchEvent(syncEvent);
-                        console.log('[ADMIN] Evento de sincronização disparado');
-                      } catch (e) {
-                        console.error('[ADMIN] Erro ao disparar evento de sincronização:', e);
-                      }
-                    }
-
-                    // Atualizar estado local
-                    setPlanos(data.planos);
-
-                    // Executar script de sincronização se disponível
-                    if (data.syncScript && typeof window !== 'undefined') {
-                      try {
-                        console.log('[ADMIN] Executando script de sincronização');
-                        // eslint-disable-next-line no-eval
-                        eval(data.syncScript);
-                      } catch (e) {
-                        console.error('[ADMIN] Erro ao executar script de sincronização:', e);
-                      }
-                    }
-
-                    // Forçar recarregamento da página de planos em todas as abas abertas
-                    if (typeof window !== 'undefined') {
-                      localStorage.setItem('force_planos_reload', timestamp.toString());
-                    }
-
-                    setMsg('Planos sincronizados com sucesso!');
-                    setTimeout(() => setMsg(''), 2000);
-                  } else {
-                    setMsg('Erro ao sincronizar planos: dados inválidos');
-                    setTimeout(() => setMsg(''), 2500);
-                  }
-                } catch (err) {
-                  console.error('[ADMIN] Erro ao sincronizar planos:', err);
-                  setMsg('Erro ao sincronizar planos');
-                  setTimeout(() => setMsg(''), 2500);
-                }
-              }}
-              style={{background: '#4CAF50', color: '#FFF', display: 'flex', alignItems: 'center', gap: '6px'}}
-            >
-              <span style={{fontSize: '1.1rem'}}>↻</span> Sincronizar Planos
-            </Button>
-          </div>
+          <h3>Planos</h3>
           <form onSubmit={async e => {
             e.preventDefault();
             if(!novoPlano.nome||!novoPlano.quantidade||!novoPlano.preco) return setMsg('Preencha todos os campos do plano!');
-            // LOG: plano a ser enviado
-            console.log('[ADMIN] Enviando novo plano:', novoPlano);
             try {
               const resp = await fetch('/api/planos', {
                 method: 'POST',
@@ -1569,7 +1074,6 @@ export default function Admin() {
                 body: JSON.stringify(novoPlano)
               });
               const data = await resp.json();
-              console.log('[ADMIN] Resposta da API ao criar plano:', data);
               if (resp.ok && data.plano) {
                 setPlanos([...planos, data.plano]);
                 setNovoPlano({nome:'',quantidade:0,preco:0, descricao:''});
@@ -1580,7 +1084,6 @@ export default function Admin() {
                 setTimeout(()=>setMsg(''), 2500);
               }
             } catch (err) {
-              console.error('[ADMIN] Erro ao criar plano:', err);
               setMsg('Erro ao criar plano.');
               setTimeout(()=>setMsg(''), 2500);
             }
@@ -1588,7 +1091,6 @@ export default function Admin() {
             <input type="text" placeholder="Nome do Plano" value={novoPlano.nome} onChange={e=>setNovoPlano({...novoPlano,nome:e.target.value})} style={{padding:8,borderRadius:6,border:'1px solid #292B2E',background:'#181A1B',color:'#FFF'}} />
             <input type="number" placeholder="Qtd. Comentários" value={novoPlano.quantidade||''} onChange={e=>setNovoPlano({...novoPlano,quantidade:Number(e.target.value)})} style={{padding:8,borderRadius:6,border:'1px solid #292B2E',background:'#181A1B',color:'#FFF',width:120}} />
             <input type="number" placeholder="Preço (R$)" value={novoPlano.preco||''} onChange={e=>setNovoPlano({...novoPlano,preco:Number(e.target.value)})} style={{padding:8,borderRadius:6,border:'1px solid #292B2E',background:'#181A1B',color:'#FFF',width:120}} />
-            <input type="text" placeholder="Descrição personalizada (opcional)" value={novoPlano.descricao} onChange={e=>setNovoPlano({...novoPlano,descricao:e.target.value})} style={{padding:8,borderRadius:6,border:'1px solid #292B2E',background:'#181A1B',color:'#FFD600',width:260}} />
             <Button type="submit">Adicionar Plano</Button>
           </form>
           <Table>
@@ -1656,11 +1158,10 @@ export default function Admin() {
             </tbody>
           </Table>
         </Section>
-      )}</old_str>
-        </Section>
       )}
-    {/* Popup de Cadastro */}
-      {showCadastroPopup && (
+
+    {/* Popups aqui... */}
+     {showCadastroPopup && (
         <div style={{
           position: 'fixed',
           top: 0,
@@ -1779,11 +1280,7 @@ export default function Admin() {
                   fontWeight: '700',
                   marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
-                  '@media (max-width: 480px)': {
-                    fontSize: '0.85rem',
-                    marginBottom: '0.4rem'
-                  }
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
                 }}>
                   📝 Nome Completo
                 </label>
@@ -1823,11 +1320,7 @@ export default function Admin() {
                   fontWeight: '700',
                   marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
-                  '@media (max-width: 480px)': {
-                    fontSize: '0.85rem',
-                    marginBottom: '0.4rem'
-                  }
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
                 }}>
                   📧 Email
                 </label>
@@ -1867,11 +1360,7 @@ export default function Admin() {
                   fontWeight: '700',
                   marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
-                  '@media (max-width: 480px)': {
-                    fontSize: '0.85rem',
-                    marginBottom: '0.4rem'
-                  }
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
                 }}>
                   📱 WhatsApp
                 </label>
@@ -1911,11 +1400,7 @@ export default function Admin() {
                   fontWeight: '700',
                   marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
-                  '@media (max-width: 480px)': {
-                    fontSize: '0.85rem',
-                    marginBottom: '0.4rem'
-                  }
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
                 }}>
                   🔐 Senha
                 </label>
@@ -1955,11 +1440,7 @@ export default function Admin() {
                   fontWeight: '700',
                   marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
-                  '@media (max-width: 480px)': {
-                    fontSize: '0.85rem',
-                    marginBottom: '0.4rem'
-                  }
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
                 }}>
                   👑 Permissões
                 </label>
@@ -1992,11 +1473,7 @@ export default function Admin() {
                   fontWeight: '700',
                   marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
-                  '@media (max-width: 480px)': {
-                    fontSize: '0.85rem',
-                    marginBottom: '0.4rem'
-                  }
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
                 }}>
                   ⚡ Pedidos Simultâneos
                 </label>
@@ -2191,11 +1668,7 @@ export default function Admin() {
                   fontWeight: '700',
                   marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
-                  '@media (max-width: 480px)': {
-                    fontSize: '0.85rem',
-                    marginBottom: '0.4rem'
-                  }
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
                 }}>
                   📝 Nome Completo
                 </label>
@@ -2235,11 +1708,7 @@ export default function Admin() {
                   fontWeight: '700',
                   marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
-                  '@media (max-width: 480px)': {
-                    fontSize: '0.85rem',
-                    marginBottom: '0.4rem'
-                  }
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
                 }}>
                   📧 Email
                 </label>
@@ -2279,11 +1748,7 @@ export default function Admin() {
                   fontWeight: '700',
                   marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
-                  '@media (max-width: 480px)': {
-                    fontSize: '0.85rem',
-                    marginBottom: '0.4rem'
-                  }
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
                 }}>
                   📱 WhatsApp
                 </label>
@@ -2323,11 +1788,7 @@ export default function Admin() {
                   fontWeight: '700',
                   marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
-                  '@media (max-width: 480px)': {
-                    fontSize: '0.85rem',
-                    marginBottom: '0.4rem'
-                  }
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
                 }}>
                   🔐 Senha
                 </label>
@@ -2367,11 +1828,7 @@ export default function Admin() {
                   fontWeight: '700',
                   marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
-                  '@media (max-width: 480px)': {
-                    fontSize: '0.85rem',
-                    marginBottom: '0.4rem'
-                  }
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
                 }}>
                   📊 Status
                 </label>
@@ -2404,11 +1861,7 @@ export default function Admin() {
                   fontWeight: '700',
                   marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
-                  '@media (max-width: 480px)': {
-                    fontSize: '0.85rem',
-                    marginBottom: '0.4rem'
-                  }
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
                 }}>
                   👑 Permissões
                 </label>
@@ -2441,11 +1894,7 @@ export default function Admin() {
                   fontWeight: '700',
                   marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
-                  '@media (max-width: 480px)': {
-                    fontSize: '0.85rem',
-                    marginBottom: '0.4rem'
-                  }
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
                 }}>
                   💬 Comentários
                 </label>
@@ -2485,11 +1934,7 @@ export default function Admin() {
                   fontWeight: '700',
                   marginBottom: '0.5rem',
                   display: 'block',
-                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)',
-                  '@media (max-width: 480px)': {
-                    fontSize: '0.85rem',
-                    marginBottom: '0.4rem'
-                  }
+                  textShadow: '0 0 5px rgba(0, 255, 136, 0.3)'
                 }}>
                   ⚡ Pedidos Simultâneos
                 </label>
@@ -2521,17 +1966,7 @@ export default function Admin() {
                 display: 'flex', 
                 gap: '1rem', 
                 justifyContent: 'center', 
-                marginTop: '1rem',
-                '@media (max-width: 768px)': {
-                  gridColumn: 'span 1',
-                  flexDirection: 'column',
-                  gap: '0.75rem',
-                  marginTop: '0.75rem'
-                },
-                '@media (max-width: 480px)': {
-                  gap: '0.5rem',
-                  marginTop: '0.5rem'
-                }
+                marginTop: '1rem'
               }}>
                 <Button 
                   type="submit" 
@@ -2551,11 +1986,7 @@ export default function Admin() {
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.75rem',
-                    '@media (max-width: 480px)': {
-                      padding: '0.8rem 1.5rem',
-                      fontSize: '1rem'
-                    }
+                    gap: '0.75rem'
                   }}
                   onMouseEnter={e=>{
                     e.currentTarget.style.transform='translateY(-3px)'; 
@@ -2589,11 +2020,7 @@ export default function Admin() {
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.75rem',
-                    '@media (max-width: 480px)': {
-                      padding: '0.8rem 1.5rem',
-                      fontSize: '1rem'
-                    }
+                    gap: '0.75rem'
                   }}
                   onMouseEnter={e=>{
                     e.currentTarget.style.transform='translateY(-3px)'; 
