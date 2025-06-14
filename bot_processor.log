@@ -74,3 +74,86 @@ Stacktrace:
 2025-06-13 21:14:51,471 - BotProcessor - INFO - Nenhum pedido disponível.
 2025-06-13 21:15:21,472 - BotProcessor - INFO - Nenhum pedido disponível.
 2025-06-13 21:15:51,474 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 23:51:37,042 - BotProcessor - INFO - Iniciando Bot Processor...
+2025-06-13 23:51:37,042 - BotProcessor - INFO - Iniciando Bot Processor
+2025-06-13 23:51:37,043 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 23:52:07,046 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 23:52:37,048 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 23:53:07,049 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 23:53:37,050 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 23:54:07,052 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 23:54:37,053 - BotProcessor - INFO - Carregando usuários para o gênero: masculino
+2025-06-13 23:54:37,054 - BotProcessor - INFO - Carregados 63 usuários do Instagram para o gênero 'masculino'
+2025-06-13 23:54:37,054 - BotProcessor - INFO - Processando pedido: 1749869655659 - Detalhes: Comentários total: 1, Já processados: 0, Status: pendente
+2025-06-13 23:54:37,054 - BotProcessor - INFO - Inicializando controle de progresso para pedido 1749869655659: 1 comentários
+2025-06-13 23:54:37,055 - BotProcessor - INFO - Processando comentário 1/1 do pedido 1749869655659
+2025-06-13 23:54:37,056 - BotProcessor - INFO - Processando comentário 1/1 do pedido 1749869655659 com usuário lucasferreira1987b
+2025-06-13 23:54:39,930 - BotProcessor - INFO - Carregando cookies para lucasferreira1987b
+2025-06-13 23:54:45,896 - BotProcessor - INFO - Navegando para o post: https://www.instagram.com/p/DKpvILWSjQr/
+2025-06-13 23:54:59,003 - BotProcessor - INFO - Tentando encontrar campo de comentário...
+2025-06-13 23:54:59,021 - BotProcessor - INFO - Campo de comentário encontrado com seletor principal
+2025-06-13 23:54:59,281 - BotProcessor - INFO - Tentou clicar no botão Postar via JavaScript direto
+2025-06-13 23:54:59,284 - BotProcessor - INFO - JavaScript não funcionou, tentando método Selenium
+2025-06-13 23:55:09,329 - BotProcessor - WARNING - Erro ao clicar no botão com Selenium: TimeoutException: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff75570fe75+79173]
+	GetHandleVerifier [0x0x7ff75570fed0+79264]
+	(No symbol) [0x0x7ff7554c9e5a]
+	(No symbol) [0x0x7ff755520586]
+	(No symbol) [0x0x7ff75552083c]
+	(No symbol) [0x0x7ff755574247]
+	(No symbol) [0x0x7ff7555489af]
+	(No symbol) [0x0x7ff75557100d]
+	(No symbol) [0x0x7ff755548743]
+	(No symbol) [0x0x7ff7555114c1]
+	(No symbol) [0x0x7ff755512253]
+	GetHandleVerifier [0x0x7ff7559da2ad+3004797]
+	GetHandleVerifier [0x0x7ff7559d46fd+2981325]
+	GetHandleVerifier [0x0x7ff7559f3350+3107360]
+	GetHandleVerifier [0x0x7ff75572a9fe+188622]
+	GetHandleVerifier [0x0x7ff75573228f+219487]
+	GetHandleVerifier [0x0x7ff755718dc4+115860]
+	GetHandleVerifier [0x0x7ff755718f79+116297]
+	GetHandleVerifier [0x0x7ff7556ff528+11256]
+	BaseThreadInitThunk [0x0x7ffdce93259d+29]
+	RtlUserThreadStart [0x0x7ffdd0acaf38+40]
+ | XPath usado: //*[@role="button" and contains(text(),"Postar")]
+2025-06-13 23:55:09,342 - BotProcessor - INFO - Enviou ENTER no campo de comentário como último recurso
+2025-06-13 23:55:09,342 - BotProcessor - WARNING - Erro ao verificar campo: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff75570fe75+79173]
+	GetHandleVerifier [0x0x7ff75570fed0+79264]
+	(No symbol) [0x0x7ff7554c9e5a]
+	(No symbol) [0x0x7ff755520586]
+	(No symbol) [0x0x7ff75552083c]
+	(No symbol) [0x0x7ff755574247]
+	(No symbol) [0x0x7ff7555489af]
+	(No symbol) [0x0x7ff75557100d]
+	(No symbol) [0x0x7ff755548743]
+	(No symbol) [0x0x7ff7555114c1]
+	(No symbol) [0x0x7ff755512253]
+	GetHandleVerifier [0x0x7ff7559da2ad+3004797]
+	GetHandleVerifier [0x0x7ff7559d46fd+2981325]
+	GetHandleVerifier [0x0x7ff7559f3350+3107360]
+	GetHandleVerifier [0x0x7ff75572a9fe+188622]
+	GetHandleVerifier [0x0x7ff75573228f+219487]
+	GetHandleVerifier [0x0x7ff755718dc4+115860]
+	GetHandleVerifier [0x0x7ff755718f79+116297]
+	GetHandleVerifier [0x0x7ff7556ff528+11256]
+	BaseThreadInitThunk [0x0x7ffdce93259d+29]
+	RtlUserThreadStart [0x0x7ffdd0acaf38+40]
+
+2025-06-13 23:55:09,342 - BotProcessor - INFO - Fechando o navegador após o comentário...
+2025-06-13 23:55:12,402 - BotProcessor - INFO - Comentário 1/1 do pedido 1749869655659 processado com sucesso
+2025-06-13 23:55:12,404 - BotProcessor - INFO - Todos os 1 comentários do pedido 1749869655659 processados com sucesso!
+2025-06-13 23:55:52,688 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 23:56:22,691 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 23:56:52,694 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 23:57:22,696 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 23:57:52,699 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 23:58:22,702 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 23:58:52,704 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 23:59:22,707 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-13 23:59:52,709 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-14 00:00:22,711 - BotProcessor - INFO - Nenhum pedido disponível.
+2025-06-14 00:00:52,714 - BotProcessor - INFO - Nenhum pedido disponível.

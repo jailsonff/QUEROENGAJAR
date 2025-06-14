@@ -14,7 +14,7 @@
     "email": "jfsilvavip@gmail.com",
     "whatsapp": "888888888888",
     "senha": "s96552654",
-    "comentarios": 153,
+    "comentarios": 253,
     "status": "ativo",
     "dataCadastro": "2025-05-23T00:13:54.806Z",
     "simultaneos": 1,
@@ -30,12 +30,32 @@
     "dataCadastro": "2025-06-13T17:27:57.961Z"
   },
   {
-    "nome": "testando2",
-    "email": "testeando2@gmail.com",
-    "whatsapp": "84565845",
-    "senha": "s96552654",
+    "nome": "Luane ",
+    "email": "luhvoss@icloud.com",
+    "whatsapp": "47989165473",
+    "senha": "170$",
+    "comentarios": 9,
+    "status": "ativo",
+    "dataCadastro": "2025-06-13T18:51:24.069Z",
+    "simultaneos": 1
+  },
+  {
+    "nome": "Rosirene Alves Ferreira ",
+    "email": "divinagoianinha@yahoo.com",
+    "whatsapp": "15 99680-5275 ",
+    "senha": "cassia18",
     "comentarios": 0,
     "status": "ativo",
-    "dataCadastro": "2025-06-14T01:09:17.366Z"
+    "dataCadastro": "2025-06-13T19:17:40.405Z",
+    "simultaneos": 1
+  },
+  {
+    "nome": "Marcos Antonio Mendes Dantas Junior",
+    "email": "marcos.kampff@gmail.com",
+    "whatsapp": "81998779937",
+    "senha": "17552008",
+    "comentarios": 0,
+    "status": "ativo",
+    "dataCadastro": "2025-06-13T21:07:18.694Z"
   }
 ]

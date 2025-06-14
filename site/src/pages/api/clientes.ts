@@ -30,6 +30,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     // Listar todos os clientes
     const clientes = readClientes();
+    // Ordena os clientes pela data de cadastro, do mais recente para o mais antigo
+    clientes.sort((a: any, b: any) => {
+      // Trata casos onde a data de cadastro pode não existir
+      const dateA = a.dataCadastro ? new Date(a.dataCadastro).getTime() : 0;
+      const dateB = b.dataCadastro ? new Date(b.dataCadastro).getTime() : 0;
+      return dateB - dateA;
+    });
     return res.status(200).json({ clientes });
   }
 
