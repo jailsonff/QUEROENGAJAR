@@ -1305,7 +1305,12 @@ export default function Admin() {
       )}
       {section==='pacotes' && (
         <Section>
-          <h3>Pacotes Comprados</h3>
+          <div style={{display:'flex', alignItems:'center', justifyContent:'center', width:'100%', marginBottom:'2rem'}}>
+            <h3 style={{color:'#00ff88', fontSize:'2.2rem', fontWeight:'700', margin:0, display:'flex', alignItems:'center', gap:'0.75rem', textShadow:'0 0 15px rgba(0, 255, 136, 0.4)', textAlign:'center'}}>
+              <span style={{fontSize:'2rem'}}>🔄</span>
+              Recargas
+            </h3>
+          </div>
           <form onSubmit={handlePacoteAdd} style={{display:'flex',gap:8,marginBottom:14,flexWrap:'wrap'}}>
             <input
               type="text"
@@ -1327,16 +1332,103 @@ export default function Admin() {
             </select>
             <Button type="submit">Adicionar Pacote</Button>
           </form>
-          <Table>
-            <thead>
-              <tr><th>Cliente</th><th>Pacote</th><th>Status</th></tr>
-            </thead>
-            <tbody>
-              {pacotes.map((p,i)=>(
-                <tr key={i}><td>{p.cliente}</td><td>{p.pacote}</td><td>{p.status}</td></tr>
-              ))}
-            </tbody>
-          </Table>
+
+          {/* Divisor decorativo */}
+          <div style={{display:'flex', alignItems:'center', margin:'2.5rem 0', opacity:0.8}}>
+            <div style={{flex:1, height:'2px', background:'linear-gradient(90deg, transparent 0%, #00ff88 50%, transparent 100%)', boxShadow:'0 0 10px rgba(0, 255, 136, 0.3)'}}></div>
+            <span style={{color:'#00ff88', padding:'0 1.5rem', fontSize:'1.5rem', textShadow:'0 0 15px rgba(0, 255, 136, 0.5)'}}>💰</span>
+            <div style={{flex:1, height:'2px', background:'linear-gradient(90deg, transparent 0%, #00ff88 50%, transparent 100%)', boxShadow:'0 0 10px rgba(0, 255, 136, 0.3)'}}></div>
+          </div>
+
+          {/* Tabela responsiva centralizada */}
+          <div style={{
+            background:'#000000', 
+            borderRadius:'16px', 
+            overflow:'hidden', 
+            border:'2px solid rgba(0, 255, 136, 0.3)', 
+            boxShadow:'0 8px 32px rgba(0, 255, 136, 0.15)', 
+            backdropFilter:'blur(15px)', 
+            position:'relative',
+            maxWidth:'100%'
+          }}>
+            <div style={{position:'absolute', top:0, left:0, right:0, bottom:0, background:'linear-gradient(135deg, rgba(0, 255, 136, 0.02) 0%, transparent 50%, rgba(0, 255, 136, 0.02) 100%)', borderRadius:'16px', pointerEvents:'none'}}></div>
+            <div style={{overflowX:'auto', position:'relative', zIndex:1, maxWidth:'100%'}}>
+              <Table style={{
+                margin:0, 
+                borderRadius:0, 
+                boxShadow:'none', 
+                background:'transparent', 
+                border:'none',
+                minWidth:'600px',
+                '@media (max-width: 768px)': {
+                  minWidth:'500px'
+                }
+              }}>
+                <thead>
+                  <tr>
+                    <th style={{
+                      padding:'0.8rem 0.6rem',
+                      fontSize:'0.85rem',
+                      textAlign:'center',
+                      '@media (max-width: 768px)': {
+                        padding:'0.6rem 0.4rem',
+                        fontSize:'0.8rem'
+                      }
+                    }}>👤 Cliente</th>
+                    <th style={{
+                      padding:'0.8rem 0.6rem',
+                      fontSize:'0.85rem',
+                      textAlign:'center',
+                      '@media (max-width: 768px)': {
+                        padding:'0.6rem 0.4rem',
+                        fontSize:'0.8rem'
+                      }
+                    }}>📦 Pacote</th>
+                    <th style={{
+                      padding:'0.8rem 0.6rem',
+                      fontSize:'0.85rem',
+                      textAlign:'center',
+                      '@media (max-width: 768px)': {
+                        padding:'0.6rem 0.4rem',
+                        fontSize:'0.8rem'
+                      }
+                    }}>📊 Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pacotes.map((p,i)=>(
+                    <tr key={i} style={{borderBottom: i < pacotes.length - 1 ? '1px solid rgba(0, 255, 136, 0.2)' : 'none', background: i % 2 === 0 ? 'rgba(10, 11, 13, 0.5)' : 'transparent', transition:'all 0.3s ease'}} onMouseEnter={e=>{e.currentTarget.style.background='rgba(0, 255, 136, 0.08)'; e.currentTarget.style.transform='translateY(-1px)'}} onMouseLeave={e=>{e.currentTarget.style.background= i % 2 === 0 ? 'rgba(10, 11, 13, 0.5)' : 'transparent'; e.currentTarget.style.transform='translateY(0)'}}>
+                      <td style={{padding:'0.8rem 0.5rem', fontSize:'0.9rem', fontWeight:'500', color:'#FFF', textAlign:'center'}}>{p.cliente}</td>
+                      <td style={{padding:'0.8rem 0.5rem', fontSize:'0.9rem', color:'#FFF', textAlign:'center'}}>
+                        <span style={{background:'rgba(0, 255, 136, 0.2)', color:'#00ff88', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', boxShadow:'0 1px 6px rgba(0, 255, 136, 0.2)', border:'1px solid rgba(0, 255, 136, 0.3)'}}>
+                          {p.pacote} comentários
+                        </span>
+                      </td>
+                      <td style={{padding:'0.8rem 0.5rem', textAlign:'center'}}>
+                        {p.status === 'liberado' ? 
+                          <span style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.3rem', boxShadow:'0 2px 10px rgba(0, 255, 136, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px'}}>
+                            ✅ Liberado
+                          </span> : 
+                          <span style={{background:'linear-gradient(135deg, #ffa500 0%, #ff8c00 100%)', color:'#FFF', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.3rem', boxShadow:'0 2px 10px rgba(255, 165, 0, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px'}}>
+                            ⏳ Aguardando
+                          </span>
+                        }
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+            {pacotes.length === 0 && (
+              <div style={{padding:'4rem', textAlign:'center', color:'rgba(255, 255, 255, 0.6)'}}>
+                <div style={{fontSize:'4rem', marginBottom:'1.5rem', filter:'drop-shadow(0 0 15px rgba(0, 255, 136, 0.3))'}}>🔄</div>
+                <h3 style={{color:'#00ff88', marginBottom:'1rem', fontSize:'1.5rem', fontWeight:'700', textShadow:'0 0 15px rgba(0, 255, 136, 0.3)'}}>Nenhuma recarga encontrada</h3>
+                <p style={{color:'rgba(255, 255, 255, 0.7)', fontSize:'1.1rem', lineHeight:'1.6'}}>
+                  Não há recargas cadastradas no momento
+                </p>
+              </div>
+            )}
+          </div>
         </Section>
       )}
       {section==='planos' && (

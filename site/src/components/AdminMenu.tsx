@@ -193,7 +193,7 @@ export default function AdminMenu({ active, onSelect }: AdminMenuProps) {
           📋 Pedidos
         </MenuLink>
         <MenuLink $active={active==='pacotes'} onClick={()=>onSelect('pacotes')}>
-          📦 Pacotes
+          🔄 Recargas
         </MenuLink>
         <MenuLink $active={active==='planos'} onClick={()=>onSelect('planos')}>
           💎 Planos
