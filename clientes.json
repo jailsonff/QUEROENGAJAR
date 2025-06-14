@@ -28,5 +28,14 @@
     "comentarios": 0,
     "status": "ativo",
     "dataCadastro": "2025-06-13T17:27:57.961Z"
+  },
+  {
+    "nome": "testando2",
+    "email": "testeando2@gmail.com",
+    "whatsapp": "84565845",
+    "senha": "s96552654",
+    "comentarios": 0,
+    "status": "ativo",
+    "dataCadastro": "2025-06-14T01:09:17.366Z"
   }
 ]
