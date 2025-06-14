@@ -1352,45 +1352,46 @@ export default function Admin() {
             maxWidth:'100%'
           }}>
             <div style={{position:'absolute', top:0, left:0, right:0, bottom:0, background:'linear-gradient(135deg, rgba(0, 255, 136, 0.02) 0%, transparent 50%, rgba(0, 255, 136, 0.02) 100%)', borderRadius:'16px', pointerEvents:'none'}}></div>
-            <div style={{overflowX:'auto', position:'relative', zIndex:1, maxWidth:'100%'}}>
+            <div style={{position:'relative', zIndex:1, maxWidth:'100%'}}>
               <Table style={{
                 margin:0, 
                 borderRadius:0, 
                 boxShadow:'none', 
                 background:'transparent', 
                 border:'none',
-                minWidth:'600px',
-                '@media (max-width: 768px)': {
-                  minWidth:'500px'
-                }
+                width:'100%',
+                tableLayout:'fixed'
               }}>
                 <thead>
                   <tr>
                     <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.85rem',
+                      padding:'0.7rem 0.4rem',
+                      fontSize:'0.75rem',
                       textAlign:'center',
+                      width:'35%',
                       '@media (max-width: 768px)': {
-                        padding:'0.6rem 0.4rem',
-                        fontSize:'0.8rem'
+                        padding:'0.5rem 0.3rem',
+                        fontSize:'0.7rem'
                       }
                     }}>👤 Cliente</th>
                     <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.85rem',
+                      padding:'0.7rem 0.4rem',
+                      fontSize:'0.75rem',
                       textAlign:'center',
+                      width:'35%',
                       '@media (max-width: 768px)': {
-                        padding:'0.6rem 0.4rem',
-                        fontSize:'0.8rem'
+                        padding:'0.5rem 0.3rem',
+                        fontSize:'0.7rem'
                       }
                     }}>📦 Pacote</th>
                     <th style={{
-                      padding:'0.8rem 0.6rem',
-                      fontSize:'0.85rem',
+                      padding:'0.7rem 0.4rem',
+                      fontSize:'0.75rem',
                       textAlign:'center',
+                      width:'30%',
                       '@media (max-width: 768px)': {
-                        padding:'0.6rem 0.4rem',
-                        fontSize:'0.8rem'
+                        padding:'0.5rem 0.3rem',
+                        fontSize:'0.7rem'
                       }
                     }}>📊 Status</th>
                   </tr>
@@ -1398,19 +1399,19 @@ export default function Admin() {
                 <tbody>
                   {pacotes.map((p,i)=>(
                     <tr key={i} style={{borderBottom: i < pacotes.length - 1 ? '1px solid rgba(0, 255, 136, 0.2)' : 'none', background: i % 2 === 0 ? 'rgba(10, 11, 13, 0.5)' : 'transparent', transition:'all 0.3s ease'}} onMouseEnter={e=>{e.currentTarget.style.background='rgba(0, 255, 136, 0.08)'; e.currentTarget.style.transform='translateY(-1px)'}} onMouseLeave={e=>{e.currentTarget.style.background= i % 2 === 0 ? 'rgba(10, 11, 13, 0.5)' : 'transparent'; e.currentTarget.style.transform='translateY(0)'}}>
-                      <td style={{padding:'0.8rem 0.5rem', fontSize:'0.9rem', fontWeight:'500', color:'#FFF', textAlign:'center'}}>{p.cliente}</td>
-                      <td style={{padding:'0.8rem 0.5rem', fontSize:'0.9rem', color:'#FFF', textAlign:'center'}}>
-                        <span style={{background:'rgba(0, 255, 136, 0.2)', color:'#00ff88', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', boxShadow:'0 1px 6px rgba(0, 255, 136, 0.2)', border:'1px solid rgba(0, 255, 136, 0.3)'}}>
-                          {p.pacote} comentários
+                      <td style={{padding:'0.7rem 0.4rem', fontSize:'0.85rem', fontWeight:'500', color:'#FFF', textAlign:'center', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}} title={p.cliente}>{p.cliente}</td>
+                      <td style={{padding:'0.7rem 0.4rem', fontSize:'0.85rem', color:'#FFF', textAlign:'center'}}>
+                        <span style={{background:'rgba(0, 255, 136, 0.2)', color:'#00ff88', padding:'0.3rem 0.6rem', borderRadius:'16px', fontSize:'0.7rem', fontWeight:'700', boxShadow:'0 1px 6px rgba(0, 255, 136, 0.2)', border:'1px solid rgba(0, 255, 136, 0.3)', display:'inline-block'}}>
+                          {p.pacote}
                         </span>
                       </td>
-                      <td style={{padding:'0.8rem 0.5rem', textAlign:'center'}}>
+                      <td style={{padding:'0.7rem 0.4rem', textAlign:'center'}}>
                         {p.status === 'liberado' ? 
-                          <span style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.3rem', boxShadow:'0 2px 10px rgba(0, 255, 136, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px'}}>
-                            ✅ Liberado
+                          <span style={{background:'linear-gradient(135deg, #00ff88 0%, #00e67a 100%)', color:'#0a0f0a', padding:'0.3rem 0.6rem', borderRadius:'16px', fontSize:'0.7rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.2rem', boxShadow:'0 2px 10px rgba(0, 255, 136, 0.3)', textTransform:'uppercase', letterSpacing:'0.1px', whiteSpace:'nowrap'}}>
+                            ✅ OK
                           </span> : 
-                          <span style={{background:'linear-gradient(135deg, #ffa500 0%, #ff8c00 100%)', color:'#FFF', padding:'0.4rem 0.8rem', borderRadius:'20px', fontSize:'0.8rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.3rem', boxShadow:'0 2px 10px rgba(255, 165, 0, 0.3)', textTransform:'uppercase', letterSpacing:'0.2px'}}>
-                            ⏳ Aguardando
+                          <span style={{background:'linear-gradient(135deg, #ffa500 0%, #ff8c00 100%)', color:'#FFF', padding:'0.3rem 0.6rem', borderRadius:'16px', fontSize:'0.7rem', fontWeight:'700', display:'inline-flex', alignItems:'center', gap:'0.2rem', boxShadow:'0 2px 10px rgba(255, 165, 0, 0.3)', textTransform:'uppercase', letterSpacing:'0.1px', whiteSpace:'nowrap'}}>
+                            ⏳ Pend.
                           </span>
                         }
                       </td>
